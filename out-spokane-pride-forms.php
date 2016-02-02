@@ -53,3 +53,13 @@ add_filter( 'query_vars', array( $controller, 'queryVars') );
 
 /* register shortcode */
 add_shortcode ( 'pride_forms', array( $controller, 'shortCode') );
+
+/* Only run these hooks if logged into the admin screen */
+if ( is_admin() )
+{
+	/* register settings */
+	add_action( 'admin_init', array( $controller, 'registerSettings' ) );
+
+	/* Add main menu and sub-menus */
+	add_action( 'admin_menu', array( $controller, 'addMenus') );
+}

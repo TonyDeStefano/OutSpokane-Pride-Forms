@@ -268,4 +268,65 @@ class Controller {
 	{
 
 	}
+
+	/**
+	 *
+	 */
+	public function addMenus()
+	{
+		add_menu_page('OutSpokane', 'OutSpokane', 'manage_options', 'outspokane', array( $this, 'showSettingsPage' ), 'dashicons-flag');
+		add_submenu_page('outspokane', 'Settings', 'Settings', 'manage_options', 'outspokane');
+		add_submenu_page('outspokane', 'Cruise Entries', 'Cruise Entries', 'manage_options', 'outspokane_cruise', array($this, 'showCruiseEntries'));
+		add_submenu_page('outspokane', 'Parade Entries', 'Parade Entries', 'manage_options', 'outspokane_parade', array($this, 'showParadeEntries'));
+		add_submenu_page('outspokane', 'Festival Entries', 'Festival Entries', 'manage_options', 'outspokane_festival', array($this, 'showFestivalEntries'));
+		add_submenu_page('outspokane', 'Murder Mystery Entries', 'Murder Mystery Entries', 'manage_options', 'outspokane_murder_mystery', array($this, 'showMurderMysteryEntries'));
+	}
+
+	public function registerSettings()
+	{
+		register_setting( 'outspokane_settings', 'stripe_test_secret_key' );
+		register_setting( 'outspokane_settings', 'stripe_test_pub_key' );
+		register_setting( 'outspokane_settings', 'stripe_live_secret_key' );
+		register_setting( 'outspokane_settings', 'stripe_live_pub_key' );
+	}
+
+	/**
+	 *
+	 */
+	public function showSettingsPage()
+	{
+		include( dirname( __DIR__ ) . '/includes/settings.php');
+	}
+
+	/**
+	 *
+	 */
+	public function showCruiseEntries()
+	{
+		include( dirname( __DIR__ ) . '/includes/cruise_entries.php');
+	}
+
+	/**
+	 *
+	 */
+	public function showParadeEntries()
+	{
+		include( dirname( __DIR__ ) . '/includes/parade_entries.php');
+	}
+
+	/**
+	 *
+	 */
+	public function showFestivalEntries()
+	{
+		include( dirname( __DIR__ ) . '/includes/festival_entries.php');
+	}
+
+	/**
+	 *
+	 */
+	public function showMurderMysteryEntries()
+	{
+		include( dirname( __DIR__ ) . '/includes/murder_mystery_entries.php');
+	}
 }
