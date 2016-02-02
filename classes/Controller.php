@@ -218,23 +218,32 @@ class Controller {
 	public function shortCode( $attributes )
 	{
 		$this->attributes = shortcode_atts( array(
-			'form' => ''
+			'form' => '',
+			'year' => date( 'Y' )
 		), $attributes );
 
 		switch ( $this->getAttribute('form') )
 		{
 			case 'cruise':
-				break;
-
 			case 'festival':
-				break;
-
 			case 'murder_mystery':
-				break;
-
 			case 'parade':
-				break;
+				return $this->return . $this->returnOutputFromPage( $this->getAttribute('form') );
 		}
+
+		return $this->return;
+	}
+
+	/**
+	 * @param $page
+	 *
+	 * @return string
+	 */
+	private function returnOutputFromPage( $page )
+	{
+		ob_start();
+		include( dirname( __DIR__ ) . '/includes/' . $page . '.php' );
+		return ob_get_clean();
 	}
 
 	/**

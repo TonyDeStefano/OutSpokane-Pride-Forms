@@ -486,4 +486,59 @@ class Entry {
 
 		return $this;
 	}
+
+	/**
+	 * @param array $exclusions
+	 */
+	public static function drawDefaultFormFields( $exclusions=NULL )
+	{
+		$exclusions = ($exclusions === NULL) ? array() : $exclusions;
+		$inclusions = array(
+			'Organization',
+			'First Name',
+			'Last Name',
+			'Email',
+			'Phone',
+			'Address',
+			'City',
+			'State',
+			'Zip'
+		);
+
+		foreach ($inclusions as $inclusion)
+		{
+			if (!in_array(preg_replace('/[^A-Za-z0-9 ]/', '_', strtolower($inclusion)), $exclusions))
+			{
+				self::drawFormField( $inclusion );
+			}
+		}
+	}
+
+	/**
+	 * @param string $label
+	 * @param string $id
+	 * @param string $type
+	 * @param array $options
+	 */
+	public static function drawFormField( $label, $id=NULL, $type='text', $options=NULL )
+	{
+		$id = ($id === NULL) ? preg_replace('/[^A-Za-z0-9 ]/', '_', strtolower($label)) : $id;
+
+		echo '
+			<div class="row">
+				<div class="col-md-3">
+					<label for="' . $id . '">' . $label . '</label>
+				</div>
+				<div class="col-md-6">';
+
+		switch ( $type )
+		{
+			default:
+				echo '<input class="form-control" id="' . $id . '">';
+		}
+
+		echo '
+				</div>
+			</div>';
+	}
 }

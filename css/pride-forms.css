@@ -1,0 +1,11 @@
+#pride-form-container .form-control {
+    width: 100%;
+    margin: 3px 0;
+    padding: 3px;
+    border: 1px solid #666;
+    border-radius: 3px;
+}
+
+#pride-form-container #state.form-control {
+    width: 50%;
+}
