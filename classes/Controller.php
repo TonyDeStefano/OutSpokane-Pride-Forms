@@ -13,6 +13,15 @@ class Controller {
 
 	const VERSION = '1.0.0';
 
+	public $action = '';
+	public $data = '';
+	public $return = '';
+	public $attributes = array();
+	public $base_page = '';
+
+	/**
+	 *
+	 */
 	public function activate()
 	{
 		add_option( 'pride_forms_version', self::VERSION );
@@ -170,4 +179,84 @@ class Controller {
 		}
 	}
 
+	/**
+	 *
+	 */
+	public function init()
+	{
+		if ( !session_id() )
+		{
+			session_start();
+		}
+
+		$parts = explode('?', $_SERVER['REQUEST_URI']);
+		$this->base_page = $parts[0];
+
+		wp_enqueue_script( 'out-spokane-pride-forms-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/pride-forms.js', array( 'jquery' ), time(), TRUE );
+		wp_enqueue_style( 'out-spokane-pride-forms-bootstrap-grid', plugin_dir_url( dirname( __FILE__ ) ) . 'css/grid12.css', array(), time() );
+		wp_enqueue_style( 'out-spokane-pride-forms-bootstrap-tables', plugin_dir_url( dirname( __FILE__ ) ) . 'css/bootstrap-tables.css', array(), time() );
+		wp_enqueue_style( 'out-spokane-pride-forms-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/pride-forms.css', array(), time() );
+	}
+
+	public function param( $param, $default='' )
+	{
+		return (isset($_REQUEST[$param])) ? htmlspecialchars($_REQUEST[$param]) : $default;
+	}
+
+	public function queryVars( $vars )
+	{
+		$vars[] = 'sq_action';
+		$vars[] = 'sq_data';
+		return $vars;
+	}
+
+	/**
+	 * @param $attributes
+	 *
+	 * @return string
+	 */
+	public function shortCode( $attributes )
+	{
+		$this->attributes = shortcode_atts( array(
+			'form' => ''
+		), $attributes );
+
+		switch ( $this->getAttribute('form') )
+		{
+			case 'cruise':
+				break;
+
+			case 'festival':
+				break;
+
+			case 'murder_mystery':
+				break;
+
+			case 'parade':
+				break;
+		}
+	}
+
+	/**
+	 * @param $attribute
+	 *
+	 * @return string
+	 */
+	public function getAttribute( $attribute )
+	{
+		if (array_key_exists($attribute, $this->attributes))
+		{
+			return strtolower($this->attributes[$attribute]);
+		}
+
+		return '';
+	}
+
+	/**
+	 *
+	 */
+	public function formCapture()
+	{
+
+	}
 }

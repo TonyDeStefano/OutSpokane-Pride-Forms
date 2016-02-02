@@ -41,3 +41,15 @@ $controller = new \OutSpokane\Controller;
 
 /* activate */
 register_activation_hook( __FILE__, array( $controller, 'activate' ) );
+
+/* initialize any variables that the plugin needs */
+add_action( 'init', array( $controller, 'init' ) );
+
+/* capture form post */
+add_action ( 'init', array( $controller, 'formCapture' ) );
+
+/* register query vars */
+add_filter( 'query_vars', array( $controller, 'queryVars') );
+
+/* register shortcode */
+add_shortcode ( 'pride_forms', array( $controller, 'shortCode') );
