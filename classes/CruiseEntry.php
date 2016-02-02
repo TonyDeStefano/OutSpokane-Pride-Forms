@@ -22,4 +22,14 @@ class CruiseEntry extends Entry{
 		$this->setTableName(self::TABLE_NAME);
 		parent::__construct( $id );
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getPaymentMethods()
+	{
+		return array(
+			self::PAYMENT_METHOD_CARD => $this->getPaymentMethod( self::PAYMENT_METHOD_CARD )
+		);
+	}
 }

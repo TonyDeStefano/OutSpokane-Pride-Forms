@@ -21,6 +21,7 @@ class Entry {
 	protected $entry_year;
 	protected $email;
 	protected $phone;
+	protected $organization;
 	protected $first_name;
 	protected $last_name;
 	protected $address;
@@ -32,6 +33,8 @@ class Entry {
 	protected $payment_method_id;
 	protected $paid_at;
 	protected $payment_amount;
+	protected $payment_confirmation_number;
+	protected $notes;
 	protected $created_at;
 	protected $updated_at;
 
@@ -144,6 +147,24 @@ class Entry {
 	 */
 	public function setPhone( $phone ) {
 		$this->phone = $phone;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getOrganization() {
+		return $this->organization;
+	}
+
+	/**
+	 * @param mixed $organization
+	 *
+	 * @return Entry
+	 */
+	public function setOrganization( $organization ) {
+		$this->organization = $organization;
 
 		return $this;
 	}
@@ -292,20 +313,41 @@ class Entry {
 		return $this;
 	}
 
-	public function getPaymentMethod() {
-		switch ($this->payment_method_id)
+	/**
+	 * @param null $payment_method_id
+	 *
+	 * @return string
+	 */
+	public function getPaymentMethod( $payment_method_id=NULL )
+	{
+		$payment_method_id = ($payment_method_id === NULL) ? $this->payment_method_id : $payment_method_id;
+
+		switch ( $payment_method_id )
 		{
-			case 1:
+			case self::PAYMENT_METHOD_CASH:
 				return 'Cash';
-			case 2:
+			case self::PAYMENT_METHOD_CARD:
 				return 'Credit Card';
-			case 3:
+			case self::PAYMENT_METHOD_CHECK:
 				return 'Check';
-			case 4:
+			case self::PAYMENT_METHOD_MO:
 				return 'Money Order';
 			default:
 				return '';
 		}
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getPaymentMethods()
+	{
+		return array(
+			self::PAYMENT_METHOD_CASH => $this->getPaymentMethod( self::PAYMENT_METHOD_CASH ),
+			self::PAYMENT_METHOD_CARD => $this->getPaymentMethod( self::PAYMENT_METHOD_CARD ),
+			self::PAYMENT_METHOD_CHECK => $this->getPaymentMethod( self::PAYMENT_METHOD_CHECK ),
+			self::PAYMENT_METHOD_MO => $this->getPaymentMethod( self::PAYMENT_METHOD_MO )
+		);
 	}
 
 	/**
@@ -365,6 +407,42 @@ class Entry {
 	 */
 	public function setPaymentAmount( $payment_amount ) {
 		$this->payment_amount = (is_numeric($payment_amount)) ? abs(round($payment_amount, 2)) : NULL;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getPaymentConfirmationNumber() {
+		return $this->payment_confirmation_number;
+	}
+
+	/**
+	 * @param mixed $payment_confirmation_number
+	 *
+	 * @return Entry
+	 */
+	public function setPaymentConfirmationNumber( $payment_confirmation_number ) {
+		$this->payment_confirmation_number = $payment_confirmation_number;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getNotes() {
+		return $this->notes;
+	}
+
+	/**
+	 * @param mixed $notes
+	 *
+	 * @return Entry
+	 */
+	public function setNotes( $notes ) {
+		$this->notes = $notes;
 
 		return $this;
 	}
