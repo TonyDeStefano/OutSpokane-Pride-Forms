@@ -276,6 +276,7 @@ class Controller {
 	{
 		add_menu_page('OutSpokane', 'OutSpokane', 'manage_options', 'outspokane', array( $this, 'showSettingsPage' ), 'dashicons-flag');
 		add_submenu_page('outspokane', 'Settings', 'Settings', 'manage_options', 'outspokane');
+		add_submenu_page('outspokane', 'Short Code', 'Short Code', 'manage_options', 'outspokane_shortcode', array($this, 'showShortCode'));
 		add_submenu_page('outspokane', 'Cruise Entries', 'Cruise Entries', 'manage_options', 'outspokane_cruise', array($this, 'showCruiseEntries'));
 		add_submenu_page('outspokane', 'Parade Entries', 'Parade Entries', 'manage_options', 'outspokane_parade', array($this, 'showParadeEntries'));
 		add_submenu_page('outspokane', 'Festival Entries', 'Festival Entries', 'manage_options', 'outspokane_festival', array($this, 'showFestivalEntries'));
@@ -296,6 +297,14 @@ class Controller {
 	public function showSettingsPage()
 	{
 		include( dirname( __DIR__ ) . '/includes/settings.php');
+	}
+
+	/**
+	 *
+	 */
+	public function showShortCode()
+	{
+		include( dirname( __DIR__ ) . '/includes/shortcode.php');
 	}
 
 	/**

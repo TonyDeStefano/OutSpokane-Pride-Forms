@@ -1,6 +1,9 @@
 <div class="wrap">
 
 	<h1>OutSpokane Form Settings</h1>
+	<p>
+		In order to accept credit card payments on the website, you must fill in the following information from your Stripe account:
+	</p>
 
 	<form method="post" action="options.php">
 
