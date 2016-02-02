@@ -28,3 +28,16 @@
  * @author Tony DeStefano
  * @version 1.0.0
  */
+
+require_once ( 'classes/Controller.php' );
+require_once ( 'classes/Entry.php' );
+require_once ( 'classes/CruiseEntry.php' );
+require_once ( 'classes/FestivalEntry.php' );
+require_once ( 'classes/ParadeEntry.php' );
+require_once ( 'classes/MurderMysteryEntry.php' );
+
+/* controller object  */
+$controller = new \OutSpokane\Controller;
+
+/* activate */
+register_activation_hook( __FILE__, array( $controller, 'activate' ) );
