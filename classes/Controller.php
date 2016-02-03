@@ -184,11 +184,6 @@ class Controller {
 	 */
 	public function init()
 	{
-		if ( !session_id() )
-		{
-			session_start();
-		}
-
 		$parts = explode('?', $_SERVER['REQUEST_URI']);
 		$this->base_page = $parts[0];
 
