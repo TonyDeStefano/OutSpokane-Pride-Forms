@@ -318,10 +318,8 @@ class Entry {
 	 *
 	 * @return string
 	 */
-	public function getPaymentMethod( $payment_method_id=NULL )
+	public static function getPaymentMethod( $payment_method_id )
 	{
-		$payment_method_id = ($payment_method_id === NULL) ? $this->payment_method_id : $payment_method_id;
-
 		switch ( $payment_method_id )
 		{
 			case self::PAYMENT_METHOD_CASH:

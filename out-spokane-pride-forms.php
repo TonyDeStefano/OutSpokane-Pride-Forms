@@ -30,6 +30,7 @@
  */
 
 require_once ( 'classes/Controller.php' );
+require_once ( 'classes/EntryTable.php' );
 require_once ( 'classes/Entry.php' );
 require_once ( 'classes/CruiseEntry.php' );
 require_once ( 'classes/FestivalEntry.php' );
