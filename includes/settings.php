@@ -24,39 +24,39 @@
 			</thead>
 			<tr valign="top">
 				<th scope="row">
-					<label for="stripe_test_secret_key">
+					<label for="pride_forms_stripe_test_secret_key">
 						Stripe Test Secret Key
 					</label>
 				</th>
-				<td><?php echo esc_attr( get_option('stripe_test_secret_key') ); ?></td>
-				<td><input type="text" id="stripe_test_secret_key" name="stripe_test_secret_key" value="<?php echo esc_attr( get_option('stripe_test_secret_key') ); ?>" /></td>
+				<td><?php echo esc_attr( get_option('pride_forms_stripe_test_secret_key') ); ?></td>
+				<td><input type="text" id="pride_forms_stripe_test_secret_key" name="pride_forms_stripe_test_secret_key" value="<?php echo esc_attr( get_option('pride_forms_stripe_test_secret_key') ); ?>" /></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row">
-					<label for="stripe_test_pub_key">
+					<label for="pride_forms_stripe_test_pub_key">
 						Stripe Test Publishable Key
 					</label>
 				</th>
-				<td><?php echo esc_attr( get_option('stripe_test_pub_key') ); ?></td>
-				<td><input type="text" id="stripe_test_pub_key" name="stripe_test_pub_key" value="<?php echo esc_attr( get_option('stripe_test_pub_key') ); ?>" /></td>
+				<td><?php echo esc_attr( get_option('pride_forms_stripe_test_pub_key') ); ?></td>
+				<td><input type="text" id="pride_forms_stripe_test_pub_key" name="pride_forms_stripe_test_pub_key" value="<?php echo esc_attr( get_option('pride_forms_stripe_test_pub_key') ); ?>" /></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row">
-					<label for="stripe_live_secret_key">
+					<label for="pride_forms_stripe_live_secret_key">
 						Stripe Live Secret Key
 					</label>
 				</th>
-				<td><?php echo esc_attr( get_option('stripe_live_secret_key') ); ?></td>
-				<td><input type="text" id="stripe_live_secret_key" name="stripe_live_secret_key" value="<?php echo esc_attr( get_option('stripe_live_secret_key') ); ?>" /></td>
+				<td><?php echo esc_attr( get_option('pride_forms_stripe_live_secret_key') ); ?></td>
+				<td><input type="text" id="pride_forms_stripe_live_secret_key" name="pride_forms_stripe_live_secret_key" value="<?php echo esc_attr( get_option('pride_forms_stripe_live_secret_key') ); ?>" /></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row">
-					<label for="stripe_live_pub_key">
+					<label for="pride_forms_stripe_live_pub_key">
 						Stripe Live Publishable Key
 					</label>
 				</th>
-				<td><?php echo esc_attr( get_option('stripe_live_pub_key') ); ?></td>
-				<td><input type="text" id="stripe_live_pub_key" name="stripe_live_pub_key" value="<?php echo esc_attr( get_option('stripe_live_pub_key') ); ?>" /></td>
+				<td><?php echo esc_attr( get_option('pride_forms_stripe_live_pub_key') ); ?></td>
+				<td><input type="text" id="pride_forms_stripe_live_pub_key" name="pride_forms_stripe_live_pub_key" value="<?php echo esc_attr( get_option('pride_forms_stripe_live_pub_key') ); ?>" /></td>
 			</tr>
 		</table>
 

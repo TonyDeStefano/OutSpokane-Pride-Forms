@@ -188,6 +188,12 @@ class Controller {
 		$this->base_page = $parts[0];
 
 		wp_enqueue_script( 'out-spokane-pride-forms-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/pride-forms.js', array( 'jquery' ), time(), TRUE );
+		wp_localize_script( 'out-spokane-pride-forms-js', 'prideforms', array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'entry_nonce' => wp_create_nonce( 'entry-nonce' )
+		) );
+		wp_enqueue_script( 'out-spokane-stripe', 'https://js.stripe.com/v2/', array( 'jquery' ), time(), TRUE);
+
 		wp_enqueue_style( 'out-spokane-pride-forms-bootstrap-grid', plugin_dir_url( dirname( __FILE__ ) ) . 'css/grid12.css', array(), time() );
 		wp_enqueue_style( 'out-spokane-pride-forms-bootstrap-tables', plugin_dir_url( dirname( __FILE__ ) ) . 'css/bootstrap-tables.css', array(), time() );
 		wp_enqueue_style( 'out-spokane-pride-forms-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/pride-forms.css', array(), time() );
@@ -280,10 +286,10 @@ class Controller {
 
 	public function registerSettings()
 	{
-		register_setting( 'outspokane_settings', 'stripe_test_secret_key' );
-		register_setting( 'outspokane_settings', 'stripe_test_pub_key' );
-		register_setting( 'outspokane_settings', 'stripe_live_secret_key' );
-		register_setting( 'outspokane_settings', 'stripe_live_pub_key' );
+		register_setting( 'outspokane_settings', 'pride_forms_stripe_test_secret_key' );
+		register_setting( 'outspokane_settings', 'pride_forms_stripe_test_pub_key' );
+		register_setting( 'outspokane_settings', 'pride_forms_stripe_live_secret_key' );
+		register_setting( 'outspokane_settings', 'pride_forms_stripe_live_pub_key' );
 	}
 
 	/**
@@ -332,5 +338,89 @@ class Controller {
 	public function showMurderMysteryEntries()
 	{
 		include( dirname( __DIR__ ) . '/includes/murder_mystery_entries.php');
+	}
+
+	public function handleNewAjaxEntry()
+	{
+		$response = array(
+			'success' => 1,
+			'error' => ''
+		);
+
+		if ( wp_verify_nonce($_POST['entry_nonce'], 'entry-nonce'))
+		{
+			if ( ! filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL ) )
+			{
+				$response['success'] = 0;
+				$response['error'] = 'The email address you entered is not valid';
+			}
+			else
+			{
+				switch ( $_POST['form'] ) {
+					case 'cruise':
+						$entry = new CruiseEntry;
+						break;
+					case 'festival':
+						$entry = new FestivalEntry;
+						break;
+					case 'murder_mystery':
+						$entry = new MurderMysteryEntry;
+						break;
+					default: /* 'parade' */
+						$entry = new ParadeEntry;
+				}
+
+				$entry
+					->setEntryYear( $_POST['entry_year'] )
+					->setFirstName( $_POST['first_name'] )
+					->setLastName( $_POST['last_name'] )
+					->setEmail( $_POST['email'] )
+					->setPhone( $_POST['phone'] )
+					->setAddress( $_POST['address'] )
+					->setCity( $_POST['city'] )
+					->setState( $_POST['state'] )
+					->setZip( $_POST['zip'] )
+					->setCreatedAt( time() )
+					->setUpdatedAt( time() );
+
+				switch ( $_POST['form'] )
+				{
+					case 'cruise':
+
+						/** @var CruiseEntry $entry */
+						$entry
+							->setQty( $_POST['qty'] )
+							->setPricePerQty( CruiseEntry::PRICE_PER_TICKET )
+							->setPaymentMethodId( Entry::PAYMENT_METHOD_CARD )
+							->create();
+
+						$response['txid'] = $entry->getCreatedAt() . '-' . $entry->getId();
+
+						break;
+
+					case 'festival':
+
+						break;
+
+					case 'murder_mystery':
+
+
+						break;
+
+					default: /* 'parade' */
+
+
+				}
+			}
+		}
+		else
+		{
+			$response['success'] = 0;
+			$response['error'] = 'There was a problem. Please try again.';
+		}
+
+		header( 'Content-Type: application/json' );
+		echo json_encode( $response );
+		exit;
 	}
 }

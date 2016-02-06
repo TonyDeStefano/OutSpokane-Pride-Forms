@@ -36,6 +36,7 @@ require_once ( 'classes/CruiseEntry.php' );
 require_once ( 'classes/FestivalEntry.php' );
 require_once ( 'classes/ParadeEntry.php' );
 require_once ( 'classes/MurderMysteryEntry.php' );
+require_once ( 'classes/Stripe/init.php' );
 
 /* controller object  */
 $controller = new \OutSpokane\Controller;
@@ -54,6 +55,10 @@ add_filter( 'query_vars', array( $controller, 'queryVars') );
 
 /* register shortcode */
 add_shortcode ( 'pride_forms', array( $controller, 'shortCode') );
+
+/* capture ajax */
+add_action( 'wp_ajax_pride_entry', array( $controller, 'handleNewAjaxEntry') );
+add_action( 'wp_ajax_nopriv_pride_entry', array( $controller, 'handleNewAjaxEntry') );
 
 /* Only run these hooks if logged into the admin screen */
 if ( is_admin() )

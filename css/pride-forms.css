@@ -9,3 +9,7 @@
 #pride-form-container #state.form-control {
     width: 50%;
 }
+
+#pride-form-step-2 {
+    display: none;
+}

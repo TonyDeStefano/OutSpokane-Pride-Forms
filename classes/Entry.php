@@ -62,6 +62,42 @@ class Entry {
 	}
 
 	/**
+	 * @param \stdClass $row
+	 */
+	public function loadFromRow( \stdClass $row )
+	{
+		$this
+			->setId( $row->id )
+			->setEntryYear( $row->entry_year )
+			->setEmail( $row->email )
+			->setPhone( $row->phone )
+			->setOrganization( $row->organization )
+			->setFirstName( $row->first_name )
+			->setLastName( $row->last_name )
+			->setAddress( $row->address )
+			->setCity( $row->city )
+			->setState( $row->state )
+			->setZip( $row->zip )
+			->setQty( $row->qty )
+			->setPricePerQty( $row->price_per_qty )
+			->setPaymentMethodId( $row->payment_method_id )
+			->setPaidAt( $row->paid_at )
+			->setPaymentAmount( $row->payment_amount )
+			->setPaymentConfirmationNumber( $row->payment_confirmation_number )
+			->setNotes( $row->notes )
+			->setCreatedAt( $row->created_at )
+			->setUpdatedAt( $row->updated_at );
+	}
+
+	/**
+	 *
+	 */
+	public function create()
+	{
+
+	}
+
+	/**
 	 * @return mixed
 	 */
 	public function getTableName() {
@@ -203,6 +239,10 @@ class Entry {
 		$this->last_name = $last_name;
 
 		return $this;
+	}
+
+	public function getName() {
+		return $this->first_name . ' ' . $this->last_name;
 	}
 
 	/**
@@ -486,6 +526,20 @@ class Entry {
 	}
 
 	/**
+	 * @return float
+	 */
+	public function getTotal() {
+		return round( $this->getQty() * $this->getPricePerQty(), 2 );
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getAmountDue() {
+		return round( $this->getTotal() - $this->getPaymentAmount(), 2);
+	}
+
+	/**
 	 * @param array $exclusions
 	 */
 	public static function drawDefaultFormFields( $exclusions=NULL )
@@ -505,7 +559,7 @@ class Entry {
 
 		foreach ($inclusions as $inclusion)
 		{
-			if (!in_array(preg_replace('/[^A-Za-z0-9 ]/', '_', strtolower($inclusion)), $exclusions))
+			if (!in_array(preg_replace('/[^A-Za-z0-9]/', '_', strtolower($inclusion)), $exclusions))
 			{
 				self::drawFormField( $inclusion );
 			}
@@ -520,7 +574,7 @@ class Entry {
 	 */
 	public static function drawFormField( $label, $id=NULL, $type='text', $options=NULL )
 	{
-		$id = ($id === NULL) ? preg_replace('/[^A-Za-z0-9 ]/', '_', strtolower($label)) : $id;
+		$id = ($id === NULL) ? preg_replace('/[^A-Za-z0-9]/', '_', strtolower($label)) : $id;
 
 		echo '
 			<div class="row">
@@ -532,7 +586,7 @@ class Entry {
 		switch ( $type )
 		{
 			default:
-				echo '<input class="form-control" id="' . $id . '">';
+				echo '<input class="form-control" data-label="' . $label . '" id="' . $id . '">';
 		}
 
 		echo '
