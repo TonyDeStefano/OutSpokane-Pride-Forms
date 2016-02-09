@@ -15,12 +15,26 @@
 		}
 	}
 
+	$stripe_keys = \OutSpokane\Entry::getStripeKeys();
+
 	?>
 
 	<a name="confirmation-payment"></a>
 	<h2>Confirmation and Payment</h2>
 
+	<?php if ( isset( $_POST['form'] ) ) { ?>
+		<div class="alert alert-danger">
+			There was a problem processing your credit card. Please try again.
+		</div>
+	<?php } ?>
+
 	<?php if ( $entry->getId() !== NULL && $entry->getCreatedAt() == $timestamp ) { ?>
+
+		<?php if ( $entry->getPaidAt() !== NULL && $entry->getAmountDue() == 0 ) { ?>
+			<div class="alert alert-success">
+				Thank you for your payment!
+			</div>
+		<?php } ?>
 
 		<table class="table">
 			<tr>
@@ -38,8 +52,19 @@
 				</tr>
 			<?php } ?>
 			<tr>
-				<th>Name:</th>
-				<td><?php echo $entry->getName(); ?></td>
+				<th>Contact:</th>
+				<td>
+					<?php echo $entry->getName(); ?><br>
+					<?php echo $entry->getPhone(); ?><br>
+					<?php echo $entry->getEmail(); ?>
+				</td>
+			</tr>
+			<tr>
+				<th>Address:</th>
+				<td>
+					<?php echo $entry->getAddress(); ?><br>
+					<?php echo $entry->getCSZ(); ?>
+				</td>
 			</tr>
 			<tr>
 				<th>Tickets:</th>
@@ -49,6 +74,55 @@
 				<tr>
 					<th>Amount Due:</th>
 					<td>$<?php echo number_format( $entry->getAmountDue(), 2 ); ?></td>
+				</tr>
+				<tr>
+					<th></th>
+					<td>
+
+						<p>
+							<strong>
+								Payment Options
+							</strong>
+						</p>
+
+						<?php foreach ($entry->getPaymentMethods() as $payment_method_id => $payment_method) { ?>
+							<?php if ($payment_method_id == \OutSpokane\Entry::PAYMENT_METHOD_CARD && strlen($stripe_keys['live']['pub']) > 0 && strlen($stripe_keys['live']['secret']) > 0) { ?>
+
+								<?php \Stripe\Stripe::setApiKey( $stripe_keys['test']['secret'] ); ?>
+
+								<p>
+									<form method="post">
+										<?php wp_nonce_field('pride-nonce'); ?>
+										<input type="hidden" name="pride_action" value="cc">
+										<input type="hidden" name="form" value="cruise">
+										<input type="hidden" name="txid" value="<?php echo $_GET['txid']; ?>">
+										<script
+											src="https://checkout.stripe.com/checkout.js"
+											class="stripe-button"
+											data-name="OutSpokane"
+											data-image="<?php echo plugin_dir_url( __DIR__ ); ?>images/rainbow-flag.png"
+											data-allow-remember-me="false"
+											data-email="<?php echo $entry->getEmail(); ?>"
+									        data-key="<?php echo $stripe_keys['test']['pub']; ?>"
+									        data-description="<?php echo $entry->getEntryYear(); ?> Pride Cruise"
+									        data-amount="<?php echo round($entry->getAmountDue() * 100); ?>"
+									        data-locale="auto"></script>
+									</form>
+								</p>
+
+							<?php } else { ?>
+
+								<p>
+									Send <?php echo $payment_method; ?> to:<br><br>
+									OutSpokane<br>
+									PO Box 883<br>
+									Spokane, WA 99201<br><br>
+								</p>
+
+							<?php } ?>
+						<?php } ?>
+
+					</td>
 				</tr>
 			<?php }  ?>
 			<?php if ( $entry->getPaymentAmount() > 0 ) { ?>

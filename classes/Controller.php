@@ -8,6 +8,9 @@
 
 namespace OutSpokane;
 
+use \Stripe\Stripe;
+use \Stripe\Charge;
+use \Stripe\Error\Card;
 
 class Controller {
 
@@ -18,6 +21,8 @@ class Controller {
 	public $return = '';
 	public $attributes = array();
 	public $base_page = '';
+	public $error = '';
+	public $successes = '';
 
 	/**
 	 *
@@ -267,7 +272,71 @@ class Controller {
 	 */
 	public function formCapture()
 	{
+		if ( isset( $_POST['pride_action'] ) )
+		{
+			if ( wp_verify_nonce( $_POST['_wpnonce'], 'pride-nonce' ) )
+			{
+				if ( $_POST['pride_action'] == 'cc' )
+				{
+					$parts = explode( '-', $_POST['txid'] );
+					if ( count( $parts ) == 2 )
+					{
+						if ( is_numeric( $parts[1] ) )
+						{
+							switch ( $_POST['form'] )
+							{
+								case 'cruise':
+									$entry = new CruiseEntry( $parts[1] );
+									$title = 'Pride Cruise';
+									break;
+								case 'festival':
+									$entry = new FestivalEntry( $parts[1] );
+									$title = 'Pride Festival Entry';
+									break;
+								case 'murder_mystery':
+									$entry = new MurderMysteryEntry( $parts[1] );
+									$title = 'Murder Mystery Ticket';
+									break;
+								default: /* 'parade' */
+									$entry = new ParadeEntry( $parts[1] );
+									$title = 'Pride Parade Entry';
+							}
 
+							if ( $entry->getCreatedAt() !== NULL )
+							{
+								$stripe_keys = Entry::getStripeKeys();
+								Stripe::setApiKey( $stripe_keys['test']['secret'] );
+
+								try
+								{
+									/** @var \Stripe\Charge $charge */
+									$charge = Charge::create( array(
+										'amount' => round( $entry->getAmountDue() * 100 ),
+										'currency' => 'usd',
+										'source' => $_POST['stripeToken'],
+										'description' => $entry->getEntryYear() . ' ' . $title
+									) );
+
+									$entry
+										->setPaidAt( time() )
+										->setPaymentMethodId( Entry::PAYMENT_METHOD_CARD )
+										->setPaymentAmount( $entry->getAmountDue() )
+										->setPaymentConfirmationNumber( $charge->id )
+										->update();
+
+									header( 'Location:' . $_POST['_wp_http_referer'] );
+									exit;
+								}
+								catch ( Card $e )
+								{
+									/* card was declined */
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**

@@ -56,14 +56,15 @@ class EntryTable extends \WP_List_Table {
 	public function get_columns()
 	{
 		return array(
+			'created_at' => 'Entry Date',
 			'entry_year' => 'Year',
 			'first_name' => 'First Name',
 			'last_name' => 'Last Name',
 			'organization' => 'Organization',
-			'qty' => 'Qty',
-			'payment_amount' => 'Total',
-			'created_at' => 'Date',
-			'paid_at' => 'Paid',
+			'qty' => 'Tickets',
+			'amount_due' => 'Total Due',
+			'payment_amount' => 'Total Paid',
+			'paid_at' => 'Paid On',
 			'payment_method_id' => 'Method',
 			'edit' => ''
 		);
@@ -75,13 +76,14 @@ class EntryTable extends \WP_List_Table {
 	public function get_sortable_columns()
 	{
 		return array(
+			'created_at' => array( 'created_at', TRUE ),
 			'entry_year' => array( 'entry_year', TRUE ),
 			'first_name' => array( 'first_name', TRUE ),
 			'last_name' => array( 'last_name', TRUE ),
 			'organization' => array( 'organization', TRUE ),
 			'qty' => array( 'qty', TRUE ),
+			'amount_due' => array( 'amount_due', TRUE ),
 			'payment_amount' => array( 'payment_amount', TRUE ),
-			'created_at' => array( 'created_at', TRUE ),
 			'paid_at' => array( 'paid_at', TRUE ),
 			'payment_method_id' => array( 'payment_method_id', TRUE )
 		);
@@ -108,6 +110,8 @@ class EntryTable extends \WP_List_Table {
 				return Entry::getPaymentMethod( $item->$column_name );
 			case 'payment_amount':
 				return '$' . number_format( ( $item->$column_name === NULL) ? 0 : $item->$column_name, 2 );
+			case 'amount_due':
+				return '$' . number_format( ( $item->price_per_qty === NULL ) ? 0 : $item->price_per_qty * $item->qty, 2 );
 			case 'edit':
 				return '<a href="?page=' . $_REQUEST['page'] . '&action=edit&id=' . $item->id . '" class="button-primary">' . __('Edit') . '</a>';
 			default:

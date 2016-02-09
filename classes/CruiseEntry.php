@@ -114,6 +114,19 @@ class CruiseEntry extends Entry{
 	}
 
 	/**
+	 *
+	 */
+	public function update()
+	{
+		global $wpdb;
+
+		if ( $this->id !== NULL )
+		{
+			parent::update();
+		}
+	}
+
+	/**
 	 * @param \stdClass $row
 	 */
 	public function loadFromRow( \stdClass $row )

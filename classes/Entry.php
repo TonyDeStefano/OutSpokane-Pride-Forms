@@ -61,6 +61,63 @@ class Entry {
 		}
 	}
 
+	public function update()
+	{
+		global $wpdb;
+
+		if ($this->id !== NULL && $this->table_name !== NULL)
+		{
+			$this->setUpdatedAt( time() );
+
+			$wpdb->update(
+				$wpdb->prefix . $this->table_name,
+				array(
+					'entry_year' => $this->entry_year,
+					'email' => $this->email,
+					'phone' => $this->phone,
+					'organization' => $this->organization,
+					'first_name' => $this->first_name,
+					'last_name' => $this->last_name,
+					'address' => $this->address,
+					'city' => $this->city,
+					'state' => $this->state,
+					'zip' => $this->zip,
+					'qty' => $this->qty,
+					'price_per_qty' => $this->price_per_qty,
+					'payment_method_id' => $this->payment_method_id,
+					'paid_at' => ( $this->paid_at === NULL ) ? NULL : $this->getPaidAt( 'Y-m-d H:i:s' ),
+					'payment_amount' => $this->payment_amount,
+					'payment_confirmation_number' => $this->payment_confirmation_number,
+					'notes' => $this->notes,
+					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
+				),
+				array(
+					'id' => $this->id
+				),
+				array(
+					'%d',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%d',
+					'%f',
+					'%d',
+					'%s',
+					'%f',
+					'%s',
+					'%s',
+					'%s'
+				)
+			);
+		}
+	}
+
 	/**
 	 * @param \stdClass $row
 	 */
@@ -315,6 +372,10 @@ class Entry {
 		$this->zip = $zip;
 
 		return $this;
+	}
+
+	public function getCSZ() {
+		return $this->city . ', ' . $this->state . ' ' . $this->zip;
 	}
 
 	/**
@@ -592,5 +653,22 @@ class Entry {
 		echo '
 				</div>
 			</div>';
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getStripeKeys()
+	{
+		return array(
+			'test' => array(
+				'secret' => get_option( 'pride_forms_stripe_test_secret_key' ),
+				'pub' => get_option( 'pride_forms_stripe_test_pub_key' )
+			),
+			'live' => array(
+				'secret' => get_option( 'pride_forms_stripe_live_secret_key' ),
+				'pub' => get_option( 'pride_forms_stripe_live_pub_key' )
+			)
+		);
 	}
 }
