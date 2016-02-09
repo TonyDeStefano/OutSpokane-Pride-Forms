@@ -212,10 +212,17 @@ class ParadeEntry extends Entry {
 	}
 
 	/**
+	 * @param bool $use_parent
+	 *
 	 * @return array
 	 */
-	public function getPaymentMethods()
+	public function getPaymentMethods( $use_parent=FALSE )
 	{
+		if ( $use_parent )
+		{
+			return parent::getPaymentMethods();
+		}
+
 		return array(
 			self::PAYMENT_METHOD_CARD => $this->getPaymentMethod( self::PAYMENT_METHOD_CARD ),
 			self::PAYMENT_METHOD_CHECK => $this->getPaymentMethod( self::PAYMENT_METHOD_CHECK )

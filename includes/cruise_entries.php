@@ -167,7 +167,7 @@ if ( isset( $_GET[ 'action' ] ) )
 								<option value="">
 									Not Paid
 								</option>
-								<?php foreach ($entry->getPaymentMethods() as $payment_method_id => $payment_method) { ?>
+								<?php foreach ($entry->getPaymentMethods( TRUE ) as $payment_method_id => $payment_method) { ?>
 									<option value="<?php echo $payment_method_id; ?>"<?php if ($payment_method_id == $entry->getPaymentMethodId()) { ?> selected<?php } ?>>
 										<?php echo $payment_method; ?>
 									</option>
