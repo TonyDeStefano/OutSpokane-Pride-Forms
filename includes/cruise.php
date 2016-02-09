@@ -132,7 +132,11 @@
 				</tr>
 				<tr>
 					<th>Payment Method:</th>
-					<td><?php echo $entry->getPaymentMethod( $entry->getPaymentMethodId() ); ?></td>
+					<td>
+						<?php echo $entry->getPaymentMethod( $entry->getPaymentMethodId() ); ?>
+						on
+						<?php echo $entry->getPaidAt( 'n/j/Y' ); ?>
+					</td>
 				</tr>
 			<?php } ?>
 		</table>

@@ -20,9 +20,11 @@ class ParadeEntry extends Entry {
 	const ENTRY_TYPE_TRUCK = 'Truck(s)/Van(s)';
 	const ENTRY_TYPE_TRAILER_FLOAT = 'Trailer/Float';
 	const ENTRY_TYPE_OTHER = 'Other';
+	const FLOAT_PARKING_SPACE_COST = 18;
 
 	private $entry_types;
 	private $float_parking_spaces;
+	private $float_parking_space_cost;
 	private $donation_amount;
 	private $description;
 	private $needs_amped_sound = FALSE;
@@ -36,6 +38,7 @@ class ParadeEntry extends Entry {
 	public function __construct( $id=NULL ) {
 		$this->setTableName(self::TABLE_NAME);
 		parent::__construct( $id );
+		$this->read();
 	}
 
 	/**
@@ -121,6 +124,24 @@ class ParadeEntry extends Entry {
 	/**
 	 * @return mixed
 	 */
+	public function getFloatParkingSpaceCost() {
+		return ($this->float_parking_space_cost === NULL) ? 0 : $this->float_parking_space_cost;
+	}
+
+	/**
+	 * @param mixed $float_parking_space_cost
+	 *
+	 * @return ParadeEntry
+	 */
+	public function setFloatParkingSpaceCost( $float_parking_space_cost ) {
+		$this->float_parking_space_cost = (is_numeric($float_parking_space_cost)) ? abs(round($float_parking_space_cost, 2)) : NULL;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
 	public function getDonationAmount() {
 		return ($this->donation_amount === NULL) ? 0 : $this->donation_amount;
 	}
@@ -162,10 +183,14 @@ class ParadeEntry extends Entry {
 	}
 
 	/**
-	 * @param boolean $needs_amped_sound
+	 * @param $needs_amped_sound
+	 *
+	 * @return $this
 	 */
 	public function setNeedsAmpedSound( $needs_amped_sound ) {
 		$this->needs_amped_sound = ($needs_amped_sound == 1 || $needs_amped_sound === TRUE) ? TRUE : FALSE;
+
+		return $this;
 	}
 
 	/**
@@ -176,10 +201,14 @@ class ParadeEntry extends Entry {
 	}
 
 	/**
-	 * @param mixed $group_size
+	 * @param $group_size
+	 *
+	 * @return $this
 	 */
 	public function setGroupSize( $group_size ) {
 		$this->group_size = (is_numeric($group_size)) ? abs(round($group_size)) : NULL;
+
+		return $this;
 	}
 
 	/**
@@ -191,5 +220,151 @@ class ParadeEntry extends Entry {
 			self::PAYMENT_METHOD_CARD => $this->getPaymentMethod( self::PAYMENT_METHOD_CARD ),
 			self::PAYMENT_METHOD_CHECK => $this->getPaymentMethod( self::PAYMENT_METHOD_CHECK )
 		);
+	}
+
+	/**
+	 *
+	 */
+	public function create()
+	{
+		global $wpdb;
+
+		$wpdb->insert(
+			$wpdb->prefix . self::TABLE_NAME,
+			array(
+				'entry_year' => $this->entry_year,
+				'email' => $this->email,
+				'phone' => $this->phone,
+				'organization' => $this->organization,
+				'first_name' => $this->first_name,
+				'last_name' => $this->last_name,
+				'address' => $this->address,
+				'city' => $this->city,
+				'state' => $this->state,
+				'zip' => $this->zip,
+				'qty' => 1,
+				'price_per_qty' => $this->price_per_qty,
+				'payment_method_id' => $this->payment_method_id,
+				'entry_types' => $this->getEntryTypes( TRUE ),
+				'float_parking_spaces' => $this->float_parking_spaces,
+				'float_parking_space_cost' => $this->float_parking_space_cost,
+				'donation_amount' => $this->donation_amount,
+				'description' => $this->description,
+				'needs_amped_sound' => $this->needs_amped_sound,
+				'group_size' => $this->group_size,
+				'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
+				'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
+			),
+			array(
+				'%d',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%d',
+				'%f',
+				'%d',
+				'%s',
+				'%d',
+				'%f',
+				'%f',
+				'%s',
+				'%d',
+				'%d',
+				'%s',
+				'%s',
+			)
+		);
+
+		$this->id = $wpdb->insert_id;
+	}
+
+	/**
+	 *
+	 */
+	public function read()
+	{
+		if ( $row = parent::read() )
+		{
+			$this->loadFromRow( $row );
+		}
+	}
+
+	/**
+	 *
+	 */
+	public function update()
+	{
+		global $wpdb;
+
+		if ( $this->id !== NULL )
+		{
+			parent::update();
+
+			$wpdb->update(
+				$wpdb->prefix . $this->table_name,
+				array(
+					'entry_types' => $this->getEntryTypes( TRUE ),
+					'float_parking_spaces' => $this->float_parking_spaces,
+					'float_parking_space_cost' => $this->float_parking_space_cost,
+					'donation_amount' => $this->donation_amount,
+					'description' => $this->description,
+					'needs_amped_sound' => $this->needs_amped_sound,
+					'group_size' => $this->group_size
+				),
+				array(
+					'id' => $this->id
+				),
+				array(
+					'%s',
+					'%d',
+					'%f',
+					'%f',
+					'%s',
+					'%d',
+					'%d'
+				),
+				array(
+					'%d'
+				)
+			);
+		}
+	}
+
+	/**
+	 * @param \stdClass $row
+	 */
+	public function loadFromRow( \stdClass $row )
+	{
+		parent::loadFromRow( $row );
+		$this
+			->setEntryTypes( $row->entry_types )
+			->setNeedsAmpedSound( $row->needs_amped_sound )
+			->setGroupSize( $row->group_size )
+			->setFloatParkingSpaces( $row->float_parking_spaces )
+			->setFloatParkingSpaceCost( $row->float_parking_space_cost )
+			->setDonationAmount( $row->donation_amount )
+			->setDescription( $row->description );
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getTotal()
+	{
+		return ($this->getFloatParkingSpaces() * $this->getFloatParkingSpaceCost()) + $this->getDonationAmount();
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getAmountDue()
+	{
+		return round( $this->getTotal() - $this->getPaymentAmount(), 2);
 	}
 }

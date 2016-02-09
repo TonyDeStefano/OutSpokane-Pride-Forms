@@ -447,18 +447,49 @@ class Controller {
 			}
 			else
 			{
-				switch ( $_POST['form'] ) {
+				switch ( $_POST['form'] )
+				{
 					case 'cruise':
+
 						$entry = new CruiseEntry;
+						$entry
+							->setQty( $_POST['qty'] )
+							->setPricePerQty( CruiseEntry::PRICE_PER_TICKET )
+							->setPaymentMethodId( Entry::PAYMENT_METHOD_CARD );
+
 						break;
+
 					case 'festival':
+
 						$entry = new FestivalEntry;
+						$entry
+							->setQty( 1 )
+							->setEntryTypeId( $_POST['entry_type_id'] )
+							->setPriceForCornerBooth( FestivalEntry::CORNER_BOOTH_FEE )
+							->setPricePerQty( $entry->getEntryTypePrice( $_POST['entry_type_id'] ) )
+							->setIsCornerBooth( ( $_POST['entry_type_id'] == FestivalEntry::ENTRY_TYPE_SPONSOR ) ? FALSE : $_POST['corner_booth'] );
+
 						break;
+
 					case 'murder_mystery':
+
+						/** @var MurderMysteryEntry $entry */
 						$entry = new MurderMysteryEntry;
+
 						break;
+
 					default: /* 'parade' */
-						$entry = new ParadeEntry;
+
+						$entry = new ParadeEntry();
+						$entry
+							->setQty( 1 )
+							->setEntryTypes( stripslashes( $_POST['entry_types'] ) )
+							->setFloatParkingSpaces( $_POST['float_parking_spaces'] )
+							->setFloatParkingSpaceCost( ParadeEntry::FLOAT_PARKING_SPACE_COST )
+							->setDonationAmount( preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] ) )
+							->setDescription( $_POST['description'] )
+							->setNeedsAmpedSound( $_POST['needs_amped_sound'] )
+							->setGroupSize( preg_replace( '/\D/', '', $_POST['group_size'] ) );
 				}
 
 				$entry
@@ -473,47 +504,10 @@ class Controller {
 					->setState( $_POST['state'] )
 					->setZip( $_POST['zip'] )
 					->setCreatedAt( time() )
-					->setUpdatedAt( time() );
+					->setUpdatedAt( time() )
+					->create();
 
-				switch ( $_POST['form'] )
-				{
-					case 'cruise':
-
-						/** @var CruiseEntry $entry */
-						$entry
-							->setQty( $_POST['qty'] )
-							->setPricePerQty( CruiseEntry::PRICE_PER_TICKET )
-							->setPaymentMethodId( Entry::PAYMENT_METHOD_CARD )
-							->create();
-
-						$response['txid'] = $entry->getCreatedAt() . '-' . $entry->getId();
-
-						break;
-
-					case 'festival':
-
-						/** @var FestivalEntry $entry */
-						$entry
-							->setQty( $_POST['qty'] )
-							->setEntryTypeId( $_POST['entry_type_id'] )
-							->setPriceForCornerBooth( FestivalEntry::CORNER_BOOTH_FEE )
-							->setPricePerQty( $entry->getEntryTypePrice( $_POST['entry_type_id'] ) )
-							->setIsCornerBooth( ( $_POST['entry_type_id'] == FestivalEntry::ENTRY_TYPE_SPONSOR ) ? FALSE : $_POST['corner_booth'] )
-							->create();
-
-						$response['txid'] = $entry->getCreatedAt() . '-' . $entry->getId();
-
-						break;
-
-					case 'murder_mystery':
-
-
-						break;
-
-					default: /* 'parade' */
-
-
-				}
+				$response['txid'] = $entry->getCreatedAt() . '-' . $entry->getId();
 			}
 		}
 		else

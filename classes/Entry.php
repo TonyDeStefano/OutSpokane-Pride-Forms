@@ -664,6 +664,17 @@ class Entry {
 
 		switch ( $type )
 		{
+			case 'textarea':
+				echo '<textarea class="form-control" data-label="' . $label . '" id="' . $id . '"></textarea>';
+				break;
+			case 'select':
+				echo '<select class="form-control" data-label="' . $label . '" id="' . $id . '">';
+				foreach ( $options as $key => $val )
+				{
+					echo '<option value="' . esc_html( $key ) . '">' . $val . '</option>';
+				}
+				echo '</select>';
+				break;
 			default:
 				echo '<input class="form-control" data-label="' . $label . '" id="' . $id . '">';
 		}

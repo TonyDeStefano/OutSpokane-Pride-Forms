@@ -1,3 +1,5 @@
+var pride_entry_types;
+
 (function($){
 
     $('#pride-form-container').on('click', '#btn-step-1', function(){
@@ -43,15 +45,28 @@
                 address: getPrideFormValue('address'),
                 city: getPrideFormValue('city'),
                 state: getPrideFormValue('state'),
-                zip: getPrideFormValue('zip')
+                zip: getPrideFormValue('zip'),
+                qty: 1
             };
 
             if (pride_form.form == 'cruise') {
                 post.qty = getPrideFormValue('qty')
             } else if (pride_form.form == 'festival') {
-                post.qty = 1;
                 post.entry_type_id = getPrideFormValue('entry_type_id');
                 post.corner_booth = getPrideFormValue('corner_booth');
+            } else if (pride_form.form == 'parade') {
+                pride_entry_types = [];
+                $('.parade_entry_type').each(function(){
+                    if ($(this).prop('checked')) {
+                        pride_entry_types.push($(this).val());
+                    }
+                });
+                post.entry_types = JSON.stringify(pride_entry_types);
+                post.float_parking_spaces = getPrideFormValue('float_parking_spaces');
+                post.donation_amount = getPrideFormValue('donation_amount');
+                post.description = getPrideFormValue('description');
+                post.needs_amped_sound = getPrideFormValue('needs_amped_sound');
+                post.group_size = getPrideFormValue('group_size');
             }
 
             $.ajax({
