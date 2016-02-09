@@ -224,6 +224,14 @@ class Controller {
 		wp_enqueue_style( 'out-spokane-pride-forms-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/pride-forms.css', array(), time() );
 	}
 
+	/**
+	 *
+	 */
+	public function enqueueAdminScripts()
+	{
+		wp_enqueue_script( 'out-spokane-admin-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin.js', array( 'jquery' ), time(), TRUE );
+	}
+
 	public function param( $param, $default='' )
 	{
 		return (isset($_REQUEST[$param])) ? htmlspecialchars($_REQUEST[$param]) : $default;
@@ -519,5 +527,117 @@ class Controller {
 		header( 'Content-Type: application/json' );
 		echo json_encode( $response );
 		exit;
+	}
+
+	/**
+	 *
+	 */
+	public function updateEntryNotes()
+	{
+		if ( isset($_POST['form']) && isset($_POST['id']) && isset($_POST['notes']) )
+		{
+			switch ($_POST['form'])
+			{
+				case 'cruise':
+					$entry = new CruiseEntry( $_POST['id'] );
+					break;
+				case 'festival':
+					$entry = new FestivalEntry( $_POST['id'] );
+					break;
+				case 'murder_mystery':
+					$entry = new MurderMysteryEntry( $_POST['id'] );
+					break;
+				default: /* parade */
+					$entry = new ParadeEntry( $_POST['id'] );
+			}
+
+			if ( $entry->getCreatedAt() !== NULL )
+			{
+
+				$entry
+					->setNotes( $_POST['notes'] )
+					->update();
+
+				echo 1;
+				exit;
+			}
+		}
+
+		echo 0;
+	}
+
+	/**
+	 *
+	 */
+	public function updateEntryPayment()
+	{
+		if ( isset($_POST['form']) && isset($_POST['id']) && isset($_POST['payment_method_id']) )
+		{
+			switch ($_POST['form'])
+			{
+				case 'cruise':
+					$entry = new CruiseEntry( $_POST['id'] );
+					break;
+				case 'festival':
+					$entry = new FestivalEntry( $_POST['id'] );
+					break;
+				case 'murder_mystery':
+					$entry = new MurderMysteryEntry( $_POST['id'] );
+					break;
+				default: /* parade */
+					$entry = new ParadeEntry( $_POST['id'] );
+			}
+
+			if ( $entry->getCreatedAt() !== NULL )
+			{
+				$entry->setPaymentMethodId( $_POST['payment_method_id'] );
+				if ( $entry->getPaymentMethodId() === NULL )
+				{
+					$entry
+						->setPaymentAmount( NULL )
+						->setPaidAt( NULL );
+				}
+				else
+				{
+					$entry
+						->setPaymentAmount( $entry->getTotal() )
+						->setPaidAt( time() );
+				}
+
+				$entry->update();
+
+				echo 1;
+				exit;
+			}
+		}
+
+		echo 0;
+	}
+
+	public function deleteEntry()
+	{
+		if ( isset($_POST['form']) && isset($_POST['id']) )
+		{
+			switch ($_POST['form'])
+			{
+				case 'cruise':
+					$entry = new CruiseEntry( $_POST['id'] );
+					break;
+				case 'festival':
+					$entry = new FestivalEntry( $_POST['id'] );
+					break;
+				case 'murder_mystery':
+					$entry = new MurderMysteryEntry( $_POST['id'] );
+					break;
+				default: /* parade */
+					$entry = new ParadeEntry( $_POST['id'] );
+			}
+
+			$entry->delete();
+			echo 'outspokane_' . $_POST['form'];
+			exit;
+		}
+
+		echo 0;
 	}
 }

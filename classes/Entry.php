@@ -173,6 +173,26 @@ class Entry {
 	}
 
 	/**
+	 *
+	 */
+	public function delete()
+	{
+		global $wpdb;
+		if ($this->id !== NULL && $this->table_name !== NULL)
+		{
+			$wpdb->delete(
+				$wpdb->prefix . $this->table_name,
+				array(
+					'id' => $this->id
+				),
+				array(
+					'%d'
+				)
+			);
+		}
+	}
+
+	/**
 	 * @return mixed
 	 */
 	public function getTableName() {

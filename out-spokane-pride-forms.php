@@ -71,4 +71,16 @@ if ( is_admin() )
 
 	/* Add main menu and sub-menus */
 	add_action( 'admin_menu', array( $controller, 'addMenus') );
+
+	/* enqueue admin scripts */
+	add_action( 'admin_enqueue_scripts', array( $controller, 'enqueueAdminScripts' ) );
+
+	/* update entry notes ajax */
+	add_action( 'wp_ajax_pride_forms_update_notes', array( $controller, 'updateEntryNotes' ) );
+
+	/* update entry payment ajax */
+	add_action( 'wp_ajax_pride_forms_update_payment', array( $controller, 'updateEntryPayment' ) );
+
+	/* delete entry ajax */
+	add_action( 'wp_ajax_pride_forms_delete_entry', array( $controller, 'deleteEntry' ) );
 }

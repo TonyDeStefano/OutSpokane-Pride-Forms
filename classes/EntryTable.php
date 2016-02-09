@@ -66,7 +66,7 @@ class EntryTable extends \WP_List_Table {
 			'payment_amount' => 'Total Paid',
 			'paid_at' => 'Paid On',
 			'payment_method_id' => 'Method',
-			'edit' => ''
+			'view' => ''
 		);
 
 		if ( $this->table == FestivalEntry::TABLE_NAME )
@@ -134,8 +134,8 @@ class EntryTable extends \WP_List_Table {
 				return '$' . number_format( ( $item->$column_name === NULL) ? 0 : $item->$column_name, 2 );
 			case 'amount_due':
 				return '$' . number_format( ( $item->price_per_qty === NULL ) ? 0 : $item->price_per_qty * $item->qty, 2 );
-			case 'edit':
-				return '<a href="?page=' . $_REQUEST['page'] . '&action=edit&id=' . $item->id . '" class="button-primary">' . __('Edit') . '</a>';
+			case 'view':
+				return '<a href="?page=' . $_REQUEST['page'] . '&action=view&id=' . $item->id . '" class="button-primary">' . __('View') . '</a>';
 			default:
 				return print_r( $item, true ); //Show the whole array for troubleshooting purposes
 		}
