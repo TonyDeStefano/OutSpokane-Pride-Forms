@@ -55,7 +55,7 @@ class EntryTable extends \WP_List_Table {
 	 */
 	public function get_columns()
 	{
-		return array(
+		$return = array(
 			'created_at' => 'Entry Date',
 			'entry_year' => 'Year',
 			'first_name' => 'First Name',
@@ -68,6 +68,17 @@ class EntryTable extends \WP_List_Table {
 			'payment_method_id' => 'Method',
 			'edit' => ''
 		);
+
+		if ( $this->table == FestivalEntry::TABLE_NAME )
+		{
+			unset( $return['qty'] );
+		}
+		elseif ( $this->table == CruiseEntry::TABLE_NAME )
+		{
+			unset( $return['organization'] );
+		}
+
+		return $return;
 	}
 
 	/**
@@ -75,7 +86,7 @@ class EntryTable extends \WP_List_Table {
 	 */
 	public function get_sortable_columns()
 	{
-		return array(
+		$return =  array(
 			'created_at' => array( 'created_at', TRUE ),
 			'entry_year' => array( 'entry_year', TRUE ),
 			'first_name' => array( 'first_name', TRUE ),
@@ -87,6 +98,17 @@ class EntryTable extends \WP_List_Table {
 			'paid_at' => array( 'paid_at', TRUE ),
 			'payment_method_id' => array( 'payment_method_id', TRUE )
 		);
+
+		if ( $this->table == FestivalEntry::TABLE_NAME )
+		{
+			unset( $return['qty'] );
+		}
+		elseif ( $this->table == CruiseEntry::TABLE_NAME )
+		{
+			unset( $return['organization'] );
+		}
+
+		return $return;
 	}
 
 	/**

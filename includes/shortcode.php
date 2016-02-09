@@ -19,4 +19,10 @@
 
 	[pride_forms year="<?php echo date('Y'); ?>" form="parade"]
 
+	<h3>Special Codes</h3>
+
+	<p>For the Festival Entry tag, you can turn off the option to let people choose a Corner Booth by doing this:</p>
+
+	[pride_forms year="<?php echo date('Y'); ?>" form="parade" corner_booth="no"]
+
 </div>

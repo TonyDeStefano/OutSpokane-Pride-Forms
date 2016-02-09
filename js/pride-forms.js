@@ -48,6 +48,10 @@
 
             if (pride_form.form == 'cruise') {
                 post.qty = getPrideFormValue('qty')
+            } else if (pride_form.form == 'festival') {
+                post.qty = 1;
+                post.entry_type_id = getPrideFormValue('entry_type_id');
+                post.corner_booth = getPrideFormValue('corner_booth');
             }
 
             $.ajax({
@@ -69,7 +73,21 @@
                 }
             });
         }
+    });
 
+    $('#entry_type_id').change(function(){
+
+        var sponsor_id = $(this).data('sponsor-id');
+        var container = $('#corner-booth-container');
+
+        if ($(this).val() == sponsor_id)
+        {
+            container.hide();
+        }
+        else
+        {
+            container.show();
+        }
     });
 
 })(jQuery);

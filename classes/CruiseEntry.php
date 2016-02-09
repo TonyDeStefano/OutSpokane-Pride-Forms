@@ -23,6 +23,7 @@ class CruiseEntry extends Entry{
 	public function __construct( $id=NULL ) {
 		$this->setTableName(self::TABLE_NAME);
 		parent::__construct( $id );
+		$this->read();
 	}
 
 	/**
@@ -88,28 +89,9 @@ class CruiseEntry extends Entry{
 	 */
 	public function read()
 	{
-		global $wpdb;
-
-		if ( $this->id !== NULL )
+		if ( $row = parent::read() )
 		{
-			$sql = $wpdb->prepare("
-				SELECT
-					*
-				FROM
-					" . $wpdb->prefix . self::TABLE_NAME . "
-				WHERE
-					id = %d",
-				$this->id
-			);
-
-			if ( $row = $wpdb->get_row( $sql ) )
-			{
-				$this->loadFromRow( $row );
-			}
-			else
-			{
-				$this->id = NULL;
-			}
+			$this->loadFromRow( $row );
 		}
 	}
 
@@ -118,8 +100,6 @@ class CruiseEntry extends Entry{
 	 */
 	public function update()
 	{
-		global $wpdb;
-
 		if ( $this->id !== NULL )
 		{
 			parent::update();

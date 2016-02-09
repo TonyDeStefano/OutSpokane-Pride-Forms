@@ -98,6 +98,7 @@ class Controller {
 					`zip` VARCHAR(10) DEFAULT NULL,
 					`qty` INT(11) DEFAULT NULL,
 					`price_per_qty` DECIMAL(11,2) DEFAULT NULL,
+					`price_for_corner_booth` DECIMAL(11,2) DEFAULT NULL,
 					`payment_method_id` INT(11) DEFAULT NULL,
 					`paid_at` DATETIME DEFAULT NULL,
 					`payment_amount` DECIMAL(11,2) DEFAULT NULL,
@@ -188,7 +189,7 @@ class Controller {
 	/**
 	 *
 	 */
-	public function uninstall()
+	public static function uninstall()
 	{
 		global $wpdb;
 
@@ -462,6 +463,7 @@ class Controller {
 
 				$entry
 					->setEntryYear( $_POST['entry_year'] )
+					->setOrganization( $_POST['organization'] )
 					->setFirstName( $_POST['first_name'] )
 					->setLastName( $_POST['last_name'] )
 					->setEmail( $_POST['email'] )
@@ -489,6 +491,17 @@ class Controller {
 						break;
 
 					case 'festival':
+
+						/** @var FestivalEntry $entry */
+						$entry
+							->setQty( $_POST['qty'] )
+							->setEntryTypeId( $_POST['entry_type_id'] )
+							->setPriceForCornerBooth( FestivalEntry::CORNER_BOOTH_FEE )
+							->setPricePerQty( $entry->getEntryTypePrice( $_POST['entry_type_id'] ) )
+							->setIsCornerBooth( ( $_POST['entry_type_id'] == FestivalEntry::ENTRY_TYPE_SPONSOR ) ? FALSE : $_POST['corner_booth'] )
+							->create();
+
+						$response['txid'] = $entry->getCreatedAt() . '-' . $entry->getId();
 
 						break;
 

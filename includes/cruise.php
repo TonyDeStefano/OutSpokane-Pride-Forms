@@ -139,7 +139,9 @@
 
 	<?php } else { ?>
 
-		<p>The confirmation you are looking for is currently unavailable.</p>
+		<div class="alert alert-danger">
+			The confirmation you are looking for is currently unavailable.
+		</div>
 
 	<?php } ?>
 

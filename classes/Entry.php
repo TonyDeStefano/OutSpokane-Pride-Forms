@@ -45,20 +45,35 @@ class Entry {
 	 */
 	public function __construct( $id=NULL ) {
 
-		$this
-			->setId($id)
-			->read();
+		$this->setId( $id );
 	}
 
 	/**
-	 *
+	 * @return array|null|object|void
 	 */
 	public function read()
 	{
-		if ($this->id !== NULL && $this->table_name !== NULL)
-		{
+		global $wpdb;
 
+		if ( $this->id !== NULL && $this->table_name != '' )
+		{
+			$sql = $wpdb->prepare("
+				SELECT
+					*
+				FROM
+					" . $wpdb->prefix . $this->table_name . "
+				WHERE
+					id = %d",
+				$this->id
+			);
+
+			if ( $row = $wpdb->get_row( $sql ) )
+			{
+				return $row;
+			}
 		}
+
+		return NULL;
 	}
 
 	public function update()
@@ -113,6 +128,9 @@ class Entry {
 					'%s',
 					'%s',
 					'%s'
+				),
+				array(
+					'%d'
 				)
 			);
 		}

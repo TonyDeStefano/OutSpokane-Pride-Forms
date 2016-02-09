@@ -45,7 +45,7 @@ $controller = new \OutSpokane\Controller;
 register_activation_hook( __FILE__, array( $controller, 'activate' ) );
 
 /* uninstall */
-register_uninstall_hook( __FILE__, array( $controller, 'uninstall' ) );
+register_uninstall_hook( __FILE__, array( '\OutSpokane\Controller', 'uninstall' ) );
 
 /* initialize any variables that the plugin needs */
 add_action( 'init', array( $controller, 'init' ) );
