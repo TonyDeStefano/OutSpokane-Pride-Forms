@@ -85,6 +85,7 @@ class Controller {
 				(
 					`id` INT(11) NOT NULL AUTO_INCREMENT,
 					`entry_type_id` INT(11) DEFAULT NULL,
+					`is_corner_booth` TINYINT(4) DEFAULT NULL,
 					`entry_year` INT(11) DEFAULT NULL,
 					`email` VARCHAR(50) DEFAULT NULL,
 					`phone` VARCHAR(50) DEFAULT NULL,
@@ -187,6 +188,24 @@ class Controller {
 	/**
 	 *
 	 */
+	public function uninstall()
+	{
+		global $wpdb;
+
+		if ( !defined( 'WP_UNINSTALL_PLUGIN' ) )
+		{
+			return;
+		}
+
+		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . CruiseEntry::TABLE_NAME );
+		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . FestivalEntry::TABLE_NAME );
+		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . MurderMysteryEntry::TABLE_NAME );
+		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . ParadeEntry::TABLE_NAME );
+	}
+
+	/**
+	 *
+	 */
 	public function init()
 	{
 		$parts = explode('?', $_SERVER['REQUEST_URI']);
@@ -225,7 +244,8 @@ class Controller {
 	{
 		$this->attributes = shortcode_atts( array(
 			'form' => '',
-			'year' => date( 'Y' )
+			'year' => date( 'Y' ),
+			'corner_booth_option' => 'yes'
 		), $attributes );
 
 		switch ( $this->getAttribute('form') )
