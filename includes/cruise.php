@@ -86,9 +86,9 @@
 						</p>
 
 						<?php foreach ($entry->getPaymentMethods() as $payment_method_id => $payment_method) { ?>
-							<?php if ($payment_method_id == \OutSpokane\Entry::PAYMENT_METHOD_CARD && strlen($stripe_keys['live']['pub']) > 0 && strlen($stripe_keys['live']['secret']) > 0) { ?>
+							<?php if ($payment_method_id == \OutSpokane\Entry::PAYMENT_METHOD_CARD && strlen($stripe_keys['pub']) > 0 && strlen($stripe_keys['secret']) > 0) { ?>
 
-								<?php \Stripe\Stripe::setApiKey( $stripe_keys['test']['secret'] ); ?>
+								<?php \Stripe\Stripe::setApiKey( $stripe_keys['secret'] ); ?>
 
 								<p>
 									<form method="post">
@@ -103,7 +103,7 @@
 											data-image="<?php echo plugin_dir_url( __DIR__ ); ?>images/rainbow-flag.png"
 											data-allow-remember-me="false"
 											data-email="<?php echo $entry->getEmail(); ?>"
-									        data-key="<?php echo $stripe_keys['test']['pub']; ?>"
+									        data-key="<?php echo $stripe_keys['pub']; ?>"
 									        data-description="<?php echo $entry->getEntryYear(); ?> Pride Cruise"
 									        data-amount="<?php echo round($entry->getAmountDue() * 100); ?>"
 									        data-locale="auto"></script>

@@ -660,15 +660,11 @@ class Entry {
 	 */
 	public static function getStripeKeys()
 	{
+		$mode = ( get_option('pride_forms_stripe_mode') == 'live' ) ? 'live' : 'test';
+
 		return array(
-			'test' => array(
-				'secret' => get_option( 'pride_forms_stripe_test_secret_key' ),
-				'pub' => get_option( 'pride_forms_stripe_test_pub_key' )
-			),
-			'live' => array(
-				'secret' => get_option( 'pride_forms_stripe_live_secret_key' ),
-				'pub' => get_option( 'pride_forms_stripe_live_pub_key' )
-			)
+			'secret' => get_option( 'pride_forms_stripe_'.$mode.'_secret_key' ),
+			'pub' => get_option( 'pride_forms_stripe_'.$mode.'_pub_key' )
 		);
 	}
 }

@@ -305,7 +305,7 @@ class Controller {
 							if ( $entry->getCreatedAt() !== NULL )
 							{
 								$stripe_keys = Entry::getStripeKeys();
-								Stripe::setApiKey( $stripe_keys['test']['secret'] );
+								Stripe::setApiKey( $stripe_keys['secret'] );
 
 								try
 								{
@@ -359,6 +359,7 @@ class Controller {
 		register_setting( 'outspokane_settings', 'pride_forms_stripe_test_pub_key' );
 		register_setting( 'outspokane_settings', 'pride_forms_stripe_live_secret_key' );
 		register_setting( 'outspokane_settings', 'pride_forms_stripe_live_pub_key' );
+		register_setting( 'outspokane_settings', 'pride_forms_stripe_mode' );
 	}
 
 	/**

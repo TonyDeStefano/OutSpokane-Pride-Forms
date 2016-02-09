@@ -58,6 +58,24 @@
 				<td><?php echo esc_attr( get_option('pride_forms_stripe_live_pub_key') ); ?></td>
 				<td><input type="text" id="pride_forms_stripe_live_pub_key" name="pride_forms_stripe_live_pub_key" value="<?php echo esc_attr( get_option('pride_forms_stripe_live_pub_key') ); ?>" /></td>
 			</tr>
+			<tr valign="top">
+				<th scope="row">
+					<label for="pride_forms_stripe_mode">
+						Mode
+					</label>
+				</th>
+				<td><?php echo ( get_option('pride_forms_stripe_mode') == 'live') ? 'Live' : 'Test' ?> Mode</td>
+				<td>
+					<select id="pride_forms_stripe_mode" name="pride_forms_stripe_mode">
+						<option value="live"<?php if (get_option('pride_forms_stripe_mode') == 'live') { ?> selected<?php } ?>>
+							Live Mode
+						</option>
+						<option value="test"<?php if (get_option('pride_forms_stripe_mode') != 'live') { ?> selected<?php } ?>>
+							Test Mode
+						</option>
+					</select>
+				</td>
+			</tr>
 		</table>
 
 		<?php submit_button(); ?>
