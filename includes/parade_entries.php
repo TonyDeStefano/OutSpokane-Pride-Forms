@@ -224,6 +224,7 @@ if ( isset( $_GET[ 'action' ] ) )
 
 		<?php
 
+		\OutSpokane\Entry::drawExportForm( \OutSpokane\ParadeEntry::TABLE_NAME );
 		$table = new \OutSpokane\EntryTable( \OutSpokane\ParadeEntry::TABLE_NAME );
 		$table->prepare_items();
 		$table->display();

@@ -200,6 +200,7 @@ if ( isset( $_GET[ 'action' ] ) )
 
 		<?php
 
+		\OutSpokane\Entry::drawExportForm( \OutSpokane\FestivalEntry::TABLE_NAME );
 		$table = new \OutSpokane\EntryTable( \OutSpokane\FestivalEntry::TABLE_NAME );
 		$table->prepare_items();
 		$table->display();

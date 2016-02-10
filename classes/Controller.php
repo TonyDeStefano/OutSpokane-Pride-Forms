@@ -301,6 +301,12 @@ class Controller {
 	 */
 	public function formCapture()
 	{
+		if (isset($_POST['pride_export']))
+		{
+			Entry::exportToCsv();
+			exit;
+		}
+
 		if ( isset( $_POST['pride_action'] ) )
 		{
 			if ( wp_verify_nonce( $_POST['_wpnonce'], 'pride-nonce' ) )

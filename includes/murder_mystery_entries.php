@@ -205,6 +205,7 @@ if ( isset( $_GET[ 'action' ] ) )
 
 		<?php
 
+		\OutSpokane\Entry::drawExportForm( \OutSpokane\MurderMysteryEntry::TABLE_NAME );
 		$table = new \OutSpokane\EntryTable( \OutSpokane\MurderMysteryEntry::TABLE_NAME );
 		$table->prepare_items();
 		$table->display();

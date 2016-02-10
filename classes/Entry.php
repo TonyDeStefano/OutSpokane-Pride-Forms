@@ -704,6 +704,8 @@ class Entry {
 			</div>';
 	}
 
+	/* TODO: move this to Controller class ... not sure why I put it here */
+
 	/**
 	 * @return array
 	 */
@@ -715,5 +717,200 @@ class Entry {
 			'secret' => get_option( 'pride_forms_stripe_'.$mode.'_secret_key' ),
 			'pub' => get_option( 'pride_forms_stripe_'.$mode.'_pub_key' )
 		);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getUniqueYears()
+	{
+		$years = array();
+
+		if ( $this->table_name != '' )
+		{
+			$years = self::getUniqueEntryYears( $this->table_name );
+		}
+
+		return $years;
+	}
+
+	/**
+	 * @param $table_name
+	 *
+	 * @return array
+	 */
+	public static function getUniqueEntryYears( $table_name )
+	{
+		global $wpdb;
+
+		$years = array();
+
+		if ( strlen( $table_name ) > 0 )
+		{
+			$rows = $wpdb->get_results("
+				SELECT DISTINCT
+					entry_year
+				FROM
+					`" . $wpdb->prefix . esc_sql( $table_name ) . "`
+				ORDER BY
+					entry_year DESC"
+			);
+
+			if ( $rows )
+			{
+				foreach ( $rows as $row )
+				{
+					$years[] = $row->entry_year;
+				}
+			}
+		}
+
+		return $years;
+	}
+
+	public static function drawExportForm( $table_name )
+	{
+		$years = self::getUniqueEntryYears( $table_name );
+		if ( count( $years ) > 0 ) {
+			echo "
+				<form class='well' method='post'>
+					<input type='hidden' name='table' value='" . $table_name . "'>
+					<select name='pride_export'>
+						<option value=''>
+							Export All Years
+						</option>";
+			foreach ( $years as $year ) {
+				echo "
+						<option value='" . $year . "'>
+							Export " . $year . "
+						</option>";
+			}
+			echo "
+					</select>
+					<input type='submit' value='Export'>
+				</form>";
+
+		}
+	}
+
+	public static function exportToCsv()
+	{
+		global $wpdb;
+
+		$tables = array(
+			CruiseEntry::TABLE_NAME => 'cruise',
+			FestivalEntry::TABLE_NAME => 'festival',
+			MurderMysteryEntry::TABLE_NAME => 'murder-mystery',
+			ParadeEntry::TABLE_NAME => 'parade'
+		);
+
+		$year = ( isset( $_POST['pride_export'] ) && is_numeric( $_POST['pride_export'] ) ) ? abs( round( $_POST['pride_export'] ) ) : NULL;
+		$table = ( isset( $_POST['table'] ) && array_key_exists( $_POST['table'], $tables ) ) ? $_POST['table'] : NULL;
+
+		header('Content-type: text/csv');
+
+		if ( $table === NULL )
+		{
+			header( 'Content-disposition: attachment;filename=export.csv' );
+			echo 'No Data to Export';
+		}
+		else
+		{
+			header( 'Content-disposition: attachment;filename=' . ( ( $year !== NULL ) ? $year : 'all' ) . '-' . $tables[ $table ] . '-entries.csv' );
+			echo "Entry Date,Entry Year,Organization,First Name,Last Name,Email,Phone,Address,City,State,Zip,";
+			switch ( $table )
+			{
+				case FestivalEntry::TABLE_NAME:
+					echo "Entry Type,Corner Booth,";
+					break;
+				case MurderMysteryEntry::TABLE_NAME:
+					echo "Sponsor Table,Upgraded Meal,Vegetarian Count,Entry Type,";
+					break;
+				case ParadeEntry::TABLE_NAME:
+					echo "Entry Types,Description,Parking Spots,Amped Sound,Group Size,Donation,";
+					break;
+			}
+			echo "Qty,Amount Due,Amount Paid,Payment Method,Paid On,Notes";
+
+			$rows = $wpdb->get_results("
+				SELECT
+					*
+				FROM
+					" . $wpdb->prefix . $table . "
+				WHERE
+					entry_year " . ( ( $year === NULL ) ? " > 0 " : " = " . $year ) . "
+				ORDER BY
+					id ASC");
+
+			if ( $rows )
+			{
+				foreach ( $rows as $row )
+				{
+					switch ( $table )
+					{
+						case CruiseEntry::TABLE_NAME:
+							$entry = new CruiseEntry;
+							break;
+						case FestivalEntry::TABLE_NAME:
+							$entry = new FestivalEntry;
+							break;
+						case MurderMysteryEntry::TABLE_NAME:
+							$entry = new MurderMysteryEntry;
+							break;
+						case ParadeEntry::TABLE_NAME:
+							$entry = new ParadeEntry;
+							break;
+						default:
+							$entry = new Entry;
+					}
+
+					$entry->loadFromRow( $row );
+
+					echo "\r\n";
+					echo $entry->getCreatedAt( 'n/j/Y' ) . ',';
+					echo $entry->getEntryYear() . ',';
+					echo '"' . str_replace( '"', '""', $entry->getOrganization() ) . '",';
+					echo '"' . str_replace( '"', '""', $entry->getFirstName() ) . '",';
+					echo '"' . str_replace( '"', '""', $entry->getLastName() ) . '",';
+					echo '"' . str_replace( '"', '""', $entry->getEmail() ) . '",';
+					echo '"' . str_replace( '"', '""', $entry->getPhone() ) . '",';
+					echo '"' . str_replace( '"', '""', $entry->getAddress() ) . '",';
+					echo '"' . str_replace( '"', '""', $entry->getCity() ) . '",';
+					echo '"' . str_replace( '"', '""', $entry->getState() ) . '",';
+					echo '"' . str_replace( '"', '""', $entry->getZip() ) . '",';
+
+					switch ( $table )
+					{
+						case FestivalEntry::TABLE_NAME:
+							echo '"' . str_replace( '"', '""', $entry->getEntryType() ) . '",';
+							echo ( ( $entry->isCornerBooth() ) ? 'Y' : 'N' ) . ',';
+							break;
+						case MurderMysteryEntry::TABLE_NAME:
+							echo ( ( $entry->isSponsor() ) ? 'Y' : 'N' ) . ',';
+							echo ( ( $entry->isUpgraded() ) ? 'Y' : 'N' ) . ',';
+							echo $entry->getVegetarianQty() . ',';
+							echo ( ( $entry->isSponsor() ) ? 'Table' : 'Ticket' ) . ',';
+							break;
+						case ParadeEntry::TABLE_NAME:
+							echo '"' . str_replace('"', '""', implode( ',', $entry->getEntryTypes() ) ) . '",';
+							echo '"' . str_replace( "\n", ' ', str_replace( "\r", ' ', str_replace( '"', '""', $entry->getDescription() ) ) ) . '",';
+							echo $entry->getFloatParkingSpaces() . ',';
+							echo ( ( $entry->needsAmpedSound() ) ? 'Y' : 'N' ) . ',';
+							echo $entry->getGroupSize() . ',';
+							echo $entry->getDonationAmount() . ',';
+							break;
+					}
+
+					echo $entry->getQty() . ',';
+					echo $entry->getTotal() . ',';
+					echo $entry->getPaymentAmount() . ',';
+					echo '"' . str_replace( '"', '""', $entry->getPaymentMethod( $entry->getPaymentMethodId() ) ) . '",';
+					echo $entry->getPaidAt( 'n/j/Y' ) . ',';
+					echo '"' . str_replace( "\n", ' ', str_replace( "\r", ' ', str_replace( '"', '""', $entry->getNotes() ) ) ) . '",';
+				}
+			}
+		}
+
+		exit;
 	}
 }
