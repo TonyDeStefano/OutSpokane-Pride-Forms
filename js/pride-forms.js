@@ -1,8 +1,16 @@
 var pride_entry_types;
+var pride_form_is_processing = false;
 
 (function($){
 
     $('#pride-form-container').on('click', '#btn-step-1', function(){
+
+        if (pride_form_is_processing) {
+            return;
+        }
+
+        pride_form_is_processing = true;
+        $(this).text('Please wait ...');
 
         getPrideForm();
 
@@ -29,6 +37,8 @@ var pride_entry_types;
         if (error.length > 0) {
 
             alert(error);
+            pride_form_is_processing = false;
+            $(this).text('Submit');
 
         } else {
 
@@ -78,10 +88,14 @@ var pride_entry_types;
                     console.log(y);
                     console.log(z);
                     alert('There was an error. Please try again.');
+                    pride_form_is_processing = false;
+                    $('#btn-step-1').text('Submit');
                 },
                 success: function(json) {
                     if (json.success == '0') {
                         alert(json.error);
+                        pride_form_is_processing = false;
+                        $('#btn-step-1').text('Submit');
                     } else {
                         window.location = '?txid=' + json.txid + '#confirmation-payment';
                     }
