@@ -77,6 +77,25 @@ var pride_form_is_processing = false;
                 post.description = getPrideFormValue('description');
                 post.needs_amped_sound = getPrideFormValue('needs_amped_sound');
                 post.group_size = getPrideFormValue('group_size');
+            } else if (pride_form.form == 'murder_mystery') {
+                post.is_sponsor = $('#is_sponsor').val();
+                if (post.is_sponsor == '1') {
+                    post.qty = '1';
+                    post.vegetarian_qty = $('#sponsor_vegetarian_qty').val();
+                    if ($('#sponsor_meal_type_upgraded').prop('checked')) {
+                        post.is_upgraded = '1';
+                    } else {
+                        post.is_upgraded = '0';
+                    }
+                } else {
+                    post.qty = $('#ticket_qty').val();
+                    post.vegetarian_qty = $('#ticket_vegetarian_qty').val();
+                    if ($('#ticket_meal_type_upgraded').prop('checked')) {
+                        post.is_upgraded = '1';
+                    } else {
+                        post.is_upgraded = '0';
+                    }
+                }
             }
 
             $.ajax({
@@ -118,6 +137,12 @@ var pride_form_is_processing = false;
             container.show();
         }
     });
+
+    $('#is_sponsor').change(function(){
+        doSponsorChange();
+    });
+
+    doSponsorChange();
 
 })(jQuery);
 
@@ -161,4 +186,20 @@ function getPrideFormValue(id) {
     }
 
     return '';
+}
+
+function doSponsorChange(){
+    var el = jQuery('#is_sponsor');
+    if (el.length > 0) {
+        var val = el.val();
+        var sponsor = jQuery('#mm-sponsor-fields');
+        var tickets = jQuery('#mm-ticket-fields');
+        if (val == '1') {
+            sponsor.show();
+            tickets.hide();
+        } else {
+            sponsor.hide();
+            tickets.show();
+        }
+    }
 }

@@ -112,7 +112,7 @@ if ( isset( $_GET[ 'action' ] ) )
 					$pages = get_pages();
 					foreach ($pages as $page)
 					{
-						if ( preg_match('/\[pride_forms[^\]]*form="cruise"[^\]]*\]/', $page->post_content) === 1)
+						if ( preg_match('/\[pride_forms[^\]]*form=["\']cruise["\'][^\]]*\]/', $page->post_content) === 1)
 						{
 							$receipt_link = get_page_link($page->ID) . '?txid=' . $entry->getCreatedAt() . '-' . $entry->getId() . '#confirmation-payment';
 							break;

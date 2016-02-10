@@ -142,7 +142,7 @@
 								</form>
 								</p>
 
-							<?php } else { ?>
+							<?php } elseif ( $payment_method_id != \OutSpokane\Entry::PAYMENT_METHOD_CARD ) { ?>
 
 								<p>
 									Send <?php echo $payment_method; ?> to:<br><br>

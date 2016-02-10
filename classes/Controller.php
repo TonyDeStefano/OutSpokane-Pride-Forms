@@ -483,6 +483,24 @@ class Controller {
 
 						/** @var MurderMysteryEntry $entry */
 						$entry = new MurderMysteryEntry;
+						$entry
+							->setIsUpgraded( $_POST['is_upgraded'] )
+							->setVegetarianQty( $_POST['vegetarian_qty'] );
+
+						if ( $_POST['is_sponsor'] == 1 )
+						{
+							$entry
+								->setQty( 1 )
+								->setIsSponsor( TRUE )
+								->setPricePerQty( ($entry->isUpgraded()) ? MurderMysteryEntry::UPGRADED_TABLE_PRICE : MurderMysteryEntry::TABLE_PRICE );
+						}
+						else
+						{
+							$entry
+								->setQty( $_POST['qty'] )
+								->setIsSponsor( FALSE )
+								->setPricePerQty( ($entry->isUpgraded()) ? MurderMysteryEntry::UPGRADED_TICKET_PRICE : MurderMysteryEntry::TICKET_PRICE );
+						}
 
 						break;
 
