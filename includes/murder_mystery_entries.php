@@ -200,7 +200,7 @@ if ( isset( $_GET[ 'action' ] ) )
 	<?php } else { ?>
 
 		<h1>
-			Murder Myster Entries
+			Murder Mystery Entries
 		</h1>
 
 		<?php
