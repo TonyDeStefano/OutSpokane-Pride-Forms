@@ -56,26 +56,19 @@ class EntryTable extends \WP_List_Table {
 	public function get_columns()
 	{
 		$return = array(
+			'name' => 'Name',
 			'created_at' => 'Entry Date',
 			'entry_year' => 'Year',
-			'first_name' => 'First Name',
-			'last_name' => 'Last Name',
-			'organization' => 'Organization',
-			'qty' => 'Tickets',
-			'amount_due' => 'Total Due',
-			'payment_amount' => 'Total Paid',
-			'paid_at' => 'Paid On',
-			'payment_method_id' => 'Method',
+			'qty' => 'Qty',
+			'amount_due' => 'Due',
+			'payment_amount' => 'Paid',
+			'paid_at' => 'Pay Date',
 			'view' => ''
 		);
 
 		if ( $this->table == FestivalEntry::TABLE_NAME )
 		{
 			unset( $return['qty'] );
-		}
-		elseif ( $this->table == CruiseEntry::TABLE_NAME )
-		{
-			unset( $return['organization'] );
 		}
 
 		return $return;
@@ -87,16 +80,13 @@ class EntryTable extends \WP_List_Table {
 	public function get_sortable_columns()
 	{
 		$return =  array(
+			'name' => array( 'last_name', TRUE ),
 			'created_at' => array( 'created_at', TRUE ),
 			'entry_year' => array( 'entry_year', TRUE ),
-			'first_name' => array( 'first_name', TRUE ),
-			'last_name' => array( 'last_name', TRUE ),
-			'organization' => array( 'organization', TRUE ),
 			'qty' => array( 'qty', TRUE ),
 			'amount_due' => array( 'amount_due', TRUE ),
 			'payment_amount' => array( 'payment_amount', TRUE ),
-			'paid_at' => array( 'paid_at', TRUE ),
-			'payment_method_id' => array( 'payment_method_id', TRUE )
+			'paid_at' => array( 'paid_at', TRUE )
 		);
 
 		if ( $this->table == FestivalEntry::TABLE_NAME )
@@ -120,16 +110,14 @@ class EntryTable extends \WP_List_Table {
 	public function column_default( $item, $column_name ) {
 		switch( $column_name ) {
 			case 'entry_year':
-			case 'first_name':
-			case 'last_name':
 			case 'organization':
 			case 'qty':
 				return $item->$column_name;
+			case 'name':
+				return $item->first_name . ' ' . $item->last_name . ( ( strlen( $item->organization ) > 0 ) ? '<br><em>' . $item->organization . '</em>' : '' );
 			case 'created_at':
 			case 'paid_at':
 				return ( $item->$column_name === NULL ) ? '' : date('n/j/Y', strtotime( $item->$column_name ) );
-			case 'payment_method_id':
-				return Entry::getPaymentMethod( $item->$column_name );
 			case 'payment_amount':
 				return '$' . number_format( ( $item->$column_name === NULL) ? 0 : $item->$column_name, 2 );
 			case 'amount_due':
