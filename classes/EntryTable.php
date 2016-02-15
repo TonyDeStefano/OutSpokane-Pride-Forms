@@ -60,6 +60,7 @@ class EntryTable extends \WP_List_Table {
 			'created_at' => 'Entry Date',
 			'entry_year' => 'Year',
 			'qty' => 'Qty',
+			'type' => 'Type',
 			'amount_due' => 'Due',
 			'payment_amount' => 'Paid',
 			'paid_at' => 'Pay Date',
@@ -69,6 +70,11 @@ class EntryTable extends \WP_List_Table {
 		if ( $this->table == FestivalEntry::TABLE_NAME )
 		{
 			unset( $return['qty'] );
+		}
+
+		if ( $this->table != MurderMysteryEntry::TABLE_NAME )
+		{
+			unset( $return['type'] );
 		}
 
 		return $return;
@@ -84,6 +90,7 @@ class EntryTable extends \WP_List_Table {
 			'created_at' => array( 'created_at', TRUE ),
 			'entry_year' => array( 'entry_year', TRUE ),
 			'qty' => array( 'qty', TRUE ),
+			'type' => array( 'is_sponsor', TRUE ),
 			'amount_due' => array( 'amount_due', TRUE ),
 			'payment_amount' => array( 'payment_amount', TRUE ),
 			'paid_at' => array( 'paid_at', TRUE )
@@ -93,9 +100,10 @@ class EntryTable extends \WP_List_Table {
 		{
 			unset( $return['qty'] );
 		}
-		elseif ( $this->table == CruiseEntry::TABLE_NAME )
+
+		if ( $this->table != MurderMysteryEntry::TABLE_NAME )
 		{
-			unset( $return['organization'] );
+			unset( $return['type'] );
 		}
 
 		return $return;
@@ -107,12 +115,15 @@ class EntryTable extends \WP_List_Table {
 	 *
 	 * @return mixed
 	 */
-	public function column_default( $item, $column_name ) {
+	public function column_default( $item, $column_name )
+	{
 		switch( $column_name ) {
 			case 'entry_year':
 			case 'organization':
 			case 'qty':
 				return $item->$column_name;
+			case 'type':
+				return ( $item->is_sponsor == 1 ) ? 'Table' : 'Ticket';
 			case 'name':
 				return $item->first_name . ' ' . $item->last_name . ( ( strlen( $item->organization ) > 0 ) ? '<br><em>' . $item->organization . '</em>' : '' );
 			case 'created_at':
@@ -121,6 +132,14 @@ class EntryTable extends \WP_List_Table {
 			case 'payment_amount':
 				return '$' . number_format( ( $item->$column_name === NULL) ? 0 : $item->$column_name, 2 );
 			case 'amount_due':
+				if ( $this->table == FestivalEntry::TABLE_NAME )
+				{
+					return '$' . number_format( ( ( $item->price_per_qty === NULL ) ? 0 : $item->price_per_qty * $item->qty ) + ( $item->is_corner_booth * $item->price_for_corner_booth ), 2 );
+				}
+				elseif ( $this->table == ParadeEntry::TABLE_NAME )
+				{
+					return '$' . number_format( ( $item->float_parking_spaces * $item->float_parking_space_cost ) + $item->donation_amount, 2 );
+				}
 				return '$' . number_format( ( $item->price_per_qty === NULL ) ? 0 : $item->price_per_qty * $item->qty, 2 );
 			case 'view':
 				return '<a href="?page=' . $_REQUEST['page'] . '&action=view&id=' . $item->id . '" class="button-primary">' . __('View') . '</a>';
