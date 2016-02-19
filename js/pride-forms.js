@@ -81,19 +81,21 @@ var pride_form_is_processing = false;
                 post.is_sponsor = $('#is_sponsor').val();
                 if (post.is_sponsor == '1') {
                     post.qty = '1';
-                    post.vegetarian_qty = $('#sponsor_vegetarian_qty').val();
                     if ($('#sponsor_meal_type_upgraded').prop('checked')) {
                         post.is_upgraded = '1';
+                        post.vegetarian_qty = 0;
                     } else {
                         post.is_upgraded = '0';
+                        post.vegetarian_qty = $('#sponsor_vegetarian_qty').val();
                     }
                 } else {
                     post.qty = $('#ticket_qty').val();
-                    post.vegetarian_qty = $('#ticket_vegetarian_qty').val();
                     if ($('#ticket_meal_type_upgraded').prop('checked')) {
                         post.is_upgraded = '1';
+                        post.vegetarian_qty = 0;
                     } else {
                         post.is_upgraded = '0';
+                        post.vegetarian_qty = $('#ticket_vegetarian_qty').val();
                     }
                 }
             }
@@ -144,6 +146,28 @@ var pride_form_is_processing = false;
 
     doSponsorChange();
 
+    var mm_ticket_fields = $('#mm-ticket-fields');
+
+    mm_ticket_fields.on('change', '#ticket_qty', function(){
+        fillVegNumbers();
+    });
+
+    fillVegNumbers();
+
+    mm_ticket_fields.on('change', 'input[name=ticket_meal_type]:radio', function(){
+       showHideTicketVeg();
+    });
+
+    showHideTicketVeg();
+
+    var mm_sponsor_fields = $('#mm-sponsor-fields');
+
+    mm_sponsor_fields.on('change', 'input[name=sponsor_meal_type]:radio', function(){
+        showHideSponsorVeg();
+    });
+
+    showHideSponsorVeg();
+
 })(jQuery);
 
 var pride_form = {
@@ -151,6 +175,45 @@ var pride_form = {
     year: '',
     fields: []
 };
+
+function fillVegNumbers()
+{
+    var tix = jQuery('#mm-ticket-fields').find('#ticket_qty');
+    if (tix.length) {
+        var val = parseInt(tix.val());
+        var el = jQuery('#ticket_vegetarian_qty');
+        el.html('');
+        for (var v = 0; v <= val; v++) {
+            el.append('<option value="' + v + '">' + v + '</option>');
+        }
+    }
+}
+
+function showHideTicketVeg()
+{
+    var container = jQuery('#mm-ticket-fields');
+    var veg = jQuery('#mm-vegetarian-dinners');
+    if (container.length) {
+        if (jQuery('#ticket_meal_type_upgraded').prop('checked')) {
+            veg.hide();
+        } else {
+            veg.show();
+        }
+    }
+}
+
+function showHideSponsorVeg()
+{
+    var container = jQuery('#mm-sponsor-fields');
+    var veg = jQuery('#sponsor-vegetarian-dinners');
+    if (container.length) {
+        if (jQuery('#sponsor_meal_type_upgraded').prop('checked')) {
+            veg.hide();
+        } else {
+            veg.show();
+        }
+    }
+}
 
 function getPrideForm()
 {

@@ -824,7 +824,7 @@ class Entry {
 					echo "Entry Type,Corner Booth,";
 					break;
 				case MurderMysteryEntry::TABLE_NAME:
-					echo "Sponsor Table,Upgraded Meal,Vegetarian Count,Entry Type,";
+					echo "Upgraded Meal,Vegetarian Count,Entry Type,";
 					break;
 				case ParadeEntry::TABLE_NAME:
 					echo "Entry Types,Description,Parking Spots,Amped Sound,Group Size,Donation,";
@@ -886,7 +886,6 @@ class Entry {
 							echo ( ( $entry->isCornerBooth() ) ? 'Y' : 'N' ) . ',';
 							break;
 						case MurderMysteryEntry::TABLE_NAME:
-							echo ( ( $entry->isSponsor() ) ? 'Y' : 'N' ) . ',';
 							echo ( ( $entry->isUpgraded() ) ? 'Y' : 'N' ) . ',';
 							echo $entry->getVegetarianQty() . ',';
 							echo ( ( $entry->isSponsor() ) ? 'Table' : 'Ticket' ) . ',';

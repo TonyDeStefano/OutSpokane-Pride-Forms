@@ -167,10 +167,6 @@ class MurderMysteryEntry extends Entry {
 		if ( $row = parent::read() )
 		{
 			$this->loadFromRow( $row );
-			$this
-				->setIsSponsor( $row->is_sponsor )
-				->setIsUpgraded( $row->is_upgraded )
-				->setVegetarianQty( $row->vegetarian_qty );
 		}
 	}
 
@@ -191,5 +187,9 @@ class MurderMysteryEntry extends Entry {
 	public function loadFromRow( \stdClass $row )
 	{
 		parent::loadFromRow( $row );
+		$this
+			->setIsSponsor( $row->is_sponsor )
+			->setIsUpgraded( $row->is_upgraded )
+			->setVegetarianQty( $row->vegetarian_qty );
 	}
 }

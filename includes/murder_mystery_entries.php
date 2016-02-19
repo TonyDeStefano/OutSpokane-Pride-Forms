@@ -82,18 +82,20 @@ if ( isset( $_GET[ 'action' ] ) )
 								<td>
 									<?php echo $entry->getQty(); ?>
 									<?php if ($entry->isSponsor()) { ?>
-										Table Sponsorship
+										Table Sponsorship (8 Tickets)
 									<?php } ?>
 								</td>
 							</tr>
 							<tr>
 								<th>Meal Type:</th>
-								<td><?php echo ( $entry->isUpgraded() ) ? 'Upgraded' : 'Regular'; ?></td>
+								<td><?php echo ( $entry->isUpgraded() ) ? 'Prime Rib Dinner' : 'Turkey or Vegetarian Dinner'; ?></td>
 							</tr>
-							<tr>
-								<th>Vegetarian Meals:</th>
-								<td><?php echo $entry->getVegetarianQty(); ?></td>
-							</tr>
+							<?php if ( ! $entry->isUpgraded() ) { ?>
+								<tr>
+									<th>Vegetarian Meals:</th>
+									<td><?php echo $entry->getVegetarianQty(); ?></td>
+								</tr>
+							<?php } ?>
 							<?php if ( $entry->getAmountDue() > 0 ) { ?>
 								<tr>
 									<th>Amount Due:</th>

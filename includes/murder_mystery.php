@@ -71,18 +71,20 @@
 				<td>
 					<?php echo $entry->getQty(); ?>
 					<?php if ($entry->isSponsor()) { ?>
-						Table Sponsorship
+						Table Sponsorship (8 Tickets)
 					<?php } ?>
 				</td>
 			</tr>
 			<tr>
 				<th>Meal Type:</th>
-				<td><?php echo ( $entry->isUpgraded() ) ? 'Upgraded' : 'Regular'; ?></td>
+				<td><?php echo ( $entry->isUpgraded() ) ? 'Prime Rib Dinner' : 'Turkey or Vegetarian Dinner'; ?></td>
 			</tr>
-			<tr>
-				<th>Vegetarian Meals:</th>
-				<td><?php echo $entry->getVegetarianQty(); ?></td>
-			</tr>
+			<?php if ( ! $entry->isUpgraded() ) { ?>
+				<tr>
+					<th>Vegetarian Meals:</th>
+					<td><?php echo $entry->getVegetarianQty(); ?></td>
+				</tr>
+			<?php } ?>
 			<?php if ( $entry->getAmountDue() > 0 ) { ?>
 				<tr>
 					<th>Amount Due:</th>
@@ -195,16 +197,16 @@
 					<div class="col-md-6">
 						<label>
 							<input type="radio" id="sponsor_meal_type_regular" name="sponsor_meal_type" checked>
-							Regular Meal ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::TABLE_PRICE, 2 ); ?>)<br>
+							Turkey or Vegetarian Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::TABLE_PRICE, 2 ); ?>)<br>
 						</label>
 						<label>
 							<input type="radio" id="sponsor_meal_type_upgraded" name="sponsor_meal_type">
-							Upgraded Meal ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::UPGRADED_TABLE_PRICE, 2 ); ?>)
+							Prime Rib Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::UPGRADED_TABLE_PRICE, 2 ); ?>)
 						</label>
 					</div>
 				</div>
 
-				<div class="row">
+				<div class="row" id="sponsor-vegetarian-dinners">
 					<div class="col-md-3">
 						<label for="sponsor_vegetarian_qty">How many vegetarian meals do you need?</label>
 					</div>
@@ -230,11 +232,11 @@
 					<div class="col-md-6">
 						<label>
 							<input type="radio" id="ticket_meal_type_regular" name="ticket_meal_type" checked>
-							Regular Meal ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::TICKET_PRICE, 2 ); ?> each)<br>
+							Turkey or Vegetarian Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::TICKET_PRICE, 2 ); ?> each)<br>
 						</label>
 						<label>
 							<input type="radio" id="ticket_meal_type_upgraded" name="ticket_meal_type">
-							Upgraded Meal ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::UPGRADED_TICKET_PRICE, 2 ); ?> each)
+							Prime Rib Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::UPGRADED_TICKET_PRICE, 2 ); ?> each)
 						</label>
 					</div>
 				</div>
@@ -254,17 +256,14 @@
 					</div>
 				</div>
 
-				<div class="row">
+				<div class="row" id="mm-vegetarian-dinners">
 					<div class="col-md-3">
-						<label for="ticket_vegetarian_qty">How many vegetarian meals do you need?</label>
+						<label for="ticket_vegetarian_qty">How many vegetarian dinners do you need?</label>
 					</div>
 					<div class="col-md-6">
 						<select id="ticket_vegetarian_qty">
-							<?php for ($x=0; $x<=\OutSpokane\MurderMysteryEntry::MAX_TICKETS; $x++) { ?>
-								<option value="<?php echo $x; ?>">
-									<?php echo $x; ?>
-								</option>
-							<?php } ?>
+							<option value="0">0</option>
+							<option value="1">1</option>
 						</select>
 					</div>
 				</div>

@@ -15,6 +15,8 @@ use \Stripe\Error\Card;
 class Controller {
 
 	const VERSION = '1.0.0';
+	const VERSION_JS = '1.0.1';
+	const VERSION_CSS = '1.0.1';
 
 	public $action = '';
 	public $data = '';
@@ -212,16 +214,16 @@ class Controller {
 		$parts = explode('?', $_SERVER['REQUEST_URI']);
 		$this->base_page = $parts[0];
 
-		wp_enqueue_script( 'out-spokane-pride-forms-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/pride-forms.js', array( 'jquery' ), time(), TRUE );
+		wp_enqueue_script( 'out-spokane-pride-forms-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/pride-forms.js', array( 'jquery' ), (WP_DEBUG) ? time() : self::VERSION_JS, TRUE );
 		wp_localize_script( 'out-spokane-pride-forms-js', 'prideforms', array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'entry_nonce' => wp_create_nonce( 'entry-nonce' )
 		) );
 		wp_enqueue_script( 'out-spokane-stripe', 'https://js.stripe.com/v2/', array( 'jquery' ), time(), TRUE);
 
-		wp_enqueue_style( 'out-spokane-pride-forms-bootstrap-grid', plugin_dir_url( dirname( __FILE__ ) ) . 'css/grid12.css', array(), time() );
-		wp_enqueue_style( 'out-spokane-pride-forms-bootstrap-tables', plugin_dir_url( dirname( __FILE__ ) ) . 'css/bootstrap-tables.css', array(), time() );
-		wp_enqueue_style( 'out-spokane-pride-forms-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/pride-forms.css', array(), time() );
+		wp_enqueue_style( 'out-spokane-pride-forms-bootstrap-grid', plugin_dir_url( dirname( __FILE__ ) ) . 'css/grid12.css', array(), (WP_DEBUG) ? time() : self::VERSION_CSS );
+		wp_enqueue_style( 'out-spokane-pride-forms-bootstrap-tables', plugin_dir_url( dirname( __FILE__ ) ) . 'css/bootstrap-tables.css', array(), (WP_DEBUG) ? time() : self::VERSION_CSS );
+		wp_enqueue_style( 'out-spokane-pride-forms-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/pride-forms.css', array(), (WP_DEBUG) ? time() : self::VERSION_CSS );
 	}
 
 	/**
@@ -229,7 +231,7 @@ class Controller {
 	 */
 	public function enqueueAdminScripts()
 	{
-		wp_enqueue_script( 'out-spokane-admin-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin.js', array( 'jquery' ), time(), TRUE );
+		wp_enqueue_script( 'out-spokane-admin-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin.js', array( 'jquery' ), (WP_DEBUG) ? time() : self::VERSION_JS, TRUE );
 	}
 
 	public function param( $param, $default='' )
