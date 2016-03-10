@@ -36,6 +36,38 @@
 
         });
 
+        $('#pride-forms-update-details').find('#submit').click(function(e){
+
+            e.preventDefault();
+            var form = $(this).closest('.well').data('form');
+            var id = $(this).closest('.well').data('id');
+
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'pride_forms_update_details',
+                    form: form,
+                    vegetarian_qty: $('#vegetarian_qty').val(),
+                    tickets_sent: $('#tickets_sent').val(),
+                    id: id
+                },
+                success: function(x) {
+                    if (x == '0') {
+                        alert('There was an error. Please try again.');
+                    } else {
+                        location.reload();
+                    }
+                },
+                error: function (x, y, z) {
+                    console.log(x);
+                    console.log(y);
+                    console.log(z);
+                    alert('There was an error. Please try again.');
+                }
+            });
+        });
+
         $('#pride-forms-mark-as-paid').find('#submit').click(function(e){
 
             e.preventDefault();
@@ -55,8 +87,7 @@
                 success: function(x) {
                     if (x == '0') {
                         alert('There was an error. Please try again.');
-                    }
-                    else {
+                    } else {
                         location.reload();
                     }
                 },

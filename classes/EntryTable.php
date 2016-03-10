@@ -64,6 +64,7 @@ class EntryTable extends \WP_List_Table {
 			'amount_due' => 'Due',
 			'payment_amount' => 'Paid',
 			'paid_at' => 'Pay Date',
+			'tickets_sent' => 'Tickets Sent',
 			'view' => ''
 		);
 
@@ -75,6 +76,7 @@ class EntryTable extends \WP_List_Table {
 		if ( $this->table != MurderMysteryEntry::TABLE_NAME )
 		{
 			unset( $return['type'] );
+			unset( $return['tickets_sent'] );
 		}
 
 		return $return;
@@ -93,7 +95,8 @@ class EntryTable extends \WP_List_Table {
 			'type' => array( 'is_sponsor', TRUE ),
 			'amount_due' => array( 'amount_due', TRUE ),
 			'payment_amount' => array( 'payment_amount', TRUE ),
-			'paid_at' => array( 'paid_at', TRUE )
+			'paid_at' => array( 'paid_at', TRUE ),
+			'tickets_sent' => array( 'tickets_sent', TRUE )
 		);
 
 		if ( $this->table == FestivalEntry::TABLE_NAME )
@@ -104,6 +107,7 @@ class EntryTable extends \WP_List_Table {
 		if ( $this->table != MurderMysteryEntry::TABLE_NAME )
 		{
 			unset( $return['type'] );
+			unset( $return['tickets_sent'] );
 		}
 
 		return $return;
@@ -141,6 +145,8 @@ class EntryTable extends \WP_List_Table {
 					return '$' . number_format( ( $item->float_parking_spaces * $item->float_parking_space_cost ) + $item->donation_amount, 2 );
 				}
 				return '$' . number_format( ( $item->price_per_qty === NULL ) ? 0 : $item->price_per_qty * $item->qty, 2 );
+			case 'tickets_sent':
+				return ( $item->tickets_sent == 1 ) ? 'Yes' : 'No';
 			case 'view':
 				return '<a href="?page=' . $_REQUEST['page'] . '&action=view&id=' . $item->id . '" class="button-primary">' . __('View') . '</a>';
 			default:

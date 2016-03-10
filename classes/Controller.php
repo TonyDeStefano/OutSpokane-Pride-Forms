@@ -595,6 +595,42 @@ class Controller {
 	/**
 	 *
 	 */
+	public function updateEntryDetails()
+	{
+		switch ($_POST['form'])
+		{
+			case 'cruise':
+				$entry = new CruiseEntry( $_POST['id'] );
+				break;
+			case 'festival':
+				$entry = new FestivalEntry( $_POST['id'] );
+				break;
+			case 'murder_mystery':
+				$entry = new MurderMysteryEntry( $_POST['id'] );
+				break;
+			default: /* parade */
+				$entry = new ParadeEntry( $_POST['id'] );
+		}
+
+		if ( $entry->getCreatedAt() !== NULL )
+		{
+			if ( $_POST['form'] == 'murder_mystery' )
+			{
+				$entry
+					->setVegetarianQty( $_POST['vegetarian_qty'] )
+					->setTicketsSent( $_POST['tickets_sent'] );
+			}
+		}
+
+		$entry->update();
+
+		echo 1;
+		exit;
+	}
+
+	/**
+	 *
+	 */
 	public function updateEntryPayment()
 	{
 		if ( isset($_POST['form']) && isset($_POST['id']) && isset($_POST['payment_method_id']) )

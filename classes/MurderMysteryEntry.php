@@ -21,6 +21,7 @@ class MurderMysteryEntry extends Entry {
 	private $vegetarian_qty;
 	private $is_sponsor = FALSE;
 	private $is_upgraded = FALSE;
+	private $tickets_sent = FALSE;
 
 	/**
 	 * MurderMysteryEntry constructor.
@@ -83,6 +84,26 @@ class MurderMysteryEntry extends Entry {
 	 */
 	public function setIsUpgraded( $is_upgraded ) {
 		$this->is_upgraded = ($is_upgraded == 1 || $is_upgraded === TRUE) ? TRUE : FALSE;
+
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function wereTicketsSent()
+	{
+		return ( $this->tickets_sent === TRUE );
+	}
+
+	/**
+	 * @param boolean $tickets_sent
+	 *
+	 * @return MurderMysteryEntry
+	 */
+	public function setTicketsSent( $tickets_sent )
+	{
+		$this->tickets_sent = ( $tickets_sent === TRUE || $tickets_sent == 1 ) ? TRUE : FALSE;
 
 		return $this;
 	}
@@ -175,10 +196,30 @@ class MurderMysteryEntry extends Entry {
 	 */
 	public function update()
 	{
+		global $wpdb;
+
 		if ( $this->id !== NULL )
 		{
 			parent::update();
 		}
+
+		$wpdb->update(
+			$wpdb->prefix . $this->table_name,
+			array(
+				'vegetarian_qty' => $this->vegetarian_qty,
+				'tickets_sent' => ( $this->wereTicketsSent() ) ? 1 : 0
+			),
+			array(
+				'id' => $this->id
+			),
+			array(
+				'%d',
+				'%d'
+			),
+			array(
+				'%d'
+			)
+		);
 	}
 
 	/**
@@ -190,6 +231,7 @@ class MurderMysteryEntry extends Entry {
 		$this
 			->setIsSponsor( $row->is_sponsor )
 			->setIsUpgraded( $row->is_upgraded )
-			->setVegetarianQty( $row->vegetarian_qty );
+			->setVegetarianQty( $row->vegetarian_qty )
+			->setTicketsSent( $row->tickets_sent );
 	}
 }

@@ -78,6 +78,9 @@ if ( is_admin() )
 	/* update entry notes ajax */
 	add_action( 'wp_ajax_pride_forms_update_notes', array( $controller, 'updateEntryNotes' ) );
 
+	/* update entry details ajax */
+	add_action( 'wp_ajax_pride_forms_update_details', array( $controller, 'updateEntryDetails' ) );
+
 	/* update entry payment ajax */
 	add_action( 'wp_ajax_pride_forms_update_payment', array( $controller, 'updateEntryPayment' ) );
 

@@ -45,7 +45,7 @@ if ( isset( $_GET[ 'action' ] ) )
 			<div class="row">
 				<div class="col-md-7">
 
-					<div class="well">
+					<div class="well" id="pride-forms-update-details" data-form="murder_mystery" data-id="<?php echo $entry->getId(); ?>">
 
 						<table class="table">
 							<tr>
@@ -93,8 +93,18 @@ if ( isset( $_GET[ 'action' ] ) )
 							<?php if ( ! $entry->isUpgraded() ) { ?>
 								<tr>
 									<th>Vegetarian Meals:</th>
-									<td><?php echo $entry->getVegetarianQty(); ?></td>
+									<td>
+										<select name="vegetarian_qty" id="vegetarian_qty">
+											<?php for ( $q=0; $q<=( ( $entry->isSponsor() ) ? 8 : $entry->getQty() ); $q++ ) { ?>
+												<option value="<?php echo $q; ?>"<?php if ( $q == $entry->getVegetarianQty() ) { ?> selected<?php } ?>>
+													<?php echo $q; ?>
+												</option>
+											<?php } ?>
+										</select>
+									</td>
 								</tr>
+							<?php } else { ?>
+								<input type="hidden" name="vegetarian_qty" id="vegetarian_qty" value="<?php echo $entry->getVegetarianQty(); ?>">
 							<?php } ?>
 							<?php if ( $entry->getAmountDue() > 0 ) { ?>
 								<tr>
@@ -116,6 +126,25 @@ if ( isset( $_GET[ 'action' ] ) )
 									</td>
 								</tr>
 							<?php } ?>
+							<tr>
+								<th>Tickets Sent:</th>
+								<td>
+									<select name="tickets_sent" id="tickets_sent">
+										<option value="0">
+											No
+										</option>
+										<option value="1"<?php if ( $entry->wereTicketsSent() ) { ?> selected<?php } ?>>
+											Yes
+										</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th></th>
+								<td>
+									<?php submit_button( 'Save' ); ?>
+								</td>
+							</tr>
 						</table>
 
 					</div>
@@ -153,7 +182,7 @@ if ( isset( $_GET[ 'action' ] ) )
 				</div>
 				<div class="col-md-5">
 
-					<div class="well" id="pride-forms-update-entry-notes" data-form="murder_myster" data-id="<?php echo $entry->getId(); ?>">
+					<div class="well" id="pride-forms-update-entry-notes" data-form="murder_mystery" data-id="<?php echo $entry->getId(); ?>">
 
 						<p>
 							<label for="entry-notes">
