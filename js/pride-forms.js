@@ -44,6 +44,7 @@ var pride_form_is_processing = false;
 
             var post = {
                 action: 'pride_entry',
+                path: $(location).attr('pathname'),
                 entry_nonce: prideforms.entry_nonce,
                 entry_year: pride_form.year,
                 form: pride_form.form,

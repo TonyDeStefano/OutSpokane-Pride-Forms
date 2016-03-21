@@ -15,7 +15,7 @@ use \Stripe\Error\Card;
 class Controller {
 
 	const VERSION = '1.0.0';
-	const VERSION_JS = '1.0.2';
+	const VERSION_JS = '1.1.0';
 	const VERSION_CSS = '1.0.1';
 
 	public $action = '';
@@ -541,6 +541,7 @@ class Controller {
 				{
 					case 'cruise':
 
+						$subject = 'Cruise';
 						$entry = new CruiseEntry;
 						$entry
 							->setQty( $_POST['qty'] )
@@ -551,6 +552,7 @@ class Controller {
 
 					case 'festival':
 
+						$subject = 'Pride Festival';
 						$entry = new FestivalEntry;
 						$entry
 							->setQty( 1 )
@@ -563,6 +565,7 @@ class Controller {
 
 					case 'murder_mystery':
 
+						$subject = 'Murder Myster';
 						/** @var MurderMysteryEntry $entry */
 						$entry = new MurderMysteryEntry;
 						$entry
@@ -588,6 +591,7 @@ class Controller {
 
 					default: /* 'parade' */
 
+						$subject = 'Pride Parade';
 						$entry = new ParadeEntry();
 						$entry
 							->setQty( 1 )
@@ -614,6 +618,56 @@ class Controller {
 					->setCreatedAt( time() )
 					->setUpdatedAt( time() )
 					->create();
+
+				$fields = array(
+					'Entry Year',
+					'Organization',
+					'First Name',
+					'Last Name',
+					'Email',
+					'Phone',
+					'Address',
+					'City',
+					'State',
+					'Zip',
+					'Qty'
+				);
+
+				$subject = 'OutSpokane Receipt - ' . $entry->getEntryYear() . ' ' . $subject ;
+				$body = '
+					<p>Thank you for signing up for our event online! Below are the details of your transaction:</p>
+					<table>
+						<tr>
+							<td><strong>Event:</strong></td>
+							<td>' . $entry->getEntryYear() . ' ' . $subject . '</td>
+						</tr>';
+
+				foreach ( $fields as $field )
+				{
+					$body .= '
+						<tr>
+							<td><strong>' . $field . ':</strong></td>
+							<td>' . $entry->getRaw( strtolower( str_replace( ' ', '_', $field ) ) ) . '</td>
+						</tr>';
+				}
+
+
+				$body .= '
+						<tr>
+							<td><strong>Total:</strong></td>
+							<td>$' . number_format( $entry->getTotal(), 2 ) . '</td>
+						</tr>
+					</table>
+					<p>View the complete details of your transaction here:</p>
+					<p><a href="https://outspokane.org' . $_POST['path'] . '?txid=' . $entry->getCreatedAt() . '-' . $entry->getId() . '">https://outspokane.org' . $_POST['path'] . '?txid=' . $entry->getCreatedAt() . '-' . $entry->getId() . '</a></p>';
+
+
+				$headers = array(
+					'Content-Type: text/html; charset=UTF-8',
+					'From info@outspokane.org'
+				);
+				wp_mail( $_POST['email'], $subject, $body, $headers );
+				wp_mail( 'info@outspokane.org', 'BCC: ' . $subject, $body, $headers );
 
 				$response['txid'] = $entry->getCreatedAt() . '-' . $entry->getId();
 			}
