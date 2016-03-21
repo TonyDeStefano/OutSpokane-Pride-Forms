@@ -207,12 +207,16 @@ class MurderMysteryEntry extends Entry {
 			$wpdb->prefix . $this->table_name,
 			array(
 				'vegetarian_qty' => $this->vegetarian_qty,
-				'tickets_sent' => ( $this->wereTicketsSent() ) ? 1 : 0
+				'tickets_sent' => ( $this->wereTicketsSent() ) ? 1 : 0,
+				'is_sponsor' => ( $this->isSponsor() ) ? 1 : 0,
+				'is_upgraded' => ( $this->isUpgraded() ) ? 1 : 0
 			),
 			array(
 				'id' => $this->id
 			),
 			array(
+				'%d',
+				'%d',
 				'%d',
 				'%d'
 			),

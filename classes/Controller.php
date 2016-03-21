@@ -361,6 +361,14 @@ class Controller {
 					->setNeedsAmpedSound( $_POST['needs_amped_sound'] )
 					->setGroupSize( $_POST['group_size'] );
 			}
+			elseif ( $_POST['form'] == 'murder_mystery' )
+			{
+				$entry
+					->setIsSponsor( $_POST['is_sponsor'] )
+					->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) )
+					->setIsUpgraded( $_POST['is_upgraded'] )
+					->setVegetarianQty( $_POST['vegetarian_qty'] );
+			}
 
 			$entry->update();
 			header( 'Location:admin.php?page=' . $_POST['return'] . '&action=view&id=' . $entry->getId() );

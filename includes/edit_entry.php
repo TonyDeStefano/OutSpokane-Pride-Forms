@@ -152,6 +152,41 @@ switch ( $_GET['form'] )
 						<th>Group Size:</th>
 						<td><input name="group_size" value="<?php echo $entry->getGroupSize(); ?>"></td>
 					</tr>
+				<?php } elseif ( $_GET['form'] == 'murder_mystery' ) { ?>
+					<tr>
+						<th>Type:</th>
+						<td>
+							<select name="is_sponsor">
+								<option value="0"<?php if ( ! $entry->isSponsor() ) { ?> selected<?php } ?>>
+									Ticket
+								</option>
+								<option value="1"<?php if ( $entry->isSponsor() ) { ?> selected<?php } ?>>
+									Table
+								</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>Price Per Ticket or Table:</th>
+						<td><input name="price_per_qty" value="$<?php echo number_format( $entry->getPricePerQty(), 2 ); ?>"></td>
+					</tr>
+					<tr>
+						<th>Upgraded Meal:</th>
+						<td>
+							<select name="is_upgraded">
+								<option value="0"<?php if ( ! $entry->isUpgraded() ) { ?> selected<?php } ?>>
+									No
+								</option>
+								<option value="1"<?php if ( $entry->isUpgraded() ) { ?> selected<?php } ?>>
+									Yes
+								</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>Vegetarian Qty:</th>
+						<td><input name="vegetarian_qty" value="<?php echo $entry->getVegetarianQty(); ?>"></td>
+					</tr>
 				<?php } ?>
 				<tr>
 					<th></th>
