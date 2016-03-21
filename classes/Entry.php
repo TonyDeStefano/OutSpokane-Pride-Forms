@@ -912,4 +912,19 @@ class Entry {
 
 		exit;
 	}
+
+	/**
+	 * @param $attribute
+	 *
+	 * @return string
+	 */
+	public function getRaw( $attribute )
+	{
+		if ( isset( $this->$attribute ) )
+		{
+			return $this->$attribute;
+		}
+
+		return '';
+	}
 }

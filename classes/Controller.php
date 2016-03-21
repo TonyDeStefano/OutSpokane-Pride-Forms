@@ -303,9 +303,53 @@ class Controller {
 	 */
 	public function formCapture()
 	{
-		if (isset($_POST['pride_export']))
+		if ( isset( $_POST['pride_export'] ) )
 		{
 			Entry::exportToCsv();
+			exit;
+		}
+
+		if ( isset( $_POST['edit_outspokane_entry'] ) )
+		{
+			switch ( $_POST['form'] )
+			{
+				case 'festival':
+					$entry = new FestivalEntry( $_POST['id'] );
+					break;
+				case 'cruise':
+					$entry = new CruiseEntry( $_POST['id'] );
+					break;
+				case 'parade':
+					$entry = new ParadeEntry( $_POST['id'] );
+					break;
+				default:
+					$entry = new MurderMysteryEntry( $_POST['id'] );
+			}
+
+			$entry
+				->setEntryYear( $_POST['entry_year'] )
+				->setOrganization( $_POST['organization'] )
+				->setFirstName( $_POST['first_name'] )
+				->setLastName( $_POST['last_name'] )
+				->setEmail( $_POST['email'] )
+				->setPhone( $_POST['phone'] )
+				->setAddress( $_POST['address'] )
+				->setCity( $_POST['city'] )
+				->setState( $_POST['state'] )
+				->setZip( $_POST['zip'] )
+				->setQty( $_POST['qty'] );
+
+			if ( $_POST['form'] == 'festival' )
+			{
+				$entry
+					->setEntryTypeId( $_POST['entry_type_id'] )
+					->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) )
+					->setIsCornerBooth( $_POST['is_corner_booth'] )
+					->setPriceForCornerBooth( preg_replace( '/[^0-9\.]/', '', $_POST['price_for_corner_booth'] ) );
+			}
+
+			$entry->update();
+			header( 'Location:admin.php?page=' . $_POST['return'] . '&action=view&id=' . $entry->getId() );
 			exit;
 		}
 
@@ -388,6 +432,9 @@ class Controller {
 		add_submenu_page('outspokane', 'Parade Entries', 'Parade Entries', 'manage_options', 'outspokane_parade', array($this, 'showParadeEntries'));
 		add_submenu_page('outspokane', 'Festival Entries', 'Festival Entries', 'manage_options', 'outspokane_festival', array($this, 'showFestivalEntries'));
 		add_submenu_page('outspokane', 'Murder Mystery Entries', 'Murder Mystery Entries', 'manage_options', 'outspokane_murder_mystery', array($this, 'showMurderMysteryEntries'));
+
+		/* I guess this is how to add a page without adding a menu */
+		add_submenu_page(NULL, 'Edit Entry', 'Edit Entry', 'manage_options', 'outspokane_edit_entry', array($this, 'editEntry'));
 	}
 
 	public function registerSettings()
@@ -445,6 +492,11 @@ class Controller {
 	public function showMurderMysteryEntries()
 	{
 		include( dirname( __DIR__ ) . '/includes/murder_mystery_entries.php');
+	}
+
+	public function editEntry()
+	{
+		include( dirname( __DIR__ ) . '/includes/edit_entry.php');
 	}
 
 	public function handleNewAjaxEntry()

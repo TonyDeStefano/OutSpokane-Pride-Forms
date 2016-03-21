@@ -37,6 +37,9 @@ if ( isset( $_GET[ 'action' ] ) )
 				<a href="?page=<?php echo $_REQUEST['page']; ?>" class="page-title-action">
 					Back
 				</a>
+				<a href="?page=outspokane_edit_entry&form=festival&id=<?php echo $entry->getId(); ?>" class="page-title-action">
+					Edit
+				</a>
 				<a href="#" class="page-title-action" id="pride-delete-entry" data-form="festival" data-id="<?php echo $entry->getId(); ?>">
 					Delete
 				</a>
