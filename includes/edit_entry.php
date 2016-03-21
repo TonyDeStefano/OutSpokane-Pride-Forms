@@ -105,6 +105,11 @@ switch ( $_GET['form'] )
 						<th>Price For Corner Booth:</th>
 						<td><input name="price_for_corner_booth" value="$<?php echo number_format( $entry->getPriceForCornerBooth(), 2 ); ?>"></td>
 					</tr>
+				<?php } else if ( $_GET['form'] == 'cruise' ) { ?>
+					<tr>
+						<th>Price Per Ticket:</th>
+						<td><input name="price_per_qty" value="$<?php echo number_format( $entry->getPricePerQty(), 2 ); ?>"></td>
+					</tr>
 				<?php } ?>
 				<tr>
 					<th></th>

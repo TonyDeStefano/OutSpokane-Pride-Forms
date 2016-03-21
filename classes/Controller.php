@@ -337,13 +337,13 @@ class Controller {
 				->setCity( $_POST['city'] )
 				->setState( $_POST['state'] )
 				->setZip( $_POST['zip'] )
-				->setQty( $_POST['qty'] );
+				->setQty( $_POST['qty'] )
+				->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) );
 
 			if ( $_POST['form'] == 'festival' )
 			{
 				$entry
 					->setEntryTypeId( $_POST['entry_type_id'] )
-					->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) )
 					->setIsCornerBooth( $_POST['is_corner_booth'] )
 					->setPriceForCornerBooth( preg_replace( '/[^0-9\.]/', '', $_POST['price_for_corner_booth'] ) );
 			}
