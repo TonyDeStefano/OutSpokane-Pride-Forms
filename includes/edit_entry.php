@@ -110,6 +110,48 @@ switch ( $_GET['form'] )
 						<th>Price Per Ticket:</th>
 						<td><input name="price_per_qty" value="$<?php echo number_format( $entry->getPricePerQty(), 2 ); ?>"></td>
 					</tr>
+				<?php } else if ( $_GET['form'] == 'parade' ) { ?>
+					<?php $entry_types = $entry->getEntryTypeList(); ?>
+					<tr>
+						<th>Entry Type(s):</th>
+						<td>
+							<?php foreach ($entry_types as $entry_type) { ?>
+								<label>
+									<input type="checkbox" name="parade_entry_type[]" value="<?php echo esc_html( $entry_type ); ?>"<?php if ( in_array( $entry_type, $entry->getEntryTypes() ) ) { ?> checked<?php } ?>>
+									<?php echo $entry_type; ?>
+								</label><br>
+							<?php } ?>
+						</td>
+					</tr>
+					<tr>
+						<th>Description:</th>
+						<td><textarea name="description"><?php echo esc_html( $entry->getDescription() ); ?></textarea></td>
+					</tr>
+					<tr>
+						<th>Float Parking Spaces:</th>
+						<td><input name="float_parking_spaces" value="<?php echo $entry->getFloatParkingSpaces(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Cost Per Parking Space:</th>
+						<td><input name="float_parking_space_cost" value="$<?php echo number_format( $entry->getFloatParkingSpaceCost(), 2 ); ?>"></td>
+					</tr>
+					<tr>
+						<th>Needs Amped Sound:</th>
+						<td>
+							<select name="needs_amped_sound">
+								<option value="0"<?php if ( ! $entry->needsAmpedSound() ) { ?> selected<?php } ?>>
+									No
+								</option>
+								<option value="1"<?php if ( $entry->needsAmpedSound() ) { ?> selected<?php } ?>>
+									Yes
+								</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>Group Size:</th>
+						<td><input name="group_size" value="<?php echo $entry->getGroupSize(); ?>"></td>
+					</tr>
 				<?php } ?>
 				<tr>
 					<th></th>

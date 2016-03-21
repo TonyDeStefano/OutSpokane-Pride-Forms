@@ -337,15 +337,29 @@ class Controller {
 				->setCity( $_POST['city'] )
 				->setState( $_POST['state'] )
 				->setZip( $_POST['zip'] )
-				->setQty( $_POST['qty'] )
-				->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) );
+				->setQty( $_POST['qty'] );
 
 			if ( $_POST['form'] == 'festival' )
 			{
 				$entry
 					->setEntryTypeId( $_POST['entry_type_id'] )
 					->setIsCornerBooth( $_POST['is_corner_booth'] )
+					->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) )
 					->setPriceForCornerBooth( preg_replace( '/[^0-9\.]/', '', $_POST['price_for_corner_booth'] ) );
+			}
+			elseif ( $_POST['form'] == 'cruise' )
+			{
+				$entry->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) );
+			}
+			elseif ( $_POST['form'] == 'parade' )
+			{
+				$entry
+					->setEntryTypes( $_POST['parade_entry_type'] )
+					->setDescription( $_POST['description'] )
+					->setFloatParkingSpaces( $_POST['float_parking_spaces'] )
+					->setFloatParkingSpaceCost( preg_replace( '/[^0-9\.]/', '', $_POST['float_parking_space_cost'] ) )
+					->setNeedsAmpedSound( $_POST['needs_amped_sound'] )
+					->setGroupSize( $_POST['group_size'] );
 			}
 
 			$entry->update();
