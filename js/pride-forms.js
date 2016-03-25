@@ -119,6 +119,9 @@ var pride_form_is_processing = false;
                         pride_form_is_processing = false;
                         $('#btn-step-1').text('Submit');
                     } else {
+                        console.log(json);
+                        pride_form_is_processing = false;
+                        $('#btn-step-1').text('Submit');
                         window.location = '?txid=' + json.txid + '#confirmation-payment';
                     }
                 }
