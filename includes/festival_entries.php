@@ -88,6 +88,12 @@ if ( isset( $_GET[ 'action' ] ) )
 								<th>Corner Booth:</th>
 								<td><?php echo ( $entry->isCornerBooth() ) ? 'Yes' : 'No'; ?></td>
 							</tr>
+							<tr>
+								<th>Comments:</th>
+								<td>
+									<?php echo $entry->getDescription(); ?>
+								</td>
+							</tr>
 							<?php if ( $entry->getAmountDue() > 0 ) { ?>
 								<tr>
 									<th>Amount Due:</th>

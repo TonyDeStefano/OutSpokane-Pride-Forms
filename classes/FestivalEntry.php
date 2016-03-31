@@ -28,6 +28,7 @@ class FestivalEntry extends Entry {
 	private $entry_type_id;
 	private $is_corner_booth = FALSE;
 	private $price_for_corner_booth;
+	private $description;
 
 	/**
 	 * FestivalEntry constructor.
@@ -154,6 +155,26 @@ class FestivalEntry extends Entry {
 	}
 
 	/**
+	 * @return mixed
+	 */
+	public function getDescription()
+	{
+		return ( $this->description === NULL ) ? '' : $this->description;
+	}
+
+	/**
+	 * @param mixed $description
+	 *
+	 * @return FestivalEntry
+	 */
+	public function setDescription( $description )
+	{
+		$this->description = $description;
+
+		return $this;
+	}
+
+	/**
 	 * @param bool $use_parent
 	 *
 	 * @return array
@@ -197,6 +218,7 @@ class FestivalEntry extends Entry {
 				'entry_type_id' => $this->entry_type_id,
 				'is_corner_booth' => ( $this->is_corner_booth ? 1 : 0 ),
 				'price_for_corner_booth' => $this->price_for_corner_booth,
+				'description' => $this->getDescription(),
 				'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
 				'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 			),
@@ -217,6 +239,7 @@ class FestivalEntry extends Entry {
 				'%d',
 				'%d',
 				'%f',
+				'%s',
 				'%s',
 				'%s',
 			)
@@ -252,7 +275,8 @@ class FestivalEntry extends Entry {
 				array(
 					'entry_type_id' => $this->entry_type_id,
 					'is_corner_booth' => $this->is_corner_booth,
-					'price_for_corner_booth' => $this->price_for_corner_booth
+					'price_for_corner_booth' => $this->price_for_corner_booth,
+					'description' => $this->getDescription()
 				),
 				array(
 					'id' => $this->id
@@ -260,7 +284,8 @@ class FestivalEntry extends Entry {
 				array(
 					'%d',
 					'%d',
-					'%f'
+					'%f',
+					'%s'
 				),
 				array(
 					'%d'
@@ -278,7 +303,8 @@ class FestivalEntry extends Entry {
 		$this
 			->setEntryTypeId( $row->entry_type_id )
 			->setIsCornerBooth( $row->is_corner_booth )
-			->setPriceForCornerBooth( $row->price_for_corner_booth );
+			->setPriceForCornerBooth( $row->price_for_corner_booth )
+			->setDescription( $row->description );
 	}
 
 	/**

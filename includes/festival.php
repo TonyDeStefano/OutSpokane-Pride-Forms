@@ -74,6 +74,10 @@
 				<th>Corner Booth:</th>
 				<td><?php echo ( $entry->isCornerBooth() ) ? 'Yes' : 'No'; ?></td>
 			</tr>
+			<tr>
+				<th>Comments/Notes:</th>
+				<td><?php echo $entry->getDescription(); ?></td>
+			</tr>
 			<?php if ( $entry->getAmountDue() > 0 ) { ?>
 				<tr>
 					<th>Amount Due:</th>
@@ -203,6 +207,8 @@
 					</div>
 				</div>
 			<?php } ?>
+			
+			<?php \OutSpokane\Entry::drawFormField( 'Comments/Notes', 'description', 'textarea' ); ?>
 
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3">

@@ -65,6 +65,7 @@ var pride_form_is_processing = false;
             } else if (pride_form.form == 'festival') {
                 post.entry_type_id = getPrideFormValue('entry_type_id');
                 post.corner_booth = getPrideFormValue('corner_booth');
+                post.description = getPrideFormValue('description');
             } else if (pride_form.form == 'parade') {
                 pride_entry_types = [];
                 $('.parade_entry_type').each(function(){

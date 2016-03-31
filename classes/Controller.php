@@ -106,6 +106,7 @@ class Controller {
 					`payment_amount` DECIMAL(11,2) DEFAULT NULL,
 					`payment_confirmation_number` VARCHAR(50) DEFAULT NULL,
 					`notes` TEXT DEFAULT NULL,
+					`description` TEXT DEFAULT NULL,
 					`created_at` DATETIME DEFAULT NULL,
 					`updated_at` DATETIME DEFAULT NULL,
 					PRIMARY KEY (`id`)
@@ -345,7 +346,8 @@ class Controller {
 					->setEntryTypeId( $_POST['entry_type_id'] )
 					->setIsCornerBooth( $_POST['is_corner_booth'] )
 					->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) )
-					->setPriceForCornerBooth( preg_replace( '/[^0-9\.]/', '', $_POST['price_for_corner_booth'] ) );
+					->setPriceForCornerBooth( preg_replace( '/[^0-9\.]/', '', $_POST['price_for_corner_booth'] ) )
+					->setDescription( $_POST['description'] );
 			}
 			elseif ( $_POST['form'] == 'cruise' )
 			{
@@ -556,6 +558,7 @@ class Controller {
 						$entry = new FestivalEntry;
 						$entry
 							->setQty( 1 )
+							->setDescription( $_POST['description'] )
 							->setEntryTypeId( $_POST['entry_type_id'] )
 							->setPriceForCornerBooth( FestivalEntry::CORNER_BOOTH_FEE )
 							->setPricePerQty( $entry->getEntryTypePrice( $_POST['entry_type_id'] ) )
