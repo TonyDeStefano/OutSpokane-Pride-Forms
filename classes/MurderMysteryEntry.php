@@ -144,7 +144,7 @@ class MurderMysteryEntry extends Entry {
 				'last_name' => $this->last_name,
 				'address' => $this->address,
 				'city' => $this->city,
-				'state' => $this->state,
+				'state' => substr( $this->state, 0 , 2 ),
 				'zip' => $this->zip,
 				'qty' => $this->qty,
 				'price_per_qty' => $this->price_per_qty,
