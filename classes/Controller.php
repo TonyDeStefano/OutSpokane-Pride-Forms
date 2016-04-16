@@ -407,10 +407,11 @@ class Controller {
 									$title = 'Pride Parade Entry';
 							}
 
-							if ( $entry->getCreatedAt() !== NULL )
+							if ( $entry->getCreatedAt() !== NULL && isset( $_POST['stripeToken'] ) && strlen( $_POST['stripeToken'] ) > 0 )
 							{
 								$stripe_keys = Entry::getStripeKeys();
 								Stripe::setApiKey( $stripe_keys['secret'] );
+								Stripe::setApiVersion( '2016-03-07' );
 
 								try
 								{
