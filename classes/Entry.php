@@ -15,6 +15,7 @@ class Entry {
 	const PAYMENT_METHOD_CARD = 2;
 	const PAYMENT_METHOD_CHECK = 3;
 	const PAYMENT_METHOD_MO = 4;
+	const PAYMENT_METHOD_SQUARE = 5;
 
 	protected $table_name;
 	protected $id;
@@ -469,6 +470,8 @@ class Entry {
 				return 'Check';
 			case self::PAYMENT_METHOD_MO:
 				return 'Money Order';
+			case self::PAYMENT_METHOD_SQUARE:
+				return 'Square';
 			default:
 				return '';
 		}
@@ -483,7 +486,8 @@ class Entry {
 			self::PAYMENT_METHOD_CASH => $this->getPaymentMethod( self::PAYMENT_METHOD_CASH ),
 			self::PAYMENT_METHOD_CARD => $this->getPaymentMethod( self::PAYMENT_METHOD_CARD ),
 			self::PAYMENT_METHOD_CHECK => $this->getPaymentMethod( self::PAYMENT_METHOD_CHECK ),
-			self::PAYMENT_METHOD_MO => $this->getPaymentMethod( self::PAYMENT_METHOD_MO )
+			self::PAYMENT_METHOD_MO => $this->getPaymentMethod( self::PAYMENT_METHOD_MO ),
+			self::PAYMENT_METHOD_SQUARE => $this->getPaymentMethod( self::PAYMENT_METHOD_SQUARE )
 		);
 	}
 
@@ -500,7 +504,7 @@ class Entry {
 	 * @return Entry
 	 */
 	public function setPaymentMethodId( $payment_method_id ) {
-		$this->payment_method_id = (in_array($payment_method_id, array(1, 2, 3, 4))) ? $payment_method_id : NULL;
+		$this->payment_method_id = (in_array($payment_method_id, array(1, 2, 3, 4, 5))) ? $payment_method_id : NULL;
 
 		return $this;
 	}
