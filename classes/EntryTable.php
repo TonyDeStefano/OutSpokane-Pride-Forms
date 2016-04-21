@@ -57,6 +57,7 @@ class EntryTable extends \WP_List_Table {
 	{
 		$return = array(
 			'name' => 'Name',
+			'is_corner_booth' => 'Corner Booth',
 			'created_at' => 'Entry Date',
 			'entry_year' => 'Year',
 			'qty' => 'Qty',
@@ -71,6 +72,11 @@ class EntryTable extends \WP_List_Table {
 		if ( $this->table == FestivalEntry::TABLE_NAME )
 		{
 			unset( $return['qty'] );
+		}
+		
+		if ( $this->table != FestivalEntry::TABLE_NAME )
+		{
+			unset( $return['is_corner_booth'] );
 		}
 
 		if ( $this->table != MurderMysteryEntry::TABLE_NAME )
@@ -89,6 +95,7 @@ class EntryTable extends \WP_List_Table {
 	{
 		$return =  array(
 			'name' => array( 'last_name', TRUE ),
+			'is_corner_booth' => array( 'is_corner_booth', TRUE ),
 			'created_at' => array( 'created_at', TRUE ),
 			'entry_year' => array( 'entry_year', TRUE ),
 			'qty' => array( 'qty', TRUE ),
@@ -102,6 +109,11 @@ class EntryTable extends \WP_List_Table {
 		if ( $this->table == FestivalEntry::TABLE_NAME )
 		{
 			unset( $return['qty'] );
+		}
+
+		if ( $this->table != FestivalEntry::TABLE_NAME )
+		{
+			unset( $return['is_corner_booth'] );
 		}
 
 		if ( $this->table != MurderMysteryEntry::TABLE_NAME )
@@ -130,6 +142,8 @@ class EntryTable extends \WP_List_Table {
 				return ( $item->is_sponsor == 1 ) ? 'Table' : 'Ticket';
 			case 'name':
 				return $item->first_name . ' ' . $item->last_name . ( ( strlen( $item->organization ) > 0 ) ? '<br><em>' . $item->organization . '</em>' : '' );
+			case 'is_corner_booth':
+				return ( $item->is_corner_booth == 1 ) ? 'Yes' : 'No';
 			case 'created_at':
 			case 'paid_at':
 				return ( $item->$column_name === NULL ) ? '' : date('n/j/Y', strtotime( $item->$column_name ) );
@@ -190,7 +204,7 @@ class EntryTable extends \WP_List_Table {
 
 		$total_items = $wpdb->query($sql);
 
-		$max_per_page = 10;
+		$max_per_page = 50;
 		$paged = ( isset( $_GET[ 'paged' ] ) && is_numeric( $_GET['paged'] ) ) ? abs( round( $_GET[ 'paged' ])) : 1;
 		$total_pages = ceil( $total_items / $max_per_page );
 
