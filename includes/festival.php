@@ -190,7 +190,7 @@
 				</div>
 			</div>
 
-			<?php if ( strtolower( $this->getAttribute( 'corner_booth_option' ) ) == 'yes' ) { ?>
+			<?php if ( strtolower( $this->getAttribute( 'corner_booth' ) ) == 'yes' ) { ?>
 				<div class="row" id="corner-booth-container">
 					<div class="col-md-3">
 						<label for="corner_booth">Upgrade to Corner Booth</label>
@@ -206,6 +206,8 @@
 						</select>
 					</div>
 				</div>
+			<?php } else { ?>
+				<input type="hidden" name="corner_booth" value="0">
 			<?php } ?>
 			
 			<?php \OutSpokane\Entry::drawFormField( 'Comments/Notes', 'description', 'textarea' ); ?>

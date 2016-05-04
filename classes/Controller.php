@@ -257,7 +257,7 @@ class Controller {
 		$this->attributes = shortcode_atts( array(
 			'form' => '',
 			'year' => date( 'Y' ),
-			'corner_booth_option' => 'yes'
+			'corner_booth' => 'yes'
 		), $attributes );
 
 		switch ( $this->getAttribute('form') )
