@@ -15,6 +15,8 @@ class CruiseEntry extends Entry{
 	const PRICE_PER_TICKET = 20;
 	const MAX_TICKETS = 20;
 
+	private $tickets_sent = FALSE;
+
 	/**
 	 * CruiseEntry constructor.
 	 *
@@ -24,6 +26,26 @@ class CruiseEntry extends Entry{
 		$this->setTableName(self::TABLE_NAME);
 		parent::__construct( $id );
 		$this->read();
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function wereTicketsSent()
+	{
+		return ( $this->tickets_sent === TRUE );
+	}
+
+	/**
+	 * @param boolean $tickets_sent
+	 *
+	 * @return MurderMysteryEntry
+	 */
+	public function setTicketsSent( $tickets_sent )
+	{
+		$this->tickets_sent = ( $tickets_sent === TRUE || $tickets_sent == 1 ) ? TRUE : FALSE;
+
+		return $this;
 	}
 
 	/**
@@ -108,10 +130,28 @@ class CruiseEntry extends Entry{
 	 */
 	public function update()
 	{
+		global $wpdb;
+
 		if ( $this->id !== NULL )
 		{
 			parent::update();
 		}
+
+		$wpdb->update(
+			$wpdb->prefix . $this->table_name,
+			array(
+				'tickets_sent' => ( $this->wereTicketsSent() ) ? 1 : 0
+			),
+			array(
+				'id' => $this->id
+			),
+			array(
+				'%d'
+			),
+			array(
+				'%d'
+			)
+		);
 	}
 
 	/**
@@ -120,5 +160,6 @@ class CruiseEntry extends Entry{
 	public function loadFromRow( \stdClass $row )
 	{
 		parent::loadFromRow( $row );
+		$this->setTicketsSent( $row->tickets_sent );
 	}
 }

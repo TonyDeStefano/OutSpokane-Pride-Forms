@@ -41,18 +41,27 @@
             e.preventDefault();
             var form = $(this).closest('.well').data('form');
             var id = $(this).closest('.well').data('id');
+            var data = {
+                action: 'pride_forms_update_details',
+                form: form,
+                id: id
+            };
+
+            if (form == 'cruise') {
+
+                data.tickets_sent = $('#tickets_sent').val();
+
+            } else if (form == 'murder_mystery') {
+
+                data.vegetarian_qty = $('#vegetarian_qty').val();
+                data.tickets_sent = $('#tickets_sent').val();
+            }
 
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',
-                data: {
-                    action: 'pride_forms_update_details',
-                    form: form,
-                    vegetarian_qty: $('#vegetarian_qty').val(),
-                    tickets_sent: $('#tickets_sent').val(),
-                    id: id
-                },
-                success: function(x) {
+                data: data,
+                success: function (x) {
                     if (x == '0') {
                         alert('There was an error. Please try again.');
                     } else {

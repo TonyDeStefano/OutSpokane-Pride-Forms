@@ -71,6 +71,7 @@ class Controller {
 					`payment_amount` DECIMAL(11,2) DEFAULT NULL,
 					`payment_confirmation_number` VARCHAR(50) DEFAULT NULL,
 					`notes` TEXT DEFAULT NULL,
+					`tickets_sent` TINYINT(4) DEFAULT NULL,
 					`created_at` DATETIME DEFAULT NULL,
 					`updated_at` DATETIME DEFAULT NULL,
 					PRIMARY KEY (`id`)
@@ -180,6 +181,7 @@ class Controller {
 					`payment_amount` DECIMAL(11,2) DEFAULT NULL,
 					`payment_confirmation_number` VARCHAR(50) DEFAULT NULL,
 					`notes` TEXT DEFAULT NULL,
+					`tickets_sent` TINYINT(4) DEFAULT NULL,
 					`created_at` DATETIME DEFAULT NULL,
 					`updated_at` DATETIME DEFAULT NULL,
 					PRIMARY KEY (`id`)
@@ -751,6 +753,10 @@ class Controller {
 				$entry
 					->setVegetarianQty( $_POST['vegetarian_qty'] )
 					->setTicketsSent( $_POST['tickets_sent'] );
+			}
+			elseif ( $_POST['form'] == 'cruise' )
+			{
+				$entry->setTicketsSent( $_POST['tickets_sent'] );
 			}
 		}
 

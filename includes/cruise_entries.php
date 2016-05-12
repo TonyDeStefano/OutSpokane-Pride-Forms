@@ -48,7 +48,7 @@ if ( isset( $_GET[ 'action' ] ) )
 			<div class="row">
 				<div class="col-md-7">
 
-					<div class="well">
+					<div class="well" id="pride-forms-update-details" data-form="cruise" data-id="<?php echo $entry->getId(); ?>">
 
 						<table class="table">
 							<tr>
@@ -104,6 +104,25 @@ if ( isset( $_GET[ 'action' ] ) )
 									</td>
 								</tr>
 							<?php } ?>
+							<tr>
+								<th>Tickets Sent:</th>
+								<td>
+									<select name="tickets_sent" id="tickets_sent">
+										<option value="0">
+											No
+										</option>
+										<option value="1"<?php if ( $entry->wereTicketsSent() ) { ?> selected<?php } ?>>
+											Yes
+										</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th></th>
+								<td>
+									<?php submit_button( 'Save' ); ?>
+								</td>
+							</tr>
 						</table>
 
 					</div>

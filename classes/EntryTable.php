@@ -82,6 +82,10 @@ class EntryTable extends \WP_List_Table {
 		if ( $this->table != MurderMysteryEntry::TABLE_NAME )
 		{
 			unset( $return['type'] );
+		}
+
+		if ( $this->table != MurderMysteryEntry::TABLE_NAME && $this->table != CruiseEntry::TABLE_NAME )
+		{
 			unset( $return['tickets_sent'] );
 		}
 
@@ -119,6 +123,10 @@ class EntryTable extends \WP_List_Table {
 		if ( $this->table != MurderMysteryEntry::TABLE_NAME )
 		{
 			unset( $return['type'] );
+		}
+
+		if ( $this->table != MurderMysteryEntry::TABLE_NAME && $this->table != CruiseEntry::TABLE_NAME )
+		{
 			unset( $return['tickets_sent'] );
 		}
 
