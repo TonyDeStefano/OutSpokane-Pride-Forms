@@ -63,15 +63,25 @@ class EntryTable extends \WP_List_Table {
 			'qty' => 'Qty',
 			'type' => 'Type',
 			'amount_due' => 'Due',
+			'donation_amount' => 'Donation',
 			'payment_amount' => 'Paid',
 			'paid_at' => 'Pay Date',
 			'tickets_sent' => 'Tickets Sent',
 			'view' => ''
 		);
 
-		if ( $this->table == FestivalEntry::TABLE_NAME )
+		if ( $this->table == FestivalEntry::TABLE_NAME || $this->table == Donation::TABLE_NAME )
 		{
 			unset( $return['qty'] );
+		}
+
+		if ( $this->table == Donation::TABLE_NAME )
+		{
+			unset ( $return['amount_due'] );
+		}
+		else
+		{
+			unset ( $return['donation_amount'] );
 		}
 		
 		if ( $this->table != FestivalEntry::TABLE_NAME )
@@ -105,14 +115,24 @@ class EntryTable extends \WP_List_Table {
 			'qty' => array( 'qty', TRUE ),
 			'type' => array( 'is_sponsor', TRUE ),
 			'amount_due' => array( 'amount_due', TRUE ),
+			'donation_amount' => array( 'donation_amount', TRUE ),
 			'payment_amount' => array( 'payment_amount', TRUE ),
 			'paid_at' => array( 'paid_at', TRUE ),
 			'tickets_sent' => array( 'tickets_sent', TRUE )
 		);
 
-		if ( $this->table == FestivalEntry::TABLE_NAME )
+		if ( $this->table == FestivalEntry::TABLE_NAME || $this->table == Donation::TABLE_NAME )
 		{
 			unset( $return['qty'] );
+		}
+
+		if ( $this->table == Donation::TABLE_NAME )
+		{
+			unset ( $return['amount_due'] );
+		}
+		else
+		{
+			unset ( $return['donation_amount'] );
 		}
 
 		if ( $this->table != FestivalEntry::TABLE_NAME )
@@ -156,6 +176,7 @@ class EntryTable extends \WP_List_Table {
 			case 'paid_at':
 				return ( $item->$column_name === NULL ) ? '' : date('n/j/Y', strtotime( $item->$column_name ) );
 			case 'payment_amount':
+			case 'donation_amount':
 				return '$' . number_format( ( $item->$column_name === NULL) ? 0 : $item->$column_name, 2 );
 			case 'amount_due':
 				if ( $this->table == FestivalEntry::TABLE_NAME )

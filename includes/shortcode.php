@@ -12,6 +12,7 @@
 			<li>festival</li>
 			<li>cruise</li>
 			<li>murder_mystery</li>
+			<li>donation</li>
 		</ul>
 	</blockquote>
 

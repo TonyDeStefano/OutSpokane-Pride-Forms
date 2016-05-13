@@ -34,6 +34,13 @@ var pride_form_is_processing = false;
             }
         }
 
+        if (pride_form.form = 'donation') {
+            var donation = getPrideFormValue('donation_amount');
+            if (donation.length == 0) {
+                error = 'Donation Amount is required';
+            }
+        }
+
         if (error.length > 0) {
 
             alert(error);
@@ -68,7 +75,7 @@ var pride_form_is_processing = false;
                 post.description = getPrideFormValue('description');
             } else if (pride_form.form == 'parade') {
                 pride_entry_types = [];
-                $('.parade_entry_type').each(function(){
+                $('.parade_entry_type').each(function () {
                     if ($(this).prop('checked')) {
                         pride_entry_types.push($(this).val());
                     }
@@ -79,6 +86,8 @@ var pride_form_is_processing = false;
                 post.description = getPrideFormValue('description');
                 post.needs_amped_sound = getPrideFormValue('needs_amped_sound');
                 post.group_size = getPrideFormValue('group_size');
+            } else if (pride_form.form = 'donation') {
+                post.donation_amount = getPrideFormValue('donation_amount');
             } else if (pride_form.form == 'murder_mystery') {
                 post.is_sponsor = $('#is_sponsor').val();
                 if (post.is_sponsor == '1') {

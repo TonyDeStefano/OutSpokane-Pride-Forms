@@ -189,6 +189,39 @@ class Controller {
 			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
 			dbDelta( $sql );
 		}
+
+		/* donations table */
+		$table = $wpdb->prefix . Donation::TABLE_NAME;
+		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
+			$sql = "
+				CREATE TABLE `" . $table . "`
+				(
+					`id` INT(11) NOT NULL AUTO_INCREMENT,
+					`entry_year` INT(11) DEFAULT NULL,
+					`email` VARCHAR(50) DEFAULT NULL,
+					`phone` VARCHAR(50) DEFAULT NULL,
+					`organization` VARCHAR(150) DEFAULT NULL,
+					`first_name` VARCHAR(50) DEFAULT NULL,
+					`last_name` VARCHAR(50) DEFAULT NULL,
+					`address` VARCHAR(50) DEFAULT NULL,
+					`city` VARCHAR(50) DEFAULT NULL,
+					`state` VARCHAR(2) DEFAULT NULL,
+					`zip` VARCHAR(10) DEFAULT NULL,
+					`payment_method_id` INT(11) DEFAULT NULL,
+					`paid_at` DATETIME DEFAULT NULL,
+					`payment_amount` DECIMAL(11,2) DEFAULT NULL,
+					`payment_confirmation_number` VARCHAR(50) DEFAULT NULL,
+					`notes` TEXT DEFAULT NULL,
+					`donation_amount` DECIMAL(11,2) DEFAULT NULL,
+					`qty` INT(11) DEFAULT NULL,
+					`price_per_qty` DECIMAL(11,2) DEFAULT NULL,
+					`created_at` DATETIME DEFAULT NULL,
+					`updated_at` DATETIME DEFAULT NULL,
+					PRIMARY KEY (`id`)
+				)";
+			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+			dbDelta( $sql );
+		}
 	}
 
 	/**
@@ -196,6 +229,7 @@ class Controller {
 	 */
 	public static function uninstall()
 	{
+		/*
 		global $wpdb;
 
 		if ( !defined( 'WP_UNINSTALL_PLUGIN' ) )
@@ -207,6 +241,8 @@ class Controller {
 		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . FestivalEntry::TABLE_NAME );
 		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . MurderMysteryEntry::TABLE_NAME );
 		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . ParadeEntry::TABLE_NAME );
+		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . Donation::TABLE_NAME );
+		*/
 	}
 
 	/**
@@ -268,6 +304,7 @@ class Controller {
 			case 'festival':
 			case 'murder_mystery':
 			case 'parade':
+			case 'donation':
 				return $this->return . $this->returnOutputFromPage( $this->getAttribute('form') );
 		}
 
@@ -324,6 +361,9 @@ class Controller {
 					break;
 				case 'parade':
 					$entry = new ParadeEntry( $_POST['id'] );
+					break;
+				case 'donation':
+					$entry = new Donation( $_POST['id'] );
 					break;
 				default:
 					$entry = new MurderMysteryEntry( $_POST['id'] );
@@ -404,6 +444,10 @@ class Controller {
 									$entry = new MurderMysteryEntry( $parts[1] );
 									$title = 'Murder Mystery Ticket';
 									break;
+								case 'donation':
+									$entry = new Donation( $parts[1] );
+									$title = 'Donation';
+									break;
 								default: /* 'parade' */
 									$entry = new ParadeEntry( $parts[1] );
 									$title = 'Pride Parade Entry';
@@ -459,6 +503,7 @@ class Controller {
 		add_submenu_page('outspokane', 'Parade Entries', 'Parade Entries', 'manage_options', 'outspokane_parade', array($this, 'showParadeEntries'));
 		add_submenu_page('outspokane', 'Festival Entries', 'Festival Entries', 'manage_options', 'outspokane_festival', array($this, 'showFestivalEntries'));
 		add_submenu_page('outspokane', 'Murder Mystery Entries', 'Murder Mystery Entries', 'manage_options', 'outspokane_murder_mystery', array($this, 'showMurderMysteryEntries'));
+		add_submenu_page('outspokane', 'Donations', 'Donations', 'manage_options', 'outspokane_donation', array($this, 'showDonations'));
 
 		/* I guess this is how to add a page without adding a menu */
 		add_submenu_page(NULL, 'Edit Entry', 'Edit Entry', 'manage_options', 'outspokane_edit_entry', array($this, 'editEntry'));
@@ -521,11 +566,25 @@ class Controller {
 		include( dirname( __DIR__ ) . '/includes/murder_mystery_entries.php');
 	}
 
+	/**
+	 *
+	 */
+	public function showDonations()
+	{
+		include( dirname( __DIR__ ) . '/includes/donations.php');
+	}
+
+	/**
+	 * 
+	 */
 	public function editEntry()
 	{
 		include( dirname( __DIR__ ) . '/includes/edit_entry.php');
 	}
 
+	/**
+	 * 
+	 */
 	public function handleNewAjaxEntry()
 	{
 		$response = array(
@@ -539,6 +598,11 @@ class Controller {
 			{
 				$response['success'] = 0;
 				$response['error'] = 'The email address you entered is not valid';
+			}
+			elseif ( $_POST['form'] == 'donation' && ( preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] ) == '' || preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] ) == 0 ) )
+			{
+				$response['success'] = 0;
+				$response['error'] = 'Please enter a valid donation amount';
 			}
 			else
 			{
@@ -571,7 +635,7 @@ class Controller {
 
 					case 'murder_mystery':
 
-						$subject = 'Murder Myster';
+						$subject = 'Murder Mystery';
 						/** @var MurderMysteryEntry $entry */
 						$entry = new MurderMysteryEntry;
 						$entry
@@ -595,10 +659,17 @@ class Controller {
 
 						break;
 
+					case 'donation':
+
+						$subject = 'Donation';
+						$entry = new Donation;
+						$entry->setDonationAmount( preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] ) );
+						break;
+
 					default: /* 'parade' */
 
 						$subject = 'Pride Parade';
-						$entry = new ParadeEntry();
+						$entry = new ParadeEntry;
 						$entry
 							->setQty( 1 )
 							->setEntryTypes( stripslashes( $_POST['entry_types'] ) )
@@ -641,10 +712,10 @@ class Controller {
 
 				$subject = 'OutSpokane Receipt - ' . $entry->getEntryYear() . ' ' . $subject ;
 				$body = '
-					<p>Thank you for signing up for our event online! Below are the details of your transaction:</p>
+					<p>Thank you! Below are the details of your transaction:</p>
 					<table>
 						<tr>
-							<td><strong>Event:</strong></td>
+							<td><strong>Title:</strong></td>
 							<td>' . $entry->getEntryYear() . ' ' . $subject . '</td>
 						</tr>';
 
@@ -707,6 +778,9 @@ class Controller {
 				case 'murder_mystery':
 					$entry = new MurderMysteryEntry( $_POST['id'] );
 					break;
+				case 'donation':
+					$entry = new Donation( $_POST['id'] );
+					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );
 			}
@@ -741,6 +815,9 @@ class Controller {
 				break;
 			case 'murder_mystery':
 				$entry = new MurderMysteryEntry( $_POST['id'] );
+				break;
+			case 'donation':
+				$entry = new Donation( $_POST['id'] );
 				break;
 			default: /* parade */
 				$entry = new ParadeEntry( $_POST['id'] );
@@ -783,6 +860,9 @@ class Controller {
 					break;
 				case 'murder_mystery':
 					$entry = new MurderMysteryEntry( $_POST['id'] );
+					break;
+				case 'donation':
+					$entry = new Donation( $_POST['id'] );
 					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );
@@ -828,6 +908,9 @@ class Controller {
 					break;
 				case 'murder_mystery':
 					$entry = new MurderMysteryEntry( $_POST['id'] );
+					break;
+				case 'donation':
+					$entry = new Donation( $_POST['id'] );
 					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );

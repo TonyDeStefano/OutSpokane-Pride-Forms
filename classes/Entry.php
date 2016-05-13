@@ -154,8 +154,6 @@ class Entry {
 			->setCity( $row->city )
 			->setState( $row->state )
 			->setZip( $row->zip )
-			->setQty( $row->qty )
-			->setPricePerQty( $row->price_per_qty )
 			->setPaymentMethodId( $row->payment_method_id )
 			->setPaidAt( $row->paid_at )
 			->setPaymentAmount( $row->payment_amount )
@@ -163,6 +161,13 @@ class Entry {
 			->setNotes( $row->notes )
 			->setCreatedAt( $row->created_at )
 			->setUpdatedAt( $row->updated_at );
+
+		if ( isset( $row->qty ) )
+		{
+			$this
+				->setQty( $row->qty )
+				->setPricePerQty( $row->price_per_qty );
+		}
 	}
 
 	/**
@@ -805,7 +810,8 @@ class Entry {
 			CruiseEntry::TABLE_NAME => 'cruise',
 			FestivalEntry::TABLE_NAME => 'festival',
 			MurderMysteryEntry::TABLE_NAME => 'murder-mystery',
-			ParadeEntry::TABLE_NAME => 'parade'
+			ParadeEntry::TABLE_NAME => 'parade',
+			Donation::TABLE_NAME => 'donation'
 		);
 
 		$year = ( isset( $_POST['pride_export'] ) && is_numeric( $_POST['pride_export'] ) ) ? abs( round( $_POST['pride_export'] ) ) : NULL;
@@ -832,6 +838,9 @@ class Entry {
 					break;
 				case ParadeEntry::TABLE_NAME:
 					echo "Entry Types,Description,Parking Spots,Amped Sound,Group Size,Donation,";
+					break;
+				case Donation::TABLE_NAME:
+					echo "Donation,";
 					break;
 			}
 			echo "Qty,Amount Due,Amount Paid,Payment Method,Paid On,Notes";
@@ -863,6 +872,9 @@ class Entry {
 							break;
 						case ParadeEntry::TABLE_NAME:
 							$entry = new ParadeEntry;
+							break;
+						case Donation::TABLE_NAME:
+							$entry = new Donation;
 							break;
 						default:
 							$entry = new Entry;
@@ -900,6 +912,9 @@ class Entry {
 							echo $entry->getFloatParkingSpaces() . ',';
 							echo ( ( $entry->needsAmpedSound() ) ? 'Y' : 'N' ) . ',';
 							echo $entry->getGroupSize() . ',';
+							echo $entry->getDonationAmount() . ',';
+							break;
+						case Donation::TABLE_NAME:
 							echo $entry->getDonationAmount() . ',';
 							break;
 					}
