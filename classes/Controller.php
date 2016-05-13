@@ -15,7 +15,7 @@ use \Stripe\Error\Card;
 class Controller {
 
 	const VERSION = '1.0.0';
-	const VERSION_JS = '1.1.1';
+	const VERSION_JS = '1.2';
 	const VERSION_CSS = '1.0.1';
 
 	public $action = '';
@@ -602,7 +602,7 @@ class Controller {
 			elseif ( $_POST['form'] == 'donation' && ( preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] ) == '' || preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] ) == 0 ) )
 			{
 				$response['success'] = 0;
-				$response['error'] = 'Please enter a valid donation amount';
+				$response['error'] = 'Please enter a valid donation amount ' . preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] );
 			}
 			else
 			{
