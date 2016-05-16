@@ -34,7 +34,7 @@ var pride_form_is_processing = false;
             }
         }
 
-        if (pride_form.form = 'donation') {
+        if (pride_form.form == 'donation') {
             var donation = getPrideFormValue('donation_amount');
             if (donation.length == 0) {
                 error = 'Donation Amount is required';
