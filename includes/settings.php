@@ -93,7 +93,7 @@ $disable_parade_form = get_option( 'pride_forms_disable_parade_form', 'N' );
 						Disable Cruise Form
 					</label>
 				</th>
-				<td><?php echo ( $disable_cruise_form == 'N' ) ? 'No' : 'Yes' ?></td>
+				<td><?php echo ( $disable_cruise_form == 'N' ) ? 'No' : '<strong style="color:red">Yes</strong>' ?></td>
 				<td>
 					<select id="pride_forms_disable_cruise_form" name="pride_forms_disable_cruise_form">
 						<option value="N"<?php if ( $disable_cruise_form == 'N') { ?> selected<?php } ?>>
@@ -112,7 +112,7 @@ $disable_parade_form = get_option( 'pride_forms_disable_parade_form', 'N' );
 						Disable Donation Form
 					</label>
 				</th>
-				<td><?php echo ( $disable_donation_form == 'N' ) ? 'No' : 'Yes' ?></td>
+				<td><?php echo ( $disable_donation_form == 'N' ) ? 'No' : '<strong style="color:red">Yes</strong>' ?></td>
 				<td>
 					<select id="pride_forms_disable_donation_form" name="pride_forms_disable_donation_form">
 						<option value="N"<?php if ( $disable_donation_form == 'N') { ?> selected<?php } ?>>
@@ -131,7 +131,7 @@ $disable_parade_form = get_option( 'pride_forms_disable_parade_form', 'N' );
 						Disable Festival Form
 					</label>
 				</th>
-				<td><?php echo ( $disable_festival_form == 'N' ) ? 'No' : 'Yes' ?></td>
+				<td><?php echo ( $disable_festival_form == 'N' ) ? 'No' : '<strong style="color:red">Yes</strong>' ?></td>
 				<td>
 					<select id="pride_forms_disable_festival_form" name="pride_forms_disable_festival_form">
 						<option value="N"<?php if ( $disable_festival_form == 'N') { ?> selected<?php } ?>>
@@ -150,7 +150,7 @@ $disable_parade_form = get_option( 'pride_forms_disable_parade_form', 'N' );
 						Disable Murder Mystery Form
 					</label>
 				</th>
-				<td><?php echo ( $disable_murder_mystery_form == 'N' ) ? 'No' : 'Yes' ?></td>
+				<td><?php echo ( $disable_murder_mystery_form == 'N' ) ? 'No' : '<strong style="color:red">Yes</strong>' ?></td>
 				<td>
 					<select id="pride_forms_disable_murder_mystery_form" name="pride_forms_disable_murder_mystery_form">
 						<option value="N"<?php if ( $disable_murder_mystery_form == 'N') { ?> selected<?php } ?>>
@@ -169,7 +169,7 @@ $disable_parade_form = get_option( 'pride_forms_disable_parade_form', 'N' );
 						Disable Parade Form
 					</label>
 				</th>
-				<td><?php echo ( $disable_parade_form == 'N' ) ? 'No' : 'Yes' ?></td>
+				<td><?php echo ( $disable_parade_form == 'N' ) ? 'No' : '<strong style="color:red">Yes</strong>' ?></td>
 				<td>
 					<select id="pride_forms_disable_parade_form" name="pride_forms_disable_parade_form">
 						<option value="N"<?php if ( $disable_parade_form == 'N') { ?> selected<?php } ?>>
