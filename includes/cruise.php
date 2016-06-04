@@ -151,41 +151,53 @@
 
 <?php } else { ?>
 
-	<div
-		id="pride-form-container"
-		data-form="<?php echo $this->getAttribute('form'); ?>"
-		data-year="<?php echo $this->getAttribute('year'); ?>"
-		class="<?php echo $this->getAttribute('form'); ?>">
+	<?php $disable_cruise_form = get_option( 'pride_forms_disable_cruise_form', 'N' ); ?>
 
-		<div id="pride-form-step-1">
+	<?php if ( $disable_cruise_form == 'Y' ) { ?>
 
-			<?php \OutSpokane\Entry::drawDefaultFormFields( array( 'organization' ) ); ?>
+		<div class="alert alert-info">
+			Tickets are not currently available.
+		</div>
 
-			<div class="row">
-				<div class="col-md-3">
-					<label for="qty">How Many Tickets?</label>
+	<?php } else { ?>
+
+		<div
+			id="pride-form-container"
+			data-form="<?php echo $this->getAttribute('form'); ?>"
+			data-year="<?php echo $this->getAttribute('year'); ?>"
+			class="<?php echo $this->getAttribute('form'); ?>">
+
+			<div id="pride-form-step-1">
+
+				<?php \OutSpokane\Entry::drawDefaultFormFields( array( 'organization' ) ); ?>
+
+				<div class="row">
+					<div class="col-md-3">
+						<label for="qty">How Many Tickets?</label>
+					</div>
+					<div class="col-md-6">
+						<select id="qty" class="form-control">
+							<?php for ($x=1; $x<=\OutSpokane\CruiseEntry::MAX_TICKETS; $x++) { ?>
+								<option value="<?php echo $x; ?>">
+									<?php echo $x; ?> - $<?php echo number_format(\OutSpokane\CruiseEntry::PRICE_PER_TICKET*$x, 2); ?>
+								</option>
+							<?php } ?>
+						</select>
+					</div>
 				</div>
-				<div class="col-md-6">
-					<select id="qty" class="form-control">
-						<?php for ($x=1; $x<=\OutSpokane\CruiseEntry::MAX_TICKETS; $x++) { ?>
-							<option value="<?php echo $x; ?>">
-								<?php echo $x; ?> - $<?php echo number_format(\OutSpokane\CruiseEntry::PRICE_PER_TICKET*$x, 2); ?>
-							</option>
-						<?php } ?>
-					</select>
+
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3">
+
+						<button id="btn-step-1">Submit</button>
+
+					</div>
 				</div>
-			</div>
 
-			<div class="row">
-				<div class="col-md-6 col-md-offset-3">
-
-					<button id="btn-step-1">Submit</button>
-
-				</div>
 			</div>
 
 		</div>
 
-	</div>
+	<?php } ?>
 
 <?php } ?>

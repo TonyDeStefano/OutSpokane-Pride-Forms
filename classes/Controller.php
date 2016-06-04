@@ -516,6 +516,11 @@ class Controller {
 		register_setting( 'outspokane_settings', 'pride_forms_stripe_live_secret_key' );
 		register_setting( 'outspokane_settings', 'pride_forms_stripe_live_pub_key' );
 		register_setting( 'outspokane_settings', 'pride_forms_stripe_mode' );
+		register_setting( 'outspokane_settings', 'pride_forms_disable_cruise_form' );
+		register_setting( 'outspokane_settings', 'pride_forms_disable_donation_form' );
+		register_setting( 'outspokane_settings', 'pride_forms_disable_festival_form' );
+		register_setting( 'outspokane_settings', 'pride_forms_disable_murder_mystery_form' );
+		register_setting( 'outspokane_settings', 'pride_forms_disable_parade_form' );
 	}
 
 	/**

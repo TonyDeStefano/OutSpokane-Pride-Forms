@@ -183,76 +183,88 @@
 
 <?php } else { ?>
 
-	<div
-		id="pride-form-container"
-		data-form="<?php echo $this->getAttribute('form'); ?>"
-		data-year="<?php echo $this->getAttribute('year'); ?>"
-		class="<?php echo $this->getAttribute('form'); ?>">
+	<?php $disable_parade_form = get_option( 'pride_forms_disable_parade_form', 'N' ); ?>
 
-		<div id="pride-form-step-1">
+	<?php if ( $disable_parade_form == 'Y' ) { ?>
 
-			<?php
+		<div class="alert alert-info">
+			Tickets are not currently available.
+		</div>
 
-			\OutSpokane\Entry::drawDefaultFormFields();
-			$parade = new \OutSpokane\ParadeEntry;
-			$entry_types = $parade->getEntryTypeList();
+	<?php } else { ?>
 
-			?>
+		<div
+			id="pride-form-container"
+			data-form="<?php echo $this->getAttribute('form'); ?>"
+			data-year="<?php echo $this->getAttribute('year'); ?>"
+			class="<?php echo $this->getAttribute('form'); ?>">
 
-			<div class="row">
-				<div class="col-md-3">
-					<label>Entry Type(s)</label>
+			<div id="pride-form-step-1">
+
+				<?php
+
+				\OutSpokane\Entry::drawDefaultFormFields();
+				$parade = new \OutSpokane\ParadeEntry;
+				$entry_types = $parade->getEntryTypeList();
+
+				?>
+
+				<div class="row">
+					<div class="col-md-3">
+						<label>Entry Type(s)</label>
+					</div>
+					<div class="col-md-6">
+						<?php foreach ($entry_types as $entry_type) { ?>
+							<label>
+								<input type="checkbox" class="parade_entry_type" value="<?php echo esc_html( $entry_type ); ?>">
+								<?php echo $entry_type; ?>
+							</label><br>
+						<?php } ?>
+					</div>
 				</div>
-				<div class="col-md-6">
-					<?php foreach ($entry_types as $entry_type) { ?>
-						<label>
-							<input type="checkbox" class="parade_entry_type" value="<?php echo esc_html( $entry_type ); ?>">
-							<?php echo $entry_type; ?>
-						</label><br>
-					<?php } ?>
+
+				<?php
+
+				\OutSpokane\Entry::drawFormField( 'Short Description', 'description', 'textarea' );
+				\OutSpokane\Entry::drawFormField(
+					'Do you need float parking for after the parade?',
+					'float_parking_spaces',
+					'select',
+					array(
+						0 => 'No',
+						1 => '1 Space ($' . number_format( \OutSpokane\ParadeEntry::FLOAT_PARKING_SPACE_COST, 2 ) . ')',
+						2 => '2 Spaces ($' . number_format( \OutSpokane\ParadeEntry::FLOAT_PARKING_SPACE_COST * 2, 2 ) . ')'
+					)
+				);
+				\OutSpokane\Entry::drawFormField(
+					'Need Amplified Sound?',
+					'needs_amped_sound',
+					'select',
+					array(
+						0 => 'No',
+						1 => 'Yes'
+					)
+				);
+				\OutSpokane\Entry::drawFormField( 'Group Size' );
+				\OutSpokane\Entry::drawFormField(
+					'If you would like to make a donation to OutSpokane, please enter the amount here',
+					'donation_amount'
+				);
+
+				?>
+
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3">
+
+						<button id="btn-step-1">Submit</button>
+
+					</div>
 				</div>
-			</div>
 
-			<?php
-
-			\OutSpokane\Entry::drawFormField( 'Short Description', 'description', 'textarea' );
-			\OutSpokane\Entry::drawFormField(
-				'Do you need float parking for after the parade?',
-				'float_parking_spaces',
-				'select',
-				array(
-					0 => 'No',
-					1 => '1 Space ($' . number_format( \OutSpokane\ParadeEntry::FLOAT_PARKING_SPACE_COST, 2 ) . ')',
-					2 => '2 Spaces ($' . number_format( \OutSpokane\ParadeEntry::FLOAT_PARKING_SPACE_COST * 2, 2 ) . ')'
-				)
-			);
-			\OutSpokane\Entry::drawFormField(
-				'Need Amplified Sound?',
-				'needs_amped_sound',
-				'select',
-				array(
-					0 => 'No',
-					1 => 'Yes'
-				)
-			);
-			\OutSpokane\Entry::drawFormField( 'Group Size' );
-			\OutSpokane\Entry::drawFormField(
-				'If you would like to make a donation to OutSpokane, please enter the amount here',
-				'donation_amount'
-			);
-
-			?>
-
-			<div class="row">
-				<div class="col-md-6 col-md-offset-3">
-
-					<button id="btn-step-1">Submit</button>
-
-				</div>
 			</div>
 
 		</div>
 
-	</div>
+	<?php } ?>
 
 <?php } ?>

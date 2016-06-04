@@ -159,69 +159,81 @@
 
 <?php } else { ?>
 
-	<div
-		id="pride-form-container"
-		data-form="<?php echo $this->getAttribute('form'); ?>"
-		data-year="<?php echo $this->getAttribute('year'); ?>"
-		class="<?php echo $this->getAttribute('form'); ?>">
+	<?php $disable_festival_form = get_option( 'pride_forms_disable_festival_form', 'N' ); ?>
 
-		<div id="pride-form-step-1">
+	<?php if ( $disable_festival_form == 'Y' ) { ?>
 
-			<?php
+		<div class="alert alert-info">
+			Tickets are not currently available.
+		</div>
 
-			\OutSpokane\Entry::drawDefaultFormFields();
-			$festival = new \OutSpokane\FestivalEntry;
-			$entry_types = $festival->getEntryTypes();
+	<?php } else { ?>
 
-			?>
+		<div
+			id="pride-form-container"
+			data-form="<?php echo $this->getAttribute('form'); ?>"
+			data-year="<?php echo $this->getAttribute('year'); ?>"
+			class="<?php echo $this->getAttribute('form'); ?>">
 
-			<div class="row">
-				<div class="col-md-3">
-					<label for="entry_type_id">Entry Type</label>
-				</div>
-				<div class="col-md-6">
-					<select id="entry_type_id" class="form-control" data-sponsor-id="<?php echo \OutSpokane\FestivalEntry::ENTRY_TYPE_SPONSOR; ?>">
-						<?php foreach ($entry_types as $entry_type_id => $entry_type) { ?>
-							<option value="<?php echo $entry_type_id; ?>">
-								<?php echo $entry_type; ?> - $<?php echo number_format( \OutSpokane\FestivalEntry::getEntryTypePrice( $entry_type_id ), 2 ); ?>
-							</option>
-						<?php } ?>
-					</select>
-				</div>
-			</div>
+			<div id="pride-form-step-1">
 
-			<?php if ( strtolower( $this->getAttribute( 'corner_booth' ) ) == 'yes' ) { ?>
-				<div class="row" id="corner-booth-container">
+				<?php
+
+				\OutSpokane\Entry::drawDefaultFormFields();
+				$festival = new \OutSpokane\FestivalEntry;
+				$entry_types = $festival->getEntryTypes();
+
+				?>
+
+				<div class="row">
 					<div class="col-md-3">
-						<label for="corner_booth">Upgrade to Corner Booth</label>
+						<label for="entry_type_id">Entry Type</label>
 					</div>
 					<div class="col-md-6">
-						<select id="corner_booth" class="form-control">
-							<option value="0">
-								No
-							</option>
-							<option value="1">
-								Yes - $<?php echo number_format( \OutSpokane\FestivalEntry::CORNER_BOOTH_FEE, 2); ?> Extra
-							</option>
+						<select id="entry_type_id" class="form-control" data-sponsor-id="<?php echo \OutSpokane\FestivalEntry::ENTRY_TYPE_SPONSOR; ?>">
+							<?php foreach ($entry_types as $entry_type_id => $entry_type) { ?>
+								<option value="<?php echo $entry_type_id; ?>">
+									<?php echo $entry_type; ?> - $<?php echo number_format( \OutSpokane\FestivalEntry::getEntryTypePrice( $entry_type_id ), 2 ); ?>
+								</option>
+							<?php } ?>
 						</select>
 					</div>
 				</div>
-			<?php } else { ?>
-				<input type="hidden" name="corner_booth" value="0">
-			<?php } ?>
-			
-			<?php \OutSpokane\Entry::drawFormField( 'Comments/Notes', 'description', 'textarea' ); ?>
 
-			<div class="row">
-				<div class="col-md-6 col-md-offset-3">
+				<?php if ( strtolower( $this->getAttribute( 'corner_booth' ) ) == 'yes' ) { ?>
+					<div class="row" id="corner-booth-container">
+						<div class="col-md-3">
+							<label for="corner_booth">Upgrade to Corner Booth</label>
+						</div>
+						<div class="col-md-6">
+							<select id="corner_booth" class="form-control">
+								<option value="0">
+									No
+								</option>
+								<option value="1">
+									Yes - $<?php echo number_format( \OutSpokane\FestivalEntry::CORNER_BOOTH_FEE, 2); ?> Extra
+								</option>
+							</select>
+						</div>
+					</div>
+				<?php } else { ?>
+					<input type="hidden" name="corner_booth" value="0">
+				<?php } ?>
 
-					<button id="btn-step-1">Submit</button>
+				<?php \OutSpokane\Entry::drawFormField( 'Comments/Notes', 'description', 'textarea' ); ?>
 
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3">
+
+						<button id="btn-step-1">Submit</button>
+
+					</div>
 				</div>
+
 			</div>
 
 		</div>
 
-	</div>
+	<?php } ?>
 
 <?php } ?>

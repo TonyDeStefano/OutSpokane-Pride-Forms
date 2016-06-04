@@ -154,34 +154,46 @@
 
 <?php } else { ?>
 
-	<div
-		id="pride-form-container"
-		data-form="<?php echo $this->getAttribute('form'); ?>"
-		data-year="<?php echo $this->getAttribute('year'); ?>"
-		class="<?php echo $this->getAttribute('form'); ?>">
+	<?php $disable_donation_form = get_option( 'pride_forms_disable_donation_form', 'N' ); ?>
 
-		<div id="pride-form-step-1">
+	<?php if ( $disable_donation_form == 'Y' ) { ?>
 
-			<?php
+		<div class="alert alert-info">
+			Donations are currently offline.
+		</div>
 
-			\OutSpokane\Entry::drawDefaultFormFields();
-			\OutSpokane\Entry::drawFormField(
-				'Donation Amount',
-				'donation_amount'
-			);
+	<?php } else { ?>
 
-			?>
+		<div
+			id="pride-form-container"
+			data-form="<?php echo $this->getAttribute('form'); ?>"
+			data-year="<?php echo $this->getAttribute('year'); ?>"
+			class="<?php echo $this->getAttribute('form'); ?>">
 
-			<div class="row">
-				<div class="col-md-6 col-md-offset-3">
+			<div id="pride-form-step-1">
 
-					<button id="btn-step-1">Submit</button>
+				<?php
 
+				\OutSpokane\Entry::drawDefaultFormFields();
+				\OutSpokane\Entry::drawFormField(
+					'Donation Amount',
+					'donation_amount'
+				);
+
+				?>
+
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3">
+
+						<button id="btn-step-1">Submit</button>
+
+					</div>
 				</div>
+
 			</div>
 
 		</div>
 
-	</div>
+	<?php } ?>
 
 <?php } ?>
