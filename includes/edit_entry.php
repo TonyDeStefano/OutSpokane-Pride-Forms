@@ -31,6 +31,16 @@ switch ( $_GET['form'] )
 		$back_page = 'outspokane_parade';
 		$entry = new \OutSpokane\ParadeEntry( $_GET['id'] );
 		break;
+	case 'flag':
+		$form_title = 'Flag Handle';
+		$back_page = 'outspokane_flag';
+		$entry = new \OutSpokane\FlagHandle( $_GET['id'] );
+		break;
+	case 'donation':
+		$form_title = 'Donation';
+		$back_page = 'outspokane_donation';
+		$entry = new \OutSpokane\Donation( $_GET['id'] );
+		break;
 	default:
 		$form_title = 'Murder Mystery';
 		$back_page = 'outspokane_murder_mystery';
@@ -113,6 +123,16 @@ switch ( $_GET['form'] )
 					<tr>
 						<th>Price Per Ticket:</th>
 						<td><input name="price_per_qty" value="$<?php echo number_format( $entry->getPricePerQty(), 2 ); ?>"></td>
+					</tr>
+				<?php } else if ( $_GET['form'] == 'donation' ) { ?>
+					<tr>
+						<th>Donation Amount:</th>
+						<td><input name="donation_amount" value="$<?php echo number_format( $entry->getDonationAmount(), 2 ); ?>"></td>
+					</tr>
+				<?php } else if ( $_GET['form'] == 'flag' ) { ?>
+					<tr>
+						<th>Message:</th>
+						<td><input name="message" value="<?php echo esc_html( $entry->getMessage() ); ?>"></td>
 					</tr>
 				<?php } else if ( $_GET['form'] == 'parade' ) { ?>
 					<?php $entry_types = $entry->getEntryTypeList(); ?>

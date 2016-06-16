@@ -13,6 +13,7 @@
 			<li>cruise</li>
 			<li>murder_mystery</li>
 			<li>donation</li>
+			<li>flag</li>
 		</ul>
 	</blockquote>
 

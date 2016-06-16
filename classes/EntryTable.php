@@ -70,7 +70,7 @@ class EntryTable extends \WP_List_Table {
 			'view' => ''
 		);
 
-		if ( $this->table == FestivalEntry::TABLE_NAME || $this->table == Donation::TABLE_NAME )
+		if ( $this->table == FestivalEntry::TABLE_NAME || $this->table == Donation::TABLE_NAME || $this->table == FlagHandle::TABLE_NAME )
 		{
 			unset( $return['qty'] );
 		}
@@ -121,7 +121,7 @@ class EntryTable extends \WP_List_Table {
 			'tickets_sent' => array( 'tickets_sent', TRUE )
 		);
 
-		if ( $this->table == FestivalEntry::TABLE_NAME || $this->table == Donation::TABLE_NAME )
+		if ( $this->table == FestivalEntry::TABLE_NAME || $this->table == Donation::TABLE_NAME || $this->table == FlagHandle::TABLE_NAME )
 		{
 			unset( $return['qty'] );
 		}

@@ -811,7 +811,8 @@ class Entry {
 			FestivalEntry::TABLE_NAME => 'festival',
 			MurderMysteryEntry::TABLE_NAME => 'murder-mystery',
 			ParadeEntry::TABLE_NAME => 'parade',
-			Donation::TABLE_NAME => 'donation'
+			Donation::TABLE_NAME => 'donation',
+			FlagHandle::TABLE_NAME => 'flag-handle'
 		);
 
 		$year = ( isset( $_POST['pride_export'] ) && is_numeric( $_POST['pride_export'] ) ) ? abs( round( $_POST['pride_export'] ) ) : NULL;
@@ -841,6 +842,9 @@ class Entry {
 					break;
 				case Donation::TABLE_NAME:
 					echo "Donation,";
+					break;
+				case FlagHandle::TABLE_NAME:
+					echo "Message,";
 					break;
 			}
 			echo "Qty,Amount Due,Amount Paid,Payment Method,Paid On,Notes";
@@ -875,6 +879,9 @@ class Entry {
 							break;
 						case Donation::TABLE_NAME:
 							$entry = new Donation;
+							break;
+						case FlagHandle::TABLE_NAME:
+							$entry = new FlagHandle;
 							break;
 						default:
 							$entry = new Entry;
@@ -916,6 +923,9 @@ class Entry {
 							break;
 						case Donation::TABLE_NAME:
 							echo $entry->getDonationAmount() . ',';
+							break;
+						case FlagHandle::TABLE_NAME:
+							echo '"' . str_replace( "\n", ' ', str_replace( "\r", ' ', str_replace( '"', '""', $entry->getMessage() ) ) ) . '",';
 							break;
 					}
 

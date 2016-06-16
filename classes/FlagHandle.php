@@ -2,41 +2,23 @@
 
 namespace OutSpokane;
 
-class Donation extends Entry {
+class FlagHandle extends Entry {
 
-	const TABLE_NAME = 'out_spokane_donations';
-
-	private $donation_amount;
+	const TABLE_NAME = 'out_spokane_flag_handles';
+	const PRICE_PER_HANDLE = 25;
+	
+	private $message;
 
 	/**
-	 * ParadeEntry constructor.
+	 * FlagHandle constructor.
 	 *
 	 * @param null $id
 	 */
-	public function __construct( $id=NULL ) {
-		$this->setTableName(self::TABLE_NAME);
+	public function __construct( $id=NULL )
+	{
+		$this->setTableName( self::TABLE_NAME );
 		parent::__construct( $id );
 		$this->read();
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getDonationAmount() {
-		return ($this->donation_amount === NULL) ? 0 : $this->donation_amount;
-	}
-
-	/**
-	 * @param mixed $donation_amount
-	 *
-	 * @return ParadeEntry
-	 */
-	public function setDonationAmount( $donation_amount )
-	{
-		$donation_amount = preg_replace( '/[^0-9.]*/', '', $donation_amount );
-		$this->donation_amount = ( is_numeric( $donation_amount ) ) ? abs ( round( $donation_amount, 2 ) ) : NULL;
-
-		return $this;
 	}
 
 	/**
@@ -74,9 +56,12 @@ class Donation extends Entry {
 				'last_name' => $this->last_name,
 				'address' => $this->address,
 				'city' => $this->city,
-				'state' => substr( $this->state, 0, 2 ),
+				'state' => substr( $this->state, 0 , 2 ),
 				'zip' => $this->zip,
-				'donation_amount' => $this->getDonationAmount(),
+				'message' => $this->message,
+				'qty' => $this->qty,
+				'price_per_qty' => $this->price_per_qty,
+				'payment_method_id' => $this->payment_method_id,
 				'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
 				'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 			),
@@ -91,7 +76,10 @@ class Donation extends Entry {
 				'%s',
 				'%s',
 				'%s',
+				'%s',
+				'%d',
 				'%f',
+				'%d',
 				'%s',
 				'%s',
 			)
@@ -121,23 +109,23 @@ class Donation extends Entry {
 		if ( $this->id !== NULL )
 		{
 			parent::update();
-
-			$wpdb->update(
-				$wpdb->prefix . $this->table_name,
-				array(
-					'donation_amount' => $this->donation_amount
-				),
-				array(
-					'id' => $this->id
-				),
-				array(
-					'%f'
-				),
-				array(
-					'%d'
-				)
-			);
 		}
+
+		$wpdb->update(
+			$wpdb->prefix . $this->table_name,
+			array(
+				'message' => $this->message
+			),
+			array(
+				'id' => $this->id
+			),
+			array(
+				'%s'
+			),
+			array(
+				'%d'
+			)
+		);
 	}
 
 	/**
@@ -146,22 +134,26 @@ class Donation extends Entry {
 	public function loadFromRow( \stdClass $row )
 	{
 		parent::loadFromRow( $row );
-		$this->setDonationAmount( $row->donation_amount );
+		$this->setMessage( $row->message );
 	}
 
 	/**
-	 * @return float
+	 * @return mixed
 	 */
-	public function getTotal()
+	public function getMessage()
 	{
-		return $this->getDonationAmount();
+		return ( $this->message === NULL ) ? '' : $this->message;
 	}
 
 	/**
-	 * @return float
+	 * @param mixed $message
+	 *
+	 * @return FlagHandle
 	 */
-	public function getAmountDue()
+	public function setMessage( $message )
 	{
-		return round( $this->getTotal() - $this->getPaymentAmount(), 2);
+		$this->message = $message;
+
+		return $this;
 	}
 }

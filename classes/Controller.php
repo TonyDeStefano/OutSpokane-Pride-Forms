@@ -14,9 +14,9 @@ use \Stripe\Error\Card;
 
 class Controller {
 
-	const VERSION = '1.0.0';
-	const VERSION_JS = '1.2.1';
-	const VERSION_CSS = '1.0.1';
+	const VERSION = '1.3.0';
+	const VERSION_JS = '1.3.0';
+	const VERSION_CSS = '1.3.0';
 
 	public $action = '';
 	public $data = '';
@@ -222,6 +222,39 @@ class Controller {
 			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
 			dbDelta( $sql );
 		}
+
+		/* flag_handles table */
+		$table = $wpdb->prefix . FlagHandle::TABLE_NAME;
+		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
+			$sql = "
+				CREATE TABLE `" . $table . "`
+				(
+					`id` INT(11) NOT NULL AUTO_INCREMENT,
+					`entry_year` INT(11) DEFAULT NULL,
+					`email` VARCHAR(50) DEFAULT NULL,
+					`phone` VARCHAR(50) DEFAULT NULL,
+					`organization` VARCHAR(150) DEFAULT NULL,
+					`first_name` VARCHAR(50) DEFAULT NULL,
+					`last_name` VARCHAR(50) DEFAULT NULL,
+					`address` VARCHAR(50) DEFAULT NULL,
+					`city` VARCHAR(50) DEFAULT NULL,
+					`state` VARCHAR(2) DEFAULT NULL,
+					`zip` VARCHAR(10) DEFAULT NULL,
+					`message` TEXT DEFAULT NULL,
+					`qty` INT(11) DEFAULT NULL,
+					`price_per_qty` DECIMAL(11,2) DEFAULT NULL,
+					`payment_method_id` INT(11) DEFAULT NULL,
+					`paid_at` DATETIME DEFAULT NULL,
+					`payment_amount` DECIMAL(11,2) DEFAULT NULL,
+					`payment_confirmation_number` VARCHAR(50) DEFAULT NULL,
+					`notes` TEXT DEFAULT NULL,
+					`created_at` DATETIME DEFAULT NULL,
+					`updated_at` DATETIME DEFAULT NULL,
+					PRIMARY KEY (`id`)
+				)";
+			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+			dbDelta( $sql );
+		}
 	}
 
 	/**
@@ -229,20 +262,7 @@ class Controller {
 	 */
 	public static function uninstall()
 	{
-		/*
-		global $wpdb;
-
-		if ( !defined( 'WP_UNINSTALL_PLUGIN' ) )
-		{
-			return;
-		}
-
-		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . CruiseEntry::TABLE_NAME );
-		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . FestivalEntry::TABLE_NAME );
-		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . MurderMysteryEntry::TABLE_NAME );
-		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . ParadeEntry::TABLE_NAME );
-		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . Donation::TABLE_NAME );
-		*/
+		/* Let's not delete tables */
 	}
 
 	/**
@@ -305,6 +325,7 @@ class Controller {
 			case 'murder_mystery':
 			case 'parade':
 			case 'donation':
+			case 'flag':
 				return $this->return . $this->returnOutputFromPage( $this->getAttribute('form') );
 		}
 
@@ -365,6 +386,9 @@ class Controller {
 				case 'donation':
 					$entry = new Donation( $_POST['id'] );
 					break;
+				case 'flag':
+					$entry = new FlagHandle( $_POST['id'] );
+					break;
 				default:
 					$entry = new MurderMysteryEntry( $_POST['id'] );
 			}
@@ -413,6 +437,16 @@ class Controller {
 					->setIsUpgraded( $_POST['is_upgraded'] )
 					->setVegetarianQty( $_POST['vegetarian_qty'] );
 			}
+			elseif ( $_POST['form'] == 'donation' )
+			{
+				$entry
+					->setDonationAmount( $_POST['donation_amount'] );
+			}
+			elseif ( $_POST['form'] == 'flag' )
+			{
+				$entry
+					->setMessage( $_POST['message'] );
+			}
 
 			$entry->update();
 			header( 'Location:admin.php?page=' . $_POST['return'] . '&action=view&id=' . $entry->getId() );
@@ -447,6 +481,10 @@ class Controller {
 								case 'donation':
 									$entry = new Donation( $parts[1] );
 									$title = 'Donation';
+									break;
+								case 'flag':
+									$entry = new FlagHandle( $parts[1] );
+									$title = 'Flag Handle';
 									break;
 								default: /* 'parade' */
 									$entry = new ParadeEntry( $parts[1] );
@@ -504,7 +542,8 @@ class Controller {
 		add_submenu_page('outspokane', 'Festival Entries', 'Festival Entries', 'manage_options', 'outspokane_festival', array($this, 'showFestivalEntries'));
 		add_submenu_page('outspokane', 'Murder Mystery Entries', 'Murder Mystery Entries', 'manage_options', 'outspokane_murder_mystery', array($this, 'showMurderMysteryEntries'));
 		add_submenu_page('outspokane', 'Donations', 'Donations', 'manage_options', 'outspokane_donation', array($this, 'showDonations'));
-
+		add_submenu_page('outspokane', 'Flag Handles', 'Flag Handles', 'manage_options', 'outspokane_flag', array($this, 'showFlagHandles'));
+		
 		/* I guess this is how to add a page without adding a menu */
 		add_submenu_page(NULL, 'Edit Entry', 'Edit Entry', 'manage_options', 'outspokane_edit_entry', array($this, 'editEntry'));
 	}
@@ -521,6 +560,7 @@ class Controller {
 		register_setting( 'outspokane_settings', 'pride_forms_disable_festival_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_murder_mystery_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_parade_form' );
+		register_setting( 'outspokane_settings', 'pride_forms_disable_flag_form' );
 	}
 
 	/**
@@ -577,6 +617,14 @@ class Controller {
 	public function showDonations()
 	{
 		include( dirname( __DIR__ ) . '/includes/donations.php');
+	}
+
+	/**
+	 *
+	 */
+	public function showFlagHandles()
+	{
+		include( dirname( __DIR__ ) . '/includes/flag_handles.php');
 	}
 
 	/**
@@ -669,6 +717,16 @@ class Controller {
 						$subject = 'Donation';
 						$entry = new Donation;
 						$entry->setDonationAmount( preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] ) );
+						break;
+
+					case 'flag':
+
+						$subject = 'Flag Handle';
+						$entry = new FlagHandle;
+						$entry
+							->setQty( 1 )
+							->setPricePerQty( FlagHandle::PRICE_PER_HANDLE )
+							->setMessage( $_POST['message'] );
 						break;
 
 					default: /* 'parade' */
@@ -786,6 +844,9 @@ class Controller {
 				case 'donation':
 					$entry = new Donation( $_POST['id'] );
 					break;
+				case 'flag':
+					$entry = new FlagHandle( $_POST['id'] );
+					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );
 			}
@@ -810,7 +871,7 @@ class Controller {
 	 */
 	public function updateEntryDetails()
 	{
-		switch ($_POST['form'])
+		switch ( $_POST['form'] )
 		{
 			case 'cruise':
 				$entry = new CruiseEntry( $_POST['id'] );
@@ -823,6 +884,9 @@ class Controller {
 				break;
 			case 'donation':
 				$entry = new Donation( $_POST['id'] );
+				break;
+			case 'flag':
+				$entry = new FlagHandle( $_POST['id'] );
 				break;
 			default: /* parade */
 				$entry = new ParadeEntry( $_POST['id'] );
@@ -839,6 +903,14 @@ class Controller {
 			elseif ( $_POST['form'] == 'cruise' )
 			{
 				$entry->setTicketsSent( $_POST['tickets_sent'] );
+			}
+			elseif ( $_POST['form'] == 'donation' )
+			{
+				$entry->setDonationAmount( $_POST['donation_amount'] );
+			}
+			elseif ( $_POST['form'] == 'flag' )
+			{
+				$entry->setMessage( $_POST['message'] );
 			}
 		}
 
@@ -868,6 +940,9 @@ class Controller {
 					break;
 				case 'donation':
 					$entry = new Donation( $_POST['id'] );
+					break;
+				case 'flag':
+					$entry = new FlagHandle( $_POST['id'] );
 					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );
@@ -916,6 +991,9 @@ class Controller {
 					break;
 				case 'donation':
 					$entry = new Donation( $_POST['id'] );
+					break;
+				case 'flag':
+					$entry = new FlagHandle( $_POST['id'] );
 					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );

@@ -86,8 +86,10 @@ var pride_form_is_processing = false;
                 post.description = getPrideFormValue('description');
                 post.needs_amped_sound = getPrideFormValue('needs_amped_sound');
                 post.group_size = getPrideFormValue('group_size');
-            } else if (pride_form.form = 'donation') {
+            } else if (pride_form.form == 'donation') {
                 post.donation_amount = getPrideFormValue('donation_amount');
+            } else if (pride_form.form == 'flag') {
+                post.message = getPrideFormValue('message');
             } else if (pride_form.form == 'murder_mystery') {
                 post.is_sponsor = $('#is_sponsor').val();
                 if (post.is_sponsor == '1') {
