@@ -5,7 +5,7 @@ namespace OutSpokane;
 class FlagHandle extends Entry {
 
 	const TABLE_NAME = 'out_spokane_flag_handles';
-	const PRICE_PER_HANDLE = 25;
+	const PRICE_PER_HANDLE = 50;
 	
 	private $message;
 
