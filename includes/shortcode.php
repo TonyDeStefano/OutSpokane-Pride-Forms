@@ -14,6 +14,7 @@
 			<li>murder_mystery</li>
 			<li>donation</li>
 			<li>flag</li>
+			<li>sponsorship</li>
 		</ul>
 	</blockquote>
 

@@ -60,6 +60,7 @@ class EntryTable extends \WP_List_Table {
 			'is_corner_booth' => 'Corner Booth',
 			'created_at' => 'Entry Date',
 			'entry_year' => 'Year',
+			'level' => 'Level',
 			'qty' => 'Qty',
 			'type' => 'Type',
 			'amount_due' => 'Due',
@@ -70,7 +71,7 @@ class EntryTable extends \WP_List_Table {
 			'view' => ''
 		);
 
-		if ( $this->table == FestivalEntry::TABLE_NAME || $this->table == Donation::TABLE_NAME || $this->table == FlagHandle::TABLE_NAME )
+		if ( $this->table == Sponsorship::TABLE_NAME || $this->table == FestivalEntry::TABLE_NAME || $this->table == Donation::TABLE_NAME || $this->table == FlagHandle::TABLE_NAME )
 		{
 			unset( $return['qty'] );
 		}
@@ -99,6 +100,11 @@ class EntryTable extends \WP_List_Table {
 			unset( $return['tickets_sent'] );
 		}
 
+		if ( ! $this->table == Sponsorship::TABLE_NAME )
+		{
+			unset( $return['level'] );
+		}
+
 		return $return;
 	}
 
@@ -112,6 +118,7 @@ class EntryTable extends \WP_List_Table {
 			'is_corner_booth' => array( 'is_corner_booth', TRUE ),
 			'created_at' => array( 'created_at', TRUE ),
 			'entry_year' => array( 'entry_year', TRUE ),
+			'level' => array( 'level', TRUE ),
 			'qty' => array( 'qty', TRUE ),
 			'type' => array( 'is_sponsor', TRUE ),
 			'amount_due' => array( 'amount_due', TRUE ),
@@ -121,7 +128,7 @@ class EntryTable extends \WP_List_Table {
 			'tickets_sent' => array( 'tickets_sent', TRUE )
 		);
 
-		if ( $this->table == FestivalEntry::TABLE_NAME || $this->table == Donation::TABLE_NAME || $this->table == FlagHandle::TABLE_NAME )
+		if ( $this->table == Sponsorship::TABLE_NAME || $this->table == FestivalEntry::TABLE_NAME || $this->table == Donation::TABLE_NAME || $this->table == FlagHandle::TABLE_NAME )
 		{
 			unset( $return['qty'] );
 		}
@@ -150,6 +157,11 @@ class EntryTable extends \WP_List_Table {
 			unset( $return['tickets_sent'] );
 		}
 
+		if ( ! $this->table == Sponsorship::TABLE_NAME )
+		{
+			unset( $return['level'] );
+		}
+
 		return $return;
 	}
 
@@ -165,6 +177,7 @@ class EntryTable extends \WP_List_Table {
 			case 'entry_year':
 			case 'organization':
 			case 'qty':
+			case 'level':
 				return $item->$column_name;
 			case 'type':
 				return ( $item->is_sponsor == 1 ) ? 'Table' : 'Ticket';
@@ -186,6 +199,10 @@ class EntryTable extends \WP_List_Table {
 				elseif ( $this->table == ParadeEntry::TABLE_NAME )
 				{
 					return '$' . number_format( ( $item->float_parking_spaces * $item->float_parking_space_cost ) + $item->donation_amount, 2 );
+				}
+				elseif( $this->table == Sponsorship::TABLE_NAME )
+				{
+					return '$' . number_format( $item->amount, 2 );
 				}
 				return '$' . number_format( ( $item->price_per_qty === NULL ) ? 0 : $item->price_per_qty * $item->qty, 2 );
 			case 'tickets_sent':

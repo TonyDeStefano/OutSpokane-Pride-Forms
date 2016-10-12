@@ -9,7 +9,7 @@ class Donation extends Entry {
 	private $donation_amount;
 
 	/**
-	 * ParadeEntry constructor.
+	 * Donation constructor.
 	 *
 	 * @param null $id
 	 */
@@ -29,7 +29,7 @@ class Donation extends Entry {
 	/**
 	 * @param mixed $donation_amount
 	 *
-	 * @return ParadeEntry
+	 * @return Donation
 	 */
 	public function setDonationAmount( $donation_amount )
 	{

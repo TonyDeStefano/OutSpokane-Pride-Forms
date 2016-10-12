@@ -648,15 +648,17 @@ class Entry {
 	}
 
 	/**
-	 * @param array $exclusions
+	 * @param null $exclusions
+	 * @param bool $hide_position_field
 	 */
-	public static function drawDefaultFormFields( $exclusions=NULL )
+	public static function drawDefaultFormFields( $exclusions = NULL, $hide_position_field = TRUE )
 	{
 		$exclusions = ($exclusions === NULL) ? array() : $exclusions;
 		$inclusions = array(
 			'Organization',
 			'First Name',
 			'Last Name',
+			'Position',
 			'Email',
 			'Phone',
 			'Address',
@@ -665,9 +667,14 @@ class Entry {
 			'Zip'
 		);
 
+		if ( $hide_position_field )
+		{
+			unset( $inclusions[3] );
+		}
+
 		foreach ($inclusions as $inclusion)
 		{
-			if (!in_array(preg_replace('/[^A-Za-z0-9]/', '_', strtolower($inclusion)), $exclusions))
+			if ( ! in_array(preg_replace('/[^A-Za-z0-9]/', '_', strtolower( $inclusion ) ), $exclusions))
 			{
 				self::drawFormField( $inclusion );
 			}

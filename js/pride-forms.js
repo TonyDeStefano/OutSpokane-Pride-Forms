@@ -41,6 +41,13 @@ var pride_form_is_processing = false;
             }
         }
 
+        if (pride_form.form == 'sponsorship') {
+            var donation = getPrideFormValue('amount');
+            if (donation.length == 0) {
+                error = 'Sponsorship Amount is required';
+            }
+        }
+
         if (error.length > 0) {
 
             alert(error);
@@ -111,6 +118,19 @@ var pride_form_is_processing = false;
                         post.vegetarian_qty = $('#ticket_vegetarian_qty').val();
                     }
                 }
+            } else if (pride_form.form == 'sponsorship') {
+                post.amount = getPrideFormValue('amount');
+                post.position = getPrideFormValue('position');
+                post.url = getPrideFormValue('url');
+                post.local_email = getPrideFormValue('local_email');
+                post.local_phone = getPrideFormValue('local_phone');
+                post.local_position = getPrideFormValue('local_position');
+                post.local_first_name = getPrideFormValue('local_first_name');
+                post.local_last_name = getPrideFormValue('local_last_name');
+                post.local_address = getPrideFormValue('local_address');
+                post.local_city = getPrideFormValue('local_city');
+                post.local_state = getPrideFormValue('local_state');
+                post.local_zip = getPrideFormValue('local_zip');
             }
 
             $.ajax({

@@ -41,6 +41,12 @@ switch ( $_GET['form'] )
 		$back_page = 'outspokane_donation';
 		$entry = new \OutSpokane\Donation( $_GET['id'] );
 		break;
+	case 'sponsorship':
+		$form_title = 'Sponsorship';
+		$back_page = 'outspokane_sponsorship';
+		$entry = new \OutSpokane\Sponsorship( $_GET['id'] );
+		unset( $fields[10] );
+		break;
 	default:
 		$form_title = 'Murder Mystery';
 		$back_page = 'outspokane_murder_mystery';
@@ -210,6 +216,59 @@ switch ( $_GET['form'] )
 					<tr>
 						<th>Vegetarian Qty:</th>
 						<td><input name="vegetarian_qty" value="<?php echo $entry->getVegetarianQty(); ?>"></td>
+					</tr>
+				<?php } else if ( $_GET['form'] == 'sponsorship' ) { ?>
+					<tr>
+						<th>Position:</th>
+						<td><input name="position" value="<?php echo $entry->getPosition(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Local First Name:</th>
+						<td><input name="local_first_name" value="<?php echo $entry->getLocalFirstName(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Local Last Name:</th>
+						<td><input name="local_last_name" value="<?php echo $entry->getLocalLastName(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Local Email:</th>
+						<td><input name="local_email" value="<?php echo $entry->getLocalEmail(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Local Phone:</th>
+						<td><input name="local_phone" value="<?php echo $entry->getLocalPhone(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Local Address:</th>
+						<td><input name="local_address" value="<?php echo $entry->getLocalAddress(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Local City:</th>
+						<td><input name="local_city" value="<?php echo $entry->getLocalCity(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Local State:</th>
+						<td><input name="local_state" value="<?php echo $entry->getLocalState(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Local Zip:</th>
+						<td><input name="local_zip" value="<?php echo $entry->getLocalZip(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Local Position:</th>
+						<td><input name="local_position" value="<?php echo $entry->getLocalPosition(); ?>"></td>
+					</tr>
+					<tr>
+						<th>URL:</th>
+						<td><input name="url" value="<?php echo $entry->getUrl(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Sponsorship Level:</th>
+						<td><input name="level" value="<?php echo $entry->getLevel(); ?>"></td>
+					</tr>
+					<tr>
+						<th>Sponsorship Amount:</th>
+						<td><input name="amount" value="$<?php echo number_format( $entry->getAmount(), 2 ); ?>"></td>
 					</tr>
 				<?php } ?>
 				<tr>

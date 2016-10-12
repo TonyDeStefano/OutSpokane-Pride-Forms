@@ -255,6 +255,51 @@ class Controller {
 			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
 			dbDelta( $sql );
 		}
+
+		/* sponsorships table */
+		$table = $wpdb->prefix . Sponsorship::TABLE_NAME;
+		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
+			$sql = "
+				CREATE TABLE `" . $table . "`
+				(
+					`id` INT(11) NOT NULL AUTO_INCREMENT,
+					`entry_year` INT(11) DEFAULT NULL,
+					`email` VARCHAR(50) DEFAULT NULL,
+					`phone` VARCHAR(50) DEFAULT NULL,
+					`organization` VARCHAR(150) DEFAULT NULL,
+					`first_name` VARCHAR(50) DEFAULT NULL,
+					`last_name` VARCHAR(50) DEFAULT NULL,
+					`position` VARCHAR(50) DEFAULT NULL,
+					`address` VARCHAR(50) DEFAULT NULL,
+					`city` VARCHAR(50) DEFAULT NULL,
+					`state` VARCHAR(2) DEFAULT NULL,
+					`zip` VARCHAR(10) DEFAULT NULL,
+					`local_first_name` VARCHAR(50) DEFAULT NULL,
+					`local_last_name` VARCHAR(50) DEFAULT NULL,
+					`local_position` VARCHAR(50) DEFAULT NULL,
+					`local_address` VARCHAR(50) DEFAULT NULL,
+					`local_city` VARCHAR(50) DEFAULT NULL,
+					`local_state` VARCHAR(2) DEFAULT NULL,
+					`local_zip` VARCHAR(10) DEFAULT NULL,
+					`local_email` VARCHAR(50) DEFAULT NULL,
+					`local_phone` VARCHAR(50) DEFAULT NULL,
+					`url` VARCHAR(150) DEFAULT NULL,
+					`level` VARCHAR(50) DEFAULT NULL,
+					`payment_method_id` INT(11) DEFAULT NULL,
+					`paid_at` DATETIME DEFAULT NULL,
+					`payment_amount` DECIMAL(11,2) DEFAULT NULL,
+					`payment_confirmation_number` VARCHAR(50) DEFAULT NULL,
+					`notes` TEXT DEFAULT NULL,
+					`amount` DECIMAL(11,2) DEFAULT NULL,
+					`qty` INT(11) DEFAULT NULL,
+					`price_per_qty` DECIMAL(11,2) DEFAULT NULL,
+					`created_at` DATETIME DEFAULT NULL,
+					`updated_at` DATETIME DEFAULT NULL,
+					PRIMARY KEY (`id`)
+				)";
+			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+			dbDelta( $sql );
+		}
 	}
 
 	/**
@@ -326,6 +371,7 @@ class Controller {
 			case 'parade':
 			case 'donation':
 			case 'flag':
+			case 'sponsorship':
 				return $this->return . $this->returnOutputFromPage( $this->getAttribute('form') );
 		}
 
@@ -389,6 +435,9 @@ class Controller {
 				case 'flag':
 					$entry = new FlagHandle( $_POST['id'] );
 					break;
+				case 'sponsorship':
+					$entry = new Sponsorship( $_POST['id'] );
+					break;
 				default:
 					$entry = new MurderMysteryEntry( $_POST['id'] );
 			}
@@ -447,6 +496,23 @@ class Controller {
 				$entry
 					->setMessage( $_POST['message'] );
 			}
+			elseif ( $_POST['form'] == 'sponsorship' )
+			{
+				$entry
+					->setPosition( $_POST['position'] )
+					->setLocalPosition( $_POST['local_position'] )
+					->setAmount( $_POST['amount'] )
+					->setUrl( $_POST['url'] )
+					->setLevel( $_POST['level'] )
+					->setLocalFirstName( $_POST['local_first_name'] )
+					->setLocalLastName( $_POST['local_last_name'] )
+					->setLocalAddress( $_POST['local_address'] )
+					->setLocalCity( $_POST['local_city'] )
+					->setLocalState( $_POST['local_state'] )
+					->setLocalZip( $_POST['local_zip'] )
+					->setLocalEmail( $_POST['local_email'] )
+					->setLocalPhone( $_POST['local_phone'] );
+			}
 
 			$entry->update();
 			header( 'Location:admin.php?page=' . $_POST['return'] . '&action=view&id=' . $entry->getId() );
@@ -485,6 +551,10 @@ class Controller {
 								case 'flag':
 									$entry = new FlagHandle( $parts[1] );
 									$title = 'Flag Handle';
+									break;
+								case 'sponsorship':
+									$entry = new Sponsorship( $parts[1] );
+									$title = 'Sponsorship';
 									break;
 								default: /* 'parade' */
 									$entry = new ParadeEntry( $parts[1] );
@@ -543,6 +613,7 @@ class Controller {
 		add_submenu_page('outspokane', 'Murder Mystery Entries', 'Murder Mystery Entries', 'manage_options', 'outspokane_murder_mystery', array($this, 'showMurderMysteryEntries'));
 		add_submenu_page('outspokane', 'Donations', 'Donations', 'manage_options', 'outspokane_donation', array($this, 'showDonations'));
 		add_submenu_page('outspokane', 'Flag Handles', 'Flag Handles', 'manage_options', 'outspokane_flag', array($this, 'showFlagHandles'));
+		add_submenu_page('outspokane', 'Sponsorships', 'Sponsorships', 'manage_options', 'outspokane_sponsorship', array($this, 'showSponsorships'));
 		
 		/* I guess this is how to add a page without adding a menu */
 		add_submenu_page(NULL, 'Edit Entry', 'Edit Entry', 'manage_options', 'outspokane_edit_entry', array($this, 'editEntry'));
@@ -561,6 +632,7 @@ class Controller {
 		register_setting( 'outspokane_settings', 'pride_forms_disable_murder_mystery_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_parade_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_flag_form' );
+		register_setting( 'outspokane_settings', 'pride_forms_disable_sponsorship_form' );
 	}
 
 	/**
@@ -628,6 +700,14 @@ class Controller {
 	}
 
 	/**
+	 *
+	 */
+	public function showSponsorships()
+	{
+		include( dirname( __DIR__ ) . '/includes/sponsorships.php');
+	}
+
+	/**
 	 * 
 	 */
 	public function editEntry()
@@ -655,7 +735,12 @@ class Controller {
 			elseif ( $_POST['form'] == 'donation' && ( preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] ) == '' || preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] ) == 0 ) )
 			{
 				$response['success'] = 0;
-				$response['error'] = 'Please enter a valid donation amount ' . preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] );
+				$response['error'] = 'Please enter a valid donation amount';
+			}
+			elseif ( $_POST['form'] == 'sponsorship' && ( preg_replace( '/[^0-9\.]/', '', $_POST['amount'] ) == '' || preg_replace( '/[^0-9\.]/', '', $_POST['amount'] ) == 0 ) )
+			{
+				$response['success'] = 0;
+				$response['error'] = 'Please enter a valid sponsorship amount';
 			}
 			else
 			{
@@ -729,19 +814,40 @@ class Controller {
 							->setMessage( $_POST['message'] );
 						break;
 
+					case 'sponsorship':
+
+						$subject = 'Sponsorship';
+						$entry = new Sponsorship;
+						$entry
+							->setAmount( preg_replace( '/[^0-9\.]/', '', $_POST['amount'] ) )
+							->setPosition( $_POST['position'] )
+							->setLocalPosition( $_POST['local_position'] )
+							->setUrl( $_POST['url'] )
+							->setLevelFromAmount()
+							->setLocalFirstName( $_POST['local_first_name'] )
+							->setLocalLastName( $_POST['local_last_name'] )
+							->setLocalAddress( $_POST['local_address'] )
+							->setLocalCity( $_POST['local_city'] )
+							->setLocalState( $_POST['local_state'] )
+							->setLocalZip( $_POST['local_zip'] )
+							->setLocalEmail( $_POST['local_email'] )
+							->setLocalPhone( $_POST['local_phone'] )
+							->setQty( 1 );
+						break;
+
 					default: /* 'parade' */
 
 						$subject = 'Pride Parade';
 						$entry = new ParadeEntry;
 						$entry
-							->setQty( 1 )
 							->setEntryTypes( stripslashes( $_POST['entry_types'] ) )
 							->setFloatParkingSpaces( $_POST['float_parking_spaces'] )
 							->setFloatParkingSpaceCost( ParadeEntry::FLOAT_PARKING_SPACE_COST )
 							->setDonationAmount( preg_replace( '/[^0-9\.]/', '', $_POST['donation_amount'] ) )
 							->setDescription( $_POST['description'] )
 							->setNeedsAmpedSound( $_POST['needs_amped_sound'] )
-							->setGroupSize( preg_replace( '/\D/', '', $_POST['group_size'] ) );
+							->setGroupSize( preg_replace( '/\D/', '', $_POST['group_size'] ) )
+							->setQty( 1 );
 				}
 
 				$entry
@@ -847,6 +953,9 @@ class Controller {
 				case 'flag':
 					$entry = new FlagHandle( $_POST['id'] );
 					break;
+				case 'sponsorship':
+					$entry = new Sponsorship( $_POST['id'] );
+					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );
 			}
@@ -888,6 +997,9 @@ class Controller {
 			case 'flag':
 				$entry = new FlagHandle( $_POST['id'] );
 				break;
+			case 'sponsorship':
+				$entry = new Sponsorship( $_POST['id'] );
+				break;
 			default: /* parade */
 				$entry = new ParadeEntry( $_POST['id'] );
 		}
@@ -907,6 +1019,23 @@ class Controller {
 			elseif ( $_POST['form'] == 'donation' )
 			{
 				$entry->setDonationAmount( $_POST['donation_amount'] );
+			}
+			elseif ( $_POST['form'] == 'sponsorship' )
+			{
+				$entry
+					->setAmount( preg_replace( '/[^0-9\.]/', '', $_POST['amount'] ) )
+					->setPosition( $_POST['position'] )
+					->setLocalPosition( $_POST['local_position'] )
+					->setUrl( $_POST['url'] )
+					->setLevel( $_POST['level'] )
+					->setLocalFirstName( $_POST['local_first_name'] )
+					->setLocalLastName( $_POST['local_last_name'] )
+					->setLocalAddress( $_POST['local_address'] )
+					->setLocalCity( $_POST['local_city'] )
+					->setLocalState( $_POST['local_state'] )
+					->setLocalZip( $_POST['local_zip'] )
+					->setLocalEmail( $_POST['local_email'] )
+					->setLocalPhone( $_POST['local_phone'] );
 			}
 			elseif ( $_POST['form'] == 'flag' )
 			{
@@ -943,6 +1072,9 @@ class Controller {
 					break;
 				case 'flag':
 					$entry = new FlagHandle( $_POST['id'] );
+					break;
+				case 'sponsorship':
+					$entry = new Sponsorship( $_POST['id'] );
 					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );
@@ -994,6 +1126,9 @@ class Controller {
 					break;
 				case 'flag':
 					$entry = new FlagHandle( $_POST['id'] );
+					break;
+				case 'sponsorship':
+					$entry = new Sponsorship( $_POST['id'] );
 					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );
