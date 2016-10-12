@@ -72,7 +72,7 @@ class Sponsorship extends Entry {
 
 		foreach ( self::getLevels() as $name => $min_amount )
 		{
-			if ( $amount > $min_amount && $amount > $last_amount )
+			if ( $amount >= $min_amount && $amount > $last_amount )
 			{
 				$level_name = $name;
 				$last_amount = $min_amount;
