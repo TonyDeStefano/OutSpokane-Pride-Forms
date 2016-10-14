@@ -891,6 +891,19 @@ class Controller {
 							<td>' . $entry->getEntryYear() . ' ' . $subject . '</td>
 						</tr>';
 
+				if ( $_POST['form'] == 'flag' )
+				{
+					$body .= '
+						<tr>
+							<td><strong>Embroidered Name:</strong></td>
+							<td>' . $entry->getMessage() . '</td>
+						</tr>
+						<tr>
+							<td><strong>Color:</strong></td>
+							<td>' . $entry->getColor() . '</td>
+						</tr>';
+				}
+
 				foreach ( $fields as $field )
 				{
 					$body .= '
@@ -909,7 +922,6 @@ class Controller {
 					</table>
 					<p>View the complete details of your transaction here:</p>
 					<p><a href="https://outspokane.org' . $_POST['path'] . '?txid=' . $entry->getCreatedAt() . '-' . $entry->getId() . '">https://outspokane.org' . $_POST['path'] . '?txid=' . $entry->getCreatedAt() . '-' . $entry->getId() . '</a></p>';
-
 
 				$headers = array(
 					'Content-Type: text/html; charset=UTF-8',
