@@ -14,9 +14,9 @@ use \Stripe\Error\Card;
 
 class Controller {
 
-	const VERSION = '1.3.2';
-	const VERSION_JS = '1.3.2';
-	const VERSION_CSS = '1.3.2';
+	const VERSION = '1.3.3';
+	const VERSION_JS = '1.3.3';
+	const VERSION_CSS = '1.3.3';
 
 	public $action = '';
 	public $data = '';

@@ -48,6 +48,13 @@ var pride_form_is_processing = false;
             }
         }
 
+        if (pride_form.form == 'flag') {
+            var message = getPrideFormValue('message').replace(/\W/g, '');
+            if (message.length > 25) {
+                error = 'Your embroidered name must be 25 characters or less (not including spaces and periods)'
+            }
+        }
+
         if (error.length > 0) {
 
             alert(error);

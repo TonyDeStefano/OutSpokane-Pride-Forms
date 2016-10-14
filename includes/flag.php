@@ -181,7 +181,7 @@
 						<label for="message">Embroidered Name</label>
 					</div>
 					<div class="col-md-6">
-						<input class="form-control" name="message" id="message" maxlength="25" placeholder="25 character limit">
+						<input class="form-control" name="message" id="message" placeholder="25 character limit">
 					</div>
 				</div>
 				<div class="row">
