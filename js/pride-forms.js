@@ -42,8 +42,8 @@ var pride_form_is_processing = false;
         }
 
         if (pride_form.form == 'sponsorship') {
-            var donation = getPrideFormValue('amount');
-            if (donation.length == 0) {
+            var sponsorship_amount = getPrideFormValue('amount');
+            if (sponsorship_amount.length == 0) {
                 error = 'Sponsorship Amount is required';
             }
         }
@@ -97,6 +97,7 @@ var pride_form_is_processing = false;
                 post.donation_amount = getPrideFormValue('donation_amount');
             } else if (pride_form.form == 'flag') {
                 post.message = getPrideFormValue('message');
+                post.color = getPrideFormValue('color');
             } else if (pride_form.form == 'murder_mystery') {
                 post.is_sponsor = $('#is_sponsor').val();
                 if (post.is_sponsor == '1') {

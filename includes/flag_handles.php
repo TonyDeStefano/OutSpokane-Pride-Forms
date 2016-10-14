@@ -80,6 +80,12 @@ if ( isset( $_GET[ 'action' ] ) )
 									<?php echo $entry->getMessage(); ?>
 								</td>
 							</tr>
+							<tr>
+								<th>Color:</th>
+								<td>
+									<?php echo $entry->getColor(); ?>
+								</td>
+							</tr>
 							<?php if ( $entry->getAmountDue() > 0 ) { ?>
 								<tr>
 									<th>Amount Due:</th>

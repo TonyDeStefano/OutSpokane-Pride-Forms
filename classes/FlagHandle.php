@@ -5,9 +5,11 @@ namespace OutSpokane;
 class FlagHandle extends Entry {
 
 	const TABLE_NAME = 'out_spokane_flag_handles';
-	const PRICE_PER_HANDLE = 50;
+	const PRICE_PER_HANDLE_BLACK = 50;
+	const PRICE_PER_HANDLE_OTHER = 55;
 	
 	private $message;
+	private $color;
 
 	/**
 	 * FlagHandle constructor.
@@ -59,6 +61,7 @@ class FlagHandle extends Entry {
 				'state' => substr( $this->state, 0 , 2 ),
 				'zip' => $this->zip,
 				'message' => $this->message,
+				'color' => $this->color,
 				'qty' => $this->qty,
 				'price_per_qty' => $this->price_per_qty,
 				'payment_method_id' => $this->payment_method_id,
@@ -67,6 +70,7 @@ class FlagHandle extends Entry {
 			),
 			array(
 				'%d',
+				'%s',
 				'%s',
 				'%s',
 				'%s',
@@ -114,12 +118,14 @@ class FlagHandle extends Entry {
 		$wpdb->update(
 			$wpdb->prefix . $this->table_name,
 			array(
-				'message' => $this->message
+				'message' => $this->message,
+				'color' => $this->color
 			),
 			array(
 				'id' => $this->id
 			),
 			array(
+				'%s',
 				'%s'
 			),
 			array(
@@ -134,7 +140,9 @@ class FlagHandle extends Entry {
 	public function loadFromRow( \stdClass $row )
 	{
 		parent::loadFromRow( $row );
-		$this->setMessage( $row->message );
+		$this
+			->setMessage( $row->message )
+			->setColor( $row->color );
 	}
 
 	/**
@@ -155,5 +163,40 @@ class FlagHandle extends Entry {
 		$this->message = $message;
 
 		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getColor()
+	{
+		return ( $this->color === NULL ) ? 'Black' : $this->color;
+	}
+
+	/**
+	 * @param mixed $color
+	 *
+	 * @return FlagHandle
+	 */
+	public function setColor( $color )
+	{
+		$this->color = $color;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getColors()
+	{
+		return array(
+			'Black' => self::PRICE_PER_HANDLE_BLACK,
+			'Red' => self::PRICE_PER_HANDLE_OTHER,
+			'Gold' => self::PRICE_PER_HANDLE_OTHER,
+			'Green' => self::PRICE_PER_HANDLE_OTHER,
+			'Blue' => self::PRICE_PER_HANDLE_OTHER,
+			'Purple' => self::PRICE_PER_HANDLE_OTHER
+		);
 	}
 }

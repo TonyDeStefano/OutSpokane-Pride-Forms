@@ -100,7 +100,7 @@ class EntryTable extends \WP_List_Table {
 			unset( $return['tickets_sent'] );
 		}
 
-		if ( ! $this->table == Sponsorship::TABLE_NAME )
+		if ( $this->table != Sponsorship::TABLE_NAME )
 		{
 			unset( $return['level'] );
 		}

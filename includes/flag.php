@@ -70,6 +70,10 @@
 				<th>Message:</th>
 				<td><?php echo $entry->getMessage(); ?></td>
 			</tr>
+			<tr>
+				<th>Color:</th>
+				<td><?php echo $entry->getColor(); ?></td>
+			</tr>
 			<?php if ( $entry->getAmountDue() > 0 ) { ?>
 				<tr>
 					<th>Amount Due:</th>
@@ -169,23 +173,30 @@
 
 			<div id="pride-form-step-1">
 
-				<div class="row">
-					<div class="col-md-3">
-						<label for="price">Price</label>
-					</div>
-					<div class="col-md-6">
-						$<?php echo number_format( \OutSpokane\FlagHandle::PRICE_PER_HANDLE, 2 ); ?>
-					</div>
-				</div>
 
 				<?php \OutSpokane\Entry::drawDefaultFormFields( array( 'organization' ) ); ?>
 
 				<div class="row">
 					<div class="col-md-3">
-						<label for="message">Embroidered Message</label>
+						<label for="message">Embroidered Name</label>
 					</div>
 					<div class="col-md-6">
-						<input class="form-control" name="message" id="message" maxlength="">
+						<input class="form-control" name="message" id="message" maxlength="25" placeholder="25 character limit">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<label for="color">Color</label>
+					</div>
+					<div class="col-md-6">
+						<select name="color" id="color" class="form-control">
+							<?php foreach ( \OutSpokane\FlagHandle::getColors() as $color => $price ) { ?>
+								<option value="<?php echo $color; ?>">
+									<?php echo $color; ?>
+									($<?php echo $price; ?>)
+								</option>
+							<?php } ?>
+						</select>
 					</div>
 				</div>
 

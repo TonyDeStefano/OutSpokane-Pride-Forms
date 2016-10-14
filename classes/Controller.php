@@ -14,9 +14,9 @@ use \Stripe\Error\Card;
 
 class Controller {
 
-	const VERSION = '1.3.1';
-	const VERSION_JS = '1.3.1';
-	const VERSION_CSS = '1.3.1';
+	const VERSION = '1.3.2';
+	const VERSION_JS = '1.3.2';
+	const VERSION_CSS = '1.3.2';
 
 	public $action = '';
 	public $data = '';
@@ -241,6 +241,7 @@ class Controller {
 					`state` VARCHAR(2) DEFAULT NULL,
 					`zip` VARCHAR(10) DEFAULT NULL,
 					`message` TEXT DEFAULT NULL,
+					`color` VARCHAR(25) DEFAULT NULL,
 					`qty` INT(11) DEFAULT NULL,
 					`price_per_qty` DECIMAL(11,2) DEFAULT NULL,
 					`payment_method_id` INT(11) DEFAULT NULL,
@@ -494,7 +495,8 @@ class Controller {
 			elseif ( $_POST['form'] == 'flag' )
 			{
 				$entry
-					->setMessage( $_POST['message'] );
+					->setMessage( $_POST['message'] )
+					->setColor( $_POST['color'] );
 			}
 			elseif ( $_POST['form'] == 'sponsorship' )
 			{
@@ -809,9 +811,10 @@ class Controller {
 						$subject = 'Flag Handle';
 						$entry = new FlagHandle;
 						$entry
-							->setQty( 1 )
-							->setPricePerQty( FlagHandle::PRICE_PER_HANDLE )
-							->setMessage( $_POST['message'] );
+							->setColor( $_POST['color'] )
+							->setMessage( $_POST['message'] )
+							->setPricePerQty( ( $_POST['color'] == 'Black' ) ? FlagHandle::PRICE_PER_HANDLE_BLACK : FlagHandle::PRICE_PER_HANDLE_OTHER )
+							->setQty( 1 );
 						break;
 
 					case 'sponsorship':
@@ -1039,7 +1042,9 @@ class Controller {
 			}
 			elseif ( $_POST['form'] == 'flag' )
 			{
-				$entry->setMessage( $_POST['message'] );
+				$entry
+					->setMessage( $_POST['message'] )
+					->setColor( $_POST['color'] );
 			}
 		}
 

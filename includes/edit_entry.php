@@ -140,6 +140,18 @@ switch ( $_GET['form'] )
 						<th>Message:</th>
 						<td><input name="message" value="<?php echo esc_html( $entry->getMessage() ); ?>"></td>
 					</tr>
+					<tr>
+						<th>Color:</th>
+						<td>
+							<select name="color">
+								<?php foreach ( \OutSpokane\FlagHandle::getColors() as $color => $price ) { ?>
+									<option value="<?php echo $color; ?>"<?php if ( $color == $entry->getColor() ) { ?> selected<?php } ?>>
+										<?php echo $color; ?>
+									</option>
+								<?php } ?>
+							</select>
+						</td>
+					</tr>
 				<?php } else if ( $_GET['form'] == 'parade' ) { ?>
 					<?php $entry_types = $entry->getEntryTypeList(); ?>
 					<tr>
