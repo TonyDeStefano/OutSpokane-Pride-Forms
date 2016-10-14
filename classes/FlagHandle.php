@@ -170,7 +170,7 @@ class FlagHandle extends Entry {
 	 */
 	public function getColor()
 	{
-		return ( $this->color === NULL ) ? 'Black' : $this->color;
+		return ( $this->color === NULL || strlen( $this->color ) == 0 ) ? 'Black' : $this->color;
 	}
 
 	/**
