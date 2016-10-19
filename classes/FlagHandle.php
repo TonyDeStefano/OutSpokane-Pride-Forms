@@ -6,7 +6,7 @@ class FlagHandle extends Entry {
 
 	const TABLE_NAME = 'out_spokane_flag_handles';
 	const PRICE_PER_HANDLE_BLACK = 50;
-	const PRICE_PER_HANDLE_OTHER = 55;
+	const PRICE_PER_HANDLE_OTHER = 50;
 	
 	private $message;
 	private $color;
