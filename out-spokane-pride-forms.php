@@ -6,7 +6,7 @@
  * Description: Custom plugin for all the OutSpokane forms
  * Author: Tony DeStefano
  * Author URI: https://www.facebook.com/TonyDeStefanoWeb
- * Version: 1.3.0
+ * Version: 1.4.3
  * Text Domain: out-spokane-pride-forms
  *
  * Copyright 2016 Tony DeStefano
@@ -26,7 +26,7 @@
  *
  * @package OutSpokanePrideForms
  * @author Tony DeStefano
- * @version 1.3.0
+ * @version 1.4.3
  */
 
 require_once ( 'classes/Controller.php' );
