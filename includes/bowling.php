@@ -110,7 +110,7 @@
 											data-allow-remember-me="false"
 											data-email="<?php echo $entry->getEmail(); ?>"
 									        data-key="<?php echo $stripe_keys['pub']; ?>"
-									        data-description="<?php echo $entry->getEntryYear(); ?> Flag Handle"
+									        data-description="<?php echo $entry->getEntryYear(); ?> Bowling Tickets"
 									        data-amount="<?php echo round($entry->getAmountDue() * 100); ?>"
 									        data-locale="auto"></script>
 									</form>
