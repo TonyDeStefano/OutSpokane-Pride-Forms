@@ -39,6 +39,7 @@ require_once ( 'classes/MurderMysteryEntry.php' );
 require_once ( 'classes/Donation.php' );
 require_once ( 'classes/FlagHandle.php' );
 require_once ( 'classes/Sponsorship.php' );
+require_once ( 'classes/BowlingEntry.php' );
 require_once ( 'classes/Stripe/init.php' );
 
 /* controller object  */

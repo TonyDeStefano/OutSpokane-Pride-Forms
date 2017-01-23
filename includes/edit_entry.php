@@ -47,6 +47,11 @@ switch ( $_GET['form'] )
 		$entry = new \OutSpokane\Sponsorship( $_GET['id'] );
 		unset( $fields[10] );
 		break;
+	case 'bowling':
+		$form_title = 'Bowling Tickets';
+		$back_page = 'outspokane_bowling';
+		$entry = new \OutSpokane\BowlingEntry( $_GET['id'] );
+		break;
 	default:
 		$form_title = 'Murder Mystery';
 		$back_page = 'outspokane_murder_mystery';

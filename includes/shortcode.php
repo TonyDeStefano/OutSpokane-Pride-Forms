@@ -15,6 +15,7 @@
 			<li>donation</li>
 			<li>flag</li>
 			<li>sponsorship</li>
+            <li>bowling</li>
 		</ul>
 	</blockquote>
 

@@ -81,7 +81,7 @@ var pride_form_is_processing = false;
                 qty: 1
             };
 
-            if (pride_form.form == 'cruise') {
+            if (pride_form.form == 'cruise' || pride_form.form == 'bowling') {
                 post.qty = getPrideFormValue('qty')
             } else if (pride_form.form == 'festival') {
                 post.entry_type_id = getPrideFormValue('entry_type_id');

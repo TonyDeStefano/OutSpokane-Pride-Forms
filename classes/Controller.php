@@ -14,8 +14,8 @@ use \Stripe\Error\Card;
 
 class Controller {
 
-	const VERSION = '1.3.3';
-	const VERSION_JS = '1.3.3';
+	const VERSION = '1.4.3';
+	const VERSION_JS = '1.4.3';
 	const VERSION_CSS = '1.3.3';
 
 	public $action = '';
@@ -301,6 +301,38 @@ class Controller {
 			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
 			dbDelta( $sql );
 		}
+
+		/* flag_handles table */
+		$table = $wpdb->prefix . BowlingEntry::TABLE_NAME;
+		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
+			$sql = "
+				CREATE TABLE `" . $table . "`
+				(
+					`id` INT(11) NOT NULL AUTO_INCREMENT,
+					`entry_year` INT(11) DEFAULT NULL,
+					`email` VARCHAR(50) DEFAULT NULL,
+					`phone` VARCHAR(50) DEFAULT NULL,
+					`organization` VARCHAR(150) DEFAULT NULL,
+					`first_name` VARCHAR(50) DEFAULT NULL,
+					`last_name` VARCHAR(50) DEFAULT NULL,
+					`address` VARCHAR(50) DEFAULT NULL,
+					`city` VARCHAR(50) DEFAULT NULL,
+					`state` VARCHAR(2) DEFAULT NULL,
+					`zip` VARCHAR(10) DEFAULT NULL,
+					`qty` INT(11) DEFAULT NULL,
+					`price_per_qty` DECIMAL(11,2) DEFAULT NULL,
+					`payment_method_id` INT(11) DEFAULT NULL,
+					`paid_at` DATETIME DEFAULT NULL,
+					`payment_amount` DECIMAL(11,2) DEFAULT NULL,
+					`payment_confirmation_number` VARCHAR(50) DEFAULT NULL,
+					`notes` TEXT DEFAULT NULL,
+					`created_at` DATETIME DEFAULT NULL,
+					`updated_at` DATETIME DEFAULT NULL,
+					PRIMARY KEY (`id`)
+				)";
+			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+			dbDelta( $sql );
+		}
 	}
 
 	/**
@@ -373,6 +405,7 @@ class Controller {
 			case 'donation':
 			case 'flag':
 			case 'sponsorship':
+			case 'bowling':
 				return $this->return . $this->returnOutputFromPage( $this->getAttribute('form') );
 		}
 
@@ -438,6 +471,9 @@ class Controller {
 					break;
 				case 'sponsorship':
 					$entry = new Sponsorship( $_POST['id'] );
+					break;
+				case 'bowling':
+					$entry = new BowlingEntry( $_POST['id'] );
 					break;
 				default:
 					$entry = new MurderMysteryEntry( $_POST['id'] );
@@ -558,6 +594,10 @@ class Controller {
 									$entry = new Sponsorship( $parts[1] );
 									$title = 'Sponsorship';
 									break;
+								case 'bowling':
+									$entry = new BowlingEntry( $parts[1] );
+									$title = 'Bowling Ticket';
+									break;
 								default: /* 'parade' */
 									$entry = new ParadeEntry( $parts[1] );
 									$title = 'Pride Parade Entry';
@@ -616,6 +656,7 @@ class Controller {
 		add_submenu_page('outspokane', 'Donations', 'Donations', 'manage_options', 'outspokane_donation', array($this, 'showDonations'));
 		add_submenu_page('outspokane', 'Flag Handles', 'Flag Handles', 'manage_options', 'outspokane_flag', array($this, 'showFlagHandles'));
 		add_submenu_page('outspokane', 'Sponsorships', 'Sponsorships', 'manage_options', 'outspokane_sponsorship', array($this, 'showSponsorships'));
+		add_submenu_page('outspokane', 'Bowling Tickets', 'Bowling Tickets', 'manage_options', 'outspokane_bowling', array($this, 'showBowlingEntries'));
 		
 		/* I guess this is how to add a page without adding a menu */
 		add_submenu_page(NULL, 'Edit Entry', 'Edit Entry', 'manage_options', 'outspokane_edit_entry', array($this, 'editEntry'));
@@ -634,6 +675,7 @@ class Controller {
 		register_setting( 'outspokane_settings', 'pride_forms_disable_murder_mystery_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_parade_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_flag_form' );
+		register_setting( 'outspokane_settings', 'pride_forms_disable_bowling_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_sponsorship_form' );
 	}
 
@@ -707,6 +749,14 @@ class Controller {
 	public function showSponsorships()
 	{
 		include( dirname( __DIR__ ) . '/includes/sponsorships.php');
+	}
+
+	/**
+	 *
+	 */
+	public function showBowlingEntries()
+	{
+		include( dirname( __DIR__ ) . '/includes/bowling_entries.php');
 	}
 
 	/**
@@ -836,6 +886,17 @@ class Controller {
 							->setLocalEmail( $_POST['local_email'] )
 							->setLocalPhone( $_POST['local_phone'] )
 							->setQty( 1 );
+						break;
+
+					case 'bowling':
+
+						$subject = 'Bowling Tickets';
+						$entry = new BowlingEntry;
+						$entry
+							->setQty( $_POST['qty'] )
+							->setPricePerQty( BowlingEntry::PRICE_PER_TICKET )
+							->setPaymentMethodId( Entry::PAYMENT_METHOD_CARD );
+
 						break;
 
 					default: /* 'parade' */
@@ -971,6 +1032,9 @@ class Controller {
 				case 'sponsorship':
 					$entry = new Sponsorship( $_POST['id'] );
 					break;
+				case 'bowling':
+					$entry = new BowlingEntry( $_POST['id'] );
+					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );
 			}
@@ -1014,6 +1078,9 @@ class Controller {
 				break;
 			case 'sponsorship':
 				$entry = new Sponsorship( $_POST['id'] );
+				break;
+			case 'bowling':
+				$entry = new BowlingEntry( $_POST['id'] );
 				break;
 			default: /* parade */
 				$entry = new ParadeEntry( $_POST['id'] );
@@ -1093,6 +1160,9 @@ class Controller {
 				case 'sponsorship':
 					$entry = new Sponsorship( $_POST['id'] );
 					break;
+				case 'bowling':
+					$entry = new BowlingEntry( $_POST['id'] );
+					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );
 			}
@@ -1146,6 +1216,9 @@ class Controller {
 					break;
 				case 'sponsorship':
 					$entry = new Sponsorship( $_POST['id'] );
+					break;
+				case 'bowling':
+					$entry = new BowlingEntry( $_POST['id'] );
 					break;
 				default: /* parade */
 					$entry = new ParadeEntry( $_POST['id'] );

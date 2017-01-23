@@ -7,6 +7,7 @@ $disable_murder_mystery_form = get_option( 'pride_forms_disable_murder_mystery_f
 $disable_parade_form = get_option( 'pride_forms_disable_parade_form', 'N' );
 $disable_flag_form = get_option( 'pride_forms_disable_flag_form', 'N' );
 $disable_sponsorship_form = get_option( 'pride_forms_disable_sponsorship_form', 'N' );
+$disable_bowling_form = get_option( 'pride_forms_disable_bowling_form', 'N' );
 
 ?>
 
@@ -221,6 +222,25 @@ $disable_sponsorship_form = get_option( 'pride_forms_disable_sponsorship_form', 
 					</select>
 				</td>
 			</tr>
+
+            <tr valign="top">
+                <th scope="row">
+                    <label for="pride_forms_disable_bowling_form">
+                        Disable Bowling Form
+                    </label>
+                </th>
+                <td><?php echo ( $disable_bowling_form == 'N' ) ? 'No' : '<strong style="color:red">Yes</strong>' ?></td>
+                <td>
+                    <select id="pride_forms_disable_bowling_form" name="pride_forms_disable_bowling_form">
+                        <option value="N"<?php if ( $disable_bowling_form == 'N') { ?> selected<?php } ?>>
+                            No
+                        </option>
+                        <option value="Y"<?php if ( $disable_bowling_form == 'Y') { ?> selected<?php } ?>>
+                            Yes
+                        </option>
+                    </select>
+                </td>
+            </tr>
 
 		</table>
 
