@@ -106,6 +106,8 @@ var pride_form_is_processing = false;
                 post.message = getPrideFormValue('message');
                 post.color = getPrideFormValue('color');
             } else if (pride_form.form == 'murder_mystery') {
+                post.is_sponsor = 0;
+                /*
                 post.is_sponsor = $('#is_sponsor').val();
                 if (post.is_sponsor == '1') {
                     post.qty = '1';
@@ -117,6 +119,7 @@ var pride_form_is_processing = false;
                         post.vegetarian_qty = $('#sponsor_vegetarian_qty').val();
                     }
                 } else {
+                */
                     post.qty = $('#ticket_qty').val();
                     if ($('#ticket_meal_type_upgraded').prop('checked')) {
                         post.is_upgraded = '1';
@@ -125,7 +128,9 @@ var pride_form_is_processing = false;
                         post.is_upgraded = '0';
                         post.vegetarian_qty = $('#ticket_vegetarian_qty').val();
                     }
+                /*
                 }
+                */
             } else if (pride_form.form == 'sponsorship') {
                 post.amount = getPrideFormValue('amount');
                 post.position = getPrideFormValue('position');

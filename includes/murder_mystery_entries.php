@@ -91,7 +91,7 @@ if ( isset( $_GET[ 'action' ] ) )
 							</tr>
 							<tr>
 								<th>Meal Type:</th>
-								<td><?php echo ( $entry->isUpgraded() ) ? 'Prime Rib Dinner' : 'Turkey or Vegetarian Dinner'; ?></td>
+								<td><?php echo ( $entry->isUpgraded() ) ? 'Steak Dinner' : 'Chicken or Vegetarian Dinner'; ?></td>
 							</tr>
 							<?php if ( ! $entry->isUpgraded() ) { ?>
 								<tr>

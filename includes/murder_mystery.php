@@ -77,7 +77,7 @@
 			</tr>
 			<tr>
 				<th>Meal Type:</th>
-				<td><?php echo ( $entry->isUpgraded() ) ? 'Prime Rib Dinner' : 'Turkey or Vegetarian Dinner'; ?></td>
+				<td><?php echo ( $entry->isUpgraded() ) ? 'Steak Dinner' : 'Chicken or Vegetarian Dinner'; ?></td>
 			</tr>
 			<?php if ( ! $entry->isUpgraded() ) { ?>
 				<tr>
@@ -186,52 +186,56 @@
 
 				<?php \OutSpokane\Entry::drawDefaultFormFields( array( 'organization' ) ); ?>
 
-				<div class="row">
-					<div class="col-md-3">
-						<label for="is_sponsor">Would you like to purchase a table sponsorship (includes 8 tickets)?</label>
-					</div>
-					<div class="col-md-6">
-						<select id="is_sponsor">
-							<option value="0">No</option>
-							<option value="1">Yes</option>
-						</select>
-					</div>
-				</div>
+                <?php if ( FALSE ) { ?>
 
-				<div id="mm-sponsor-fields">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="is_sponsor">Would you like to purchase a table sponsorship (includes 8 tickets)?</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select id="is_sponsor">
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                    </div>
 
-					<div class="row">
-						<div class="col-md-3">
-							<label for="sponsor_meal_type">Meal Type</label>
-						</div>
-						<div class="col-md-6">
-							<label>
-								<input type="radio" id="sponsor_meal_type_regular" name="sponsor_meal_type" checked>
-								Turkey or Vegetarian Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::TABLE_PRICE, 2 ); ?>)<br>
-							</label>
-							<label>
-								<input type="radio" id="sponsor_meal_type_upgraded" name="sponsor_meal_type">
-								Prime Rib Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::UPGRADED_TABLE_PRICE, 2 ); ?>)
-							</label>
-						</div>
-					</div>
+                    <div id="mm-sponsor-fields">
 
-					<div class="row" id="sponsor-vegetarian-dinners">
-						<div class="col-md-3">
-							<label for="sponsor_vegetarian_qty">How many vegetarian meals do you need?</label>
-						</div>
-						<div class="col-md-6">
-							<select id="sponsor_vegetarian_qty">
-								<?php for ($x=0; $x<=8; $x++) { ?>
-									<option value="<?php echo $x; ?>">
-										<?php echo $x; ?>
-									</option>
-								<?php } ?>
-							</select>
-						</div>
-					</div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="sponsor_meal_type">Meal Type</label>
+                            </div>
+                            <div class="col-md-6">
+                                <label>
+                                    <input type="radio" id="sponsor_meal_type_regular" name="sponsor_meal_type" checked>
+                                    Chicken or Vegetarian Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::TABLE_PRICE, 2 ); ?>)<br>
+                                </label>
+                                <label>
+                                    <input type="radio" id="sponsor_meal_type_upgraded" name="sponsor_meal_type">
+                                    Steak Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::UPGRADED_TABLE_PRICE, 2 ); ?>)
+                                </label>
+                            </div>
+                        </div>
 
-				</div>
+                        <div class="row" id="sponsor-vegetarian-dinners">
+                            <div class="col-md-3">
+                                <label for="sponsor_vegetarian_qty">How many vegetarian meals do you need?</label>
+                            </div>
+                            <div class="col-md-6">
+                                <select id="sponsor_vegetarian_qty">
+                                    <?php for ($x=0; $x<=8; $x++) { ?>
+                                        <option value="<?php echo $x; ?>">
+                                            <?php echo $x; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                <?php } ?>
 
 				<div id="mm-ticket-fields">
 
@@ -242,11 +246,11 @@
 						<div class="col-md-6">
 							<label>
 								<input type="radio" id="ticket_meal_type_regular" name="ticket_meal_type" checked>
-								Turkey or Vegetarian Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::TICKET_PRICE, 2 ); ?> each)<br>
+								Chicken or Vegetarian Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::TICKET_PRICE, 2 ); ?> each)<br>
 							</label>
 							<label>
 								<input type="radio" id="ticket_meal_type_upgraded" name="ticket_meal_type">
-								Prime Rib Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::UPGRADED_TICKET_PRICE, 2 ); ?> each)
+								Steak Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::UPGRADED_TICKET_PRICE, 2 ); ?> each)
 							</label>
 						</div>
 					</div>

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Tony DeStefano
- * Date: 2/1/16
- * Time: 3:58 PM
- */
 
 namespace OutSpokane;
 
@@ -15,7 +9,7 @@ use \Stripe\Error\Card;
 class Controller {
 
 	const VERSION = '1.4.3';
-	const VERSION_JS = '1.4.3';
+	const VERSION_JS = '1.4.4';
 	const VERSION_CSS = '1.3.3';
 
 	public $action = '';

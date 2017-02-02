@@ -1,19 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Tony DeStefano
- * Date: 2/1/16
- * Time: 4:00 PM
- */
 
 namespace OutSpokane;
-
 
 class MurderMysteryEntry extends Entry {
 
 	const TABLE_NAME = 'out_spokane_murder_mystery_entries';
-	const TICKET_PRICE = 35;
-	const UPGRADED_TICKET_PRICE = 50;
+	const TICKET_PRICE = 55;
+	const UPGRADED_TICKET_PRICE = 65;
 	const TABLE_PRICE = 350;
 	const UPGRADED_TABLE_PRICE = 500;
 	const MAX_TICKETS = 20;
@@ -28,8 +21,9 @@ class MurderMysteryEntry extends Entry {
 	 *
 	 * @param null $id
 	 */
-	public function __construct( $id=NULL ) {
-		$this->setTableName(self::TABLE_NAME);
+	public function __construct( $id = NULL )
+	{
+		$this->setTableName( self::TABLE_NAME );
 		parent::__construct( $id );
 		$this->read();
 	}
@@ -37,8 +31,9 @@ class MurderMysteryEntry extends Entry {
 	/**
 	 * @return mixed
 	 */
-	public function getVegetarianQty() {
-		return ($this->vegetarian_qty === NULL) ? 0 : $this->vegetarian_qty;
+	public function getVegetarianQty()
+	{
+		return ( $this->vegetarian_qty === NULL ) ? 0 : $this->vegetarian_qty;
 	}
 
 	/**
@@ -46,8 +41,9 @@ class MurderMysteryEntry extends Entry {
 	 *
 	 * @return MurderMysteryEntry
 	 */
-	public function setVegetarianQty( $vegetarian_qty ) {
-		$this->vegetarian_qty = (is_numeric($vegetarian_qty)) ? abs(round($vegetarian_qty)) : NULL;
+	public function setVegetarianQty( $vegetarian_qty )
+	{
+		$this->vegetarian_qty = ( is_numeric( $vegetarian_qty ) ) ? abs( round( $vegetarian_qty ) ) : NULL;
 
 		return $this;
 	}
@@ -55,8 +51,9 @@ class MurderMysteryEntry extends Entry {
 	/**
 	 * @return boolean
 	 */
-	public function isSponsor() {
-		return ($this->is_sponsor === TRUE) ? TRUE : FALSE;
+	public function isSponsor()
+	{
+		return ( $this->is_sponsor === TRUE ) ? TRUE : FALSE;
 	}
 
 	/**
@@ -64,8 +61,9 @@ class MurderMysteryEntry extends Entry {
 	 *
 	 * @return MurderMysteryEntry
 	 */
-	public function setIsSponsor( $is_sponsor ) {
-		$this->is_sponsor = ($is_sponsor == 1 || $is_sponsor === TRUE) ? TRUE : FALSE;
+	public function setIsSponsor( $is_sponsor )
+	{
+		$this->is_sponsor = ( $is_sponsor == 1 || $is_sponsor === TRUE ) ? TRUE : FALSE;
 
 		return $this;
 	}
@@ -73,8 +71,9 @@ class MurderMysteryEntry extends Entry {
 	/**
 	 * @return boolean
 	 */
-	public function isUpgraded() {
-		return ($this->is_upgraded === TRUE) ? TRUE : FALSE;
+	public function isUpgraded()
+	{
+		return ( $this->is_upgraded === TRUE ) ? TRUE : FALSE;
 	}
 
 	/**
@@ -82,8 +81,9 @@ class MurderMysteryEntry extends Entry {
 	 *
 	 * @return MurderMysteryEntry
 	 */
-	public function setIsUpgraded( $is_upgraded ) {
-		$this->is_upgraded = ($is_upgraded == 1 || $is_upgraded === TRUE) ? TRUE : FALSE;
+	public function setIsUpgraded( $is_upgraded )
+	{
+		$this->is_upgraded = ( $is_upgraded == 1 || $is_upgraded === TRUE ) ? TRUE : FALSE;
 
 		return $this;
 	}
@@ -113,14 +113,14 @@ class MurderMysteryEntry extends Entry {
 	 *
 	 * @return array
 	 */
-	public function getPaymentMethods( $use_parent=FALSE )
+	public function getPaymentMethods( $use_parent = FALSE )
 	{
 		if ( $use_parent )
 		{
 			return parent::getPaymentMethods();
 		}
 
-		return array(
+		return array (
 			self::PAYMENT_METHOD_CARD => $this->getPaymentMethod( self::PAYMENT_METHOD_CARD ),
 			self::PAYMENT_METHOD_CHECK => $this->getPaymentMethod( self::PAYMENT_METHOD_CHECK )
 		);
@@ -135,7 +135,7 @@ class MurderMysteryEntry extends Entry {
 
 		$wpdb->insert(
 			$wpdb->prefix . self::TABLE_NAME,
-			array(
+			array (
 				'entry_year' => $this->entry_year,
 				'email' => $this->email,
 				'phone' => $this->phone,
@@ -144,18 +144,18 @@ class MurderMysteryEntry extends Entry {
 				'last_name' => $this->last_name,
 				'address' => $this->address,
 				'city' => $this->city,
-				'state' => substr( $this->state, 0 , 2 ),
+				'state' => substr( $this->state, 0, 2 ),
 				'zip' => $this->zip,
 				'qty' => $this->qty,
 				'price_per_qty' => $this->price_per_qty,
 				'payment_method_id' => $this->payment_method_id,
 				'vegetarian_qty' => $this->vegetarian_qty,
-				'is_sponsor' => ($this->isSponsor()) ? 1 : 0,
-				'is_upgraded' => ($this->isUpgraded()) ? 1 : 0,
+				'is_sponsor' => ( $this->isSponsor() ) ? 1 : 0,
+				'is_upgraded' => ( $this->isUpgraded() ) ? 1 : 0,
 				'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
 				'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 			),
-			array(
+			array (
 				'%d',
 				'%s',
 				'%s',
@@ -205,22 +205,22 @@ class MurderMysteryEntry extends Entry {
 
 		$wpdb->update(
 			$wpdb->prefix . $this->table_name,
-			array(
+			array (
 				'vegetarian_qty' => $this->vegetarian_qty,
 				'tickets_sent' => ( $this->wereTicketsSent() ) ? 1 : 0,
 				'is_sponsor' => ( $this->isSponsor() ) ? 1 : 0,
 				'is_upgraded' => ( $this->isUpgraded() ) ? 1 : 0
 			),
-			array(
+			array (
 				'id' => $this->id
 			),
-			array(
+			array (
 				'%d',
 				'%d',
 				'%d',
 				'%d'
 			),
-			array(
+			array (
 				'%d'
 			)
 		);
