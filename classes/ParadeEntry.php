@@ -61,7 +61,7 @@ class ParadeEntry extends Entry {
 	/**
 	 * @param bool $as_json
 	 *
-	 * @return array|mixed|string|void
+	 * @return array|mixed|string
 	 */
 	public function getEntryTypes( $as_json=FALSE ) {
 		$entry_types = ($this->entry_types === NULL) ? array() : $this->entry_types;
@@ -194,10 +194,38 @@ class ParadeEntry extends Entry {
 	}
 
 	/**
-	 * @return mixed
+	 * @param bool $as_range
+	 *
+	 * @return int|string
 	 */
-	public function getGroupSize() {
-		return ($this->group_size === NULL) ? 0 : $this->group_size;
+	public function getGroupSize( $as_range = FALSE )
+	{
+		if ( $as_range )
+		{
+			switch ( $this->group_size )
+			{
+				case 1:
+					return '1 - 9';
+					break;
+				case 10:
+					return '10 - 20';
+					break;
+				case 21:
+					return '21 - 30';
+					break;
+				case 31:
+					return '31 - 40';
+					break;
+				case 41:
+					return '41 - 50';
+					break;
+				case 51:
+					return '51+';
+					break;
+			}
+		}
+
+		return ( $this->group_size === NULL ) ? 0 : $this->group_size;
 	}
 
 	/**

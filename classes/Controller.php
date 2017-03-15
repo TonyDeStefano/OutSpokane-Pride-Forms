@@ -8,7 +8,7 @@ use \Stripe\Error\Card;
 
 class Controller {
 
-	const VERSION = '1.4.3';
+	const VERSION = '1.4.4';
 	const VERSION_JS = '1.4.4';
 	const VERSION_CSS = '1.3.3';
 

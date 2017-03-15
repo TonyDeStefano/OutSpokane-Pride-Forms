@@ -94,7 +94,7 @@ if ( isset( $_GET[ 'action' ] ) )
 							</tr>
 							<tr>
 								<th>Group Size:</th>
-								<td><?php echo $entry->getGroupSize(); ?></td>
+								<td><?php echo $entry->getGroupSize( TRUE ); ?></td>
 							</tr>
 							<?php if ($entry->getFloatParkingSpaces() > 0) { ?>
 								<tr>

@@ -80,7 +80,7 @@
 			</tr>
 			<tr>
 				<th>Group Size:</th>
-				<td><?php echo $entry->getGroupSize(); ?></td>
+				<td><?php echo $entry->getGroupSize( TRUE ); ?></td>
 			</tr>
 			<?php if ($entry->getFloatParkingSpaces() > 0) { ?>
 				<tr>
@@ -245,7 +245,19 @@
 						1 => 'Yes'
 					)
 				);
-				\OutSpokane\Entry::drawFormField( 'Group Size' );
+				\OutSpokane\Entry::drawFormField(
+					'Group Size',
+					'group_size',
+					'select',
+					array(
+						1 => '1 - 9',
+						10 => '10 - 20',
+						21 => '21 - 30',
+						31 => '31 - 40',
+						41 => '41 - 50',
+						51 => '51+'
+					)
+				);
 				\OutSpokane\Entry::drawFormField(
 					'If you would like to make a donation to OutSpokane, please enter the amount here',
 					'donation_amount'

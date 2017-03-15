@@ -929,7 +929,7 @@ class Entry {
 							echo '"' . str_replace( "\n", ' ', str_replace( "\r", ' ', str_replace( '"', '""', $entry->getDescription() ) ) ) . '",';
 							echo $entry->getFloatParkingSpaces() . ',';
 							echo ( ( $entry->needsAmpedSound() ) ? 'Y' : 'N' ) . ',';
-							echo $entry->getGroupSize() . ',';
+							echo $entry->getGroupSize( TRUE ) . ',';
 							echo $entry->getDonationAmount() . ',';
 							break;
 						case Donation::TABLE_NAME:

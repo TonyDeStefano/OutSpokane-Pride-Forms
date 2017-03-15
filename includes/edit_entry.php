@@ -197,7 +197,29 @@ switch ( $_GET['form'] )
 					</tr>
 					<tr>
 						<th>Group Size:</th>
-						<td><input name="group_size" value="<?php echo $entry->getGroupSize(); ?>"></td>
+						<td>
+                            <?php $found = FALSE; ?>
+                            <select name="group_size">
+                                <option value="1"<?php if ( $entry->getGroupSize() >= 1 && $entry->getGroupSize() <= 9 ) { ?> selected<?php } ?>>
+                                    1 - 9
+                                </option>
+                                <option value="10"<?php if ( $entry->getGroupSize() >= 10 && $entry->getGroupSize() <= 20 ) { ?> selected<?php } ?>>
+                                    10 - 20
+                                </option>
+                                <option value="21"<?php if ( $entry->getGroupSize() >= 21 && $entry->getGroupSize() <= 30 ) { ?> selected<?php } ?>>
+                                    21 - 30
+                                </option>
+                                <option value="31"<?php if ( $entry->getGroupSize() >= 31 && $entry->getGroupSize() <= 40 ) { ?> selected<?php } ?>>
+                                    31 - 40
+                                </option>
+                                <option value="41"<?php if ( $entry->getGroupSize() >= 41 && $entry->getGroupSize() <= 50 ) { ?> selected<?php } ?>>
+                                    41 - 50
+                                </option>
+                                <option value="51"<?php if ( $entry->getGroupSize() >= 51 ) { ?> selected<?php } ?>>
+                                    51+
+                                </option>
+                            </select>
+                        </td>
 					</tr>
 				<?php } elseif ( $_GET['form'] == 'murder_mystery' ) { ?>
 					<tr>
