@@ -811,6 +811,7 @@ class Entry {
 
 	public static function exportToCsv()
 	{
+		/** @var \wpdb $wpdb */
 		global $wpdb;
 
 		$tables = array(
@@ -820,7 +821,8 @@ class Entry {
 			ParadeEntry::TABLE_NAME => 'parade',
 			Donation::TABLE_NAME => 'donation',
 			FlagHandle::TABLE_NAME => 'flag-handle',
-			Sponsorship::TABLE_NAME => 'sponsorship'
+			Sponsorship::TABLE_NAME => 'sponsorship',
+			BowlingEntry::TABLE_NAME => 'bowling'
 		);
 
 		$year = ( isset( $_POST['pride_export'] ) && is_numeric( $_POST['pride_export'] ) ) ? abs( round( $_POST['pride_export'] ) ) : NULL;
