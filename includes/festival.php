@@ -217,7 +217,7 @@
 						</div>
 					</div>
 				<?php } else { ?>
-					<input type="hidden" name="corner_booth" value="0">
+					<input type="hidden" id="corner_booth" value="0">
 				<?php } ?>
 
 				<?php \OutSpokane\Entry::drawFormField( 'Comments/Notes', 'description', 'textarea' ); ?>
