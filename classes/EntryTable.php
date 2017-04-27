@@ -67,6 +67,8 @@ class EntryTable extends \WP_List_Table {
 			'donation_amount' => 'Donation',
 			'payment_amount' => 'Paid',
 			'paid_at' => 'Pay Date',
+			'payment_method_id' => 'Payment Method',
+			'email' => 'Email',
 			'tickets_sent' => 'Tickets Sent',
 			'view' => ''
 		);
@@ -125,6 +127,8 @@ class EntryTable extends \WP_List_Table {
 			'donation_amount' => array( 'donation_amount', TRUE ),
 			'payment_amount' => array( 'payment_amount', TRUE ),
 			'paid_at' => array( 'paid_at', TRUE ),
+			'payment_method_id' => array( 'payment_method_id', TRUE ),
+			'email' => array( 'email', TRUE ),
 			'tickets_sent' => array( 'tickets_sent', TRUE )
 		);
 
@@ -178,6 +182,7 @@ class EntryTable extends \WP_List_Table {
 			case 'organization':
 			case 'qty':
 			case 'level':
+			case 'email':
 				return $item->$column_name;
 			case 'type':
 				return ( $item->is_sponsor == 1 ) ? 'Table' : 'Ticket';
@@ -209,6 +214,31 @@ class EntryTable extends \WP_List_Table {
 				return ( $item->tickets_sent == 1 ) ? 'Yes' : 'No';
 			case 'view':
 				return '<a href="?page=' . $_REQUEST['page'] . '&action=view&id=' . $item->id . '" class="button-primary">' . __('View') . '</a>';
+			case 'payment_method_id':
+				if ( $item->$column_name == Entry::PAYMENT_METHOD_CASH )
+				{
+					return 'Cash';
+				}
+				elseif ( $item->$column_name == Entry::PAYMENT_METHOD_CARD )
+				{
+					return 'Credit Card';
+				}
+				elseif ( $item->$column_name == Entry::PAYMENT_METHOD_CHECK )
+				{
+					return 'Check';
+				}
+				elseif ( $item->$column_name == Entry::PAYMENT_METHOD_MO )
+				{
+					return 'Money Order';
+				}
+				elseif ( $item->$column_name == Entry::PAYMENT_METHOD_SQUARE )
+				{
+					return 'Credit Card';
+				}
+				else
+				{
+					return '';
+				}
 			default:
 				return print_r( $item, true ); //Show the whole array for troubleshooting purposes
 		}
