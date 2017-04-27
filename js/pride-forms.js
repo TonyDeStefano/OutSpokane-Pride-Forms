@@ -29,26 +29,26 @@ var pride_form_is_processing = false;
 
         for (var v=0; v<required_values.length; v++) {
 
-            if (error.length == 0 && required_values[v][1].length == 0) {
+            if (error.length === 0 && required_values[v][1].length === 0) {
                 error = required_values[v][0] + ' is required';
             }
         }
 
-        if (pride_form.form == 'donation') {
+        if (pride_form.form === 'donation') {
             var donation = getPrideFormValue('donation_amount');
-            if (donation.length == 0) {
+            if (donation.length === 0) {
                 error = 'Donation Amount is required';
             }
         }
 
-        if (pride_form.form == 'sponsorship') {
+        if (pride_form.form === 'sponsorship') {
             var sponsorship_amount = getPrideFormValue('amount');
-            if (sponsorship_amount.length == 0) {
+            if (sponsorship_amount.length === 0) {
                 error = 'Sponsorship Amount is required';
             }
         }
 
-        if (pride_form.form == 'flag') {
+        if (pride_form.form === 'flag') {
             var message = getPrideFormValue('message').replace(/\W/g, '');
             if (message.length > 25) {
                 error = 'Your embroidered name must be 25 characters or less (not including spaces and periods)'
@@ -81,13 +81,13 @@ var pride_form_is_processing = false;
                 qty: 1
             };
 
-            if (pride_form.form == 'cruise' || pride_form.form == 'bowling') {
+            if (pride_form.form === 'cruise' || pride_form.form === 'bowling') {
                 post.qty = getPrideFormValue('qty')
-            } else if (pride_form.form == 'festival') {
+            } else if (pride_form.form === 'festival') {
                 post.entry_type_id = getPrideFormValue('entry_type_id');
                 post.corner_booth = getPrideFormValue('corner_booth');
                 post.description = getPrideFormValue('description');
-            } else if (pride_form.form == 'parade') {
+            } else if (pride_form.form === 'parade') {
                 pride_entry_types = [];
                 $('.parade_entry_type').each(function () {
                     if ($(this).prop('checked')) {
@@ -100,12 +100,12 @@ var pride_form_is_processing = false;
                 post.description = getPrideFormValue('description');
                 post.needs_amped_sound = getPrideFormValue('needs_amped_sound');
                 post.group_size = getPrideFormValue('group_size');
-            } else if (pride_form.form == 'donation') {
+            } else if (pride_form.form === 'donation') {
                 post.donation_amount = getPrideFormValue('donation_amount');
-            } else if (pride_form.form == 'flag') {
+            } else if (pride_form.form === 'flag') {
                 post.message = getPrideFormValue('message');
                 post.color = getPrideFormValue('color');
-            } else if (pride_form.form == 'murder_mystery') {
+            } else if (pride_form.form === 'murder_mystery') {
                 post.is_sponsor = 0;
                 /*
                 post.is_sponsor = $('#is_sponsor').val();
@@ -131,7 +131,7 @@ var pride_form_is_processing = false;
                 /*
                 }
                 */
-            } else if (pride_form.form == 'sponsorship') {
+            } else if (pride_form.form === 'sponsorship') {
                 post.amount = getPrideFormValue('amount');
                 post.position = getPrideFormValue('position');
                 post.url = getPrideFormValue('url');
@@ -152,14 +152,24 @@ var pride_form_is_processing = false;
                 data: post,
                 error: function(x, y, z) {
                     console.log(x);
+                    console.log(x.responseText);
                     console.log(y);
                     console.log(z);
                     alert('There was an error. Please try again.');
                     pride_form_is_processing = false;
                     $('#btn-step-1').text('Submit');
+
+                    $.ajax({
+                        url: prideforms.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'error-report',
+                            error: x.responseText
+                        }
+                    });
                 },
                 success: function(json) {
-                    if (json.success == '0') {
+                    if (json.success === '0') {
                         alert(json.error);
                         pride_form_is_processing = false;
                         $('#btn-step-1').text('Submit');
@@ -179,7 +189,7 @@ var pride_form_is_processing = false;
         var sponsor_id = $(this).data('sponsor-id');
         var container = $('#corner-booth-container');
 
-        if ($(this).val() == sponsor_id)
+        if ($(this).val() === sponsor_id)
         {
             container.hide();
         }

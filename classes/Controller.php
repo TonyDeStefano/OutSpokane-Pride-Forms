@@ -9,7 +9,7 @@ use \Stripe\Error\Card;
 class Controller {
 
 	const VERSION = '1.4.4';
-	const VERSION_JS = '1.4.4';
+	const VERSION_JS = '1.4.5';
 	const VERSION_CSS = '1.3.3';
 
 	public $action = '';
@@ -770,6 +770,16 @@ class Controller {
 			'success' => 1,
 			'error' => ''
 		);
+
+		if ( isset( $_POST['action'] ) && $_POST['action'] == 'error-report' )
+		{
+			$headers = array(
+				'Content-Type: text/html; charset=UTF-8',
+				'From info@outspokane.org'
+			);
+			wp_mail( 'spokanetony@gmail.com', 'OutSpokane Server Error', 'The following error just occurred: ' . $_POST['error'], $headers );
+			exit;
+		}
 
 		if ( wp_verify_nonce($_POST['entry_nonce'], 'entry-nonce'))
 		{
