@@ -18,9 +18,9 @@ class FestivalEntry extends Entry {
 	const ENTRY_TYPE_COMMERCIAL = 3;
 	const ENTRY_TYPE_SPONSOR = 4;
 
-	const ENTRY_FEE_NON_PROFIT = 100;
+	const ENTRY_FEE_NON_PROFIT = 50;
 	const ENTRY_FEE_POLITICAL = 150;
-	const ENTRY_FEE_COMMERCIAL = 150;
+	const ENTRY_FEE_COMMERCIAL = 200;
 	const ENTRY_FEE_SPONSOR = 0;
 
 	const CORNER_BOOTH_FEE = 50;
