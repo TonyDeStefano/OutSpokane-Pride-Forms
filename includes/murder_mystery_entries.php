@@ -84,31 +84,63 @@ if ( isset( $_GET[ 'action' ] ) )
 								<th>Tickets:</th>
 								<td>
 									<?php echo $entry->getQty(); ?>
-									<?php if ($entry->isSponsor()) { ?>
-										Table Sponsorship (8 Tickets)
-									<?php } ?>
+                                    <?php if ( $entry->getEntryYear() == 2018 ) { ?>
+                                        <?php if ($entry->isSponsor()) { ?>
+                                            Tickets (Sponsor)
+                                        <?php } ?>
+                                        <?php if ($entry->isVip()) { ?>
+                                            VIP Table (8 Tickets)
+                                        <?php } ?>
+                                    <?php } else { ?>
+                                        <?php if ($entry->isSponsor()) { ?>
+                                            Table Sponsorship (8 Tickets)
+                                        <?php } ?>
+                                    <?php } ?>
 								</td>
 							</tr>
-							<tr>
-								<th>Meal Type:</th>
-								<td><?php echo ( $entry->isUpgraded() ) ? 'Steak Dinner' : 'Chicken or Vegetarian Dinner'; ?></td>
-							</tr>
-							<?php if ( ! $entry->isUpgraded() ) { ?>
-								<tr>
-									<th>Vegetarian Meals:</th>
-									<td>
-										<select name="vegetarian_qty" id="vegetarian_qty">
-											<?php for ( $q=0; $q<=( ( $entry->isSponsor() ) ? 8 : $entry->getQty() ); $q++ ) { ?>
-												<option value="<?php echo $q; ?>"<?php if ( $q == $entry->getVegetarianQty() ) { ?> selected<?php } ?>>
-													<?php echo $q; ?>
-												</option>
-											<?php } ?>
-										</select>
-									</td>
-								</tr>
-							<?php } else { ?>
-								<input type="hidden" name="vegetarian_qty" id="vegetarian_qty" value="<?php echo $entry->getVegetarianQty(); ?>">
-							<?php } ?>
+                            <?php if ( $entry->getEntryYear() == 2018 ) { ?>
+                                <tr>
+                                    <th>Meals:</th>
+                                    <td>
+                                        <?php
+
+                                        $meals_types = \OutSpokane\MurderMysteryEntry::getMealTypes();
+                                        $chosen_meals = $entry->getMeals( TRUE );
+
+                                        foreach ( $chosen_meals as $index => $qty )
+                                        {
+                                            if ( isset( $meals_types[ $index ] ) )
+                                            {
+                                                echo $qty . ' X ' . $meals_types[ $index ]['name'] . '<br>';
+                                            }
+                                        }
+
+                                        ?>
+                                        <input type="hidden" name="vegetarian_qty" id="vegetarian_qty" value="0">
+                                    </td>
+                                </tr>
+                            <?php } else { ?>
+                                <tr>
+                                    <th>Meal Type:</th>
+                                    <td><?php echo ( $entry->isUpgraded() ) ? 'Steak Dinner' : 'Chicken or Vegetarian Dinner'; ?></td>
+                                </tr>
+                                <?php if ( ! $entry->isUpgraded() ) { ?>
+                                    <tr>
+                                        <th>Vegetarian Meals:</th>
+                                        <td>
+                                            <select name="vegetarian_qty" id="vegetarian_qty">
+                                                <?php for ( $q=0; $q<=( ( $entry->isSponsor() ) ? 8 : $entry->getQty() ); $q++ ) { ?>
+                                                    <option value="<?php echo $q; ?>"<?php if ( $q == $entry->getVegetarianQty() ) { ?> selected<?php } ?>>
+                                                        <?php echo $q; ?>
+                                                    </option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                <?php } else { ?>
+                                    <input type="hidden" name="vegetarian_qty" id="vegetarian_qty" value="<?php echo $entry->getVegetarianQty(); ?>">
+                                <?php } ?>
+                            <?php } ?>
 							<?php if ( $entry->getAmountDue() > 0 ) { ?>
 								<tr>
 									<th>Amount Due:</th>

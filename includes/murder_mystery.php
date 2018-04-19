@@ -71,20 +71,32 @@
 				<td>
 					<?php echo $entry->getQty(); ?>
 					<?php if ($entry->isSponsor()) { ?>
-						Table Sponsorship (8 Tickets)
+						Tickets (Sponsor)
 					<?php } ?>
+                    <?php if ($entry->isVip()) { ?>
+                        VIP Table (8 Tickets)
+                    <?php } ?>
 				</td>
 			</tr>
 			<tr>
-				<th>Meal Type:</th>
-				<td><?php echo ( $entry->isUpgraded() ) ? 'Steak Dinner' : 'Chicken or Vegetarian Dinner'; ?></td>
+				<th>Meal Types:</th>
+				<td>
+                    <?php
+
+                    $meals_types = \OutSpokane\MurderMysteryEntry::getMealTypes();
+                    $chosen_meals = $entry->getMeals( TRUE );
+
+                    foreach ( $chosen_meals as $index => $qty )
+                    {
+                        if ( isset( $meals_types[ $index ] ) )
+                        {
+                            echo $qty . ' X ' . $meals_types[ $index ]['name'] . '<br>';
+                        }
+                    }
+
+                    ?>
+                </td>
 			</tr>
-			<?php if ( ! $entry->isUpgraded() ) { ?>
-				<tr>
-					<th>Vegetarian Meals:</th>
-					<td><?php echo $entry->getVegetarianQty(); ?></td>
-				</tr>
-			<?php } ?>
 			<?php if ( $entry->getAmountDue() > 0 ) { ?>
 				<tr>
 					<th>Amount Due:</th>
@@ -184,108 +196,95 @@
 
 			<div id="pride-form-step-1">
 
-				<?php \OutSpokane\Entry::drawDefaultFormFields( array( 'organization' ) ); ?>
+				<?php \OutSpokane\Entry::drawDefaultFormFields(); ?>
 
-                <?php if ( FALSE ) { ?>
+                <div id="mm-sponsor-question">
 
                     <div class="row">
-                        <div class="col-md-3">
-                            <label for="is_sponsor">Would you like to purchase a table sponsorship (includes 8 tickets)?</label>
+                        <div class="col-md-12">
+                            <label for="mm_is_sponsor">Are you an event sponsor (Includes 10 Tickets)?</label>
                         </div>
-                        <div class="col-md-6">
-                            <select id="is_sponsor">
-                                <option value="0">No</option>
-                                <option value="1">Yes</option>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <select id="mm_is_sponsor">
+                                <option value="0">No - I am not an event sponsor</option>
+                                <option value="1">Yes - I am an event sponsor</option>
                             </select>
                         </div>
                     </div>
 
-                    <div id="mm-sponsor-fields">
+                </div>
 
-                        <div class="row">
-                            <div class="col-md-3">
-                                <label for="sponsor_meal_type">Meal Type</label>
-                            </div>
-                            <div class="col-md-6">
-                                <label>
-                                    <input type="radio" id="sponsor_meal_type_regular" name="sponsor_meal_type" checked>
-                                    Chicken or Vegetarian Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::TABLE_PRICE, 2 ); ?>)<br>
-                                </label>
-                                <label>
-                                    <input type="radio" id="sponsor_meal_type_upgraded" name="sponsor_meal_type">
-                                    Steak Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::UPGRADED_TABLE_PRICE, 2 ); ?>)
-                                </label>
-                            </div>
+                <div id="mm-vip-question">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="mm_is_vip">We have VIP tables available for $500!</label>
+                            <p>Includes:</p>
+                            <ul style="margin-left:50px">
+                                <li>8 Tickets</li>
+                                <li>$40 of Bribe Bucks</li>
+                                <li>2 Cruise Tickets</li>
+                                <li>1 Package of Mystery Evidence</li>
+                                <li>16 Drink Tickets (2 Per Person)</li>
+                                <li>1 Free Prom Picture</li>
+                                <li>Priority Access To The Buffet</li>
+                            </ul>
                         </div>
-
-                        <div class="row" id="sponsor-vegetarian-dinners">
-                            <div class="col-md-3">
-                                <label for="sponsor_vegetarian_qty">How many vegetarian meals do you need?</label>
-                            </div>
-                            <div class="col-md-6">
-                                <select id="sponsor_vegetarian_qty">
-                                    <?php for ($x=0; $x<=8; $x++) { ?>
-                                        <option value="<?php echo $x; ?>">
-                                            <?php echo $x; ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <select id="mm_is_vip">
+                                <option value="0">No - I do not need a VIP table</option>
+                                <option value="1">Yes - I would like a VIP table</option>
+                            </select>
                         </div>
-
                     </div>
 
-                <?php } ?>
+                </div>
 
-				<div id="mm-ticket-fields">
+                <div id="mm-qty-question">
 
-					<div class="row">
-						<div class="col-md-3">
-							<label for="ticket_meal_type">Meal Type</label>
-						</div>
-						<div class="col-md-6">
-							<label>
-								<input type="radio" id="ticket_meal_type_regular" name="ticket_meal_type" checked>
-								Chicken or Vegetarian Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::TICKET_PRICE, 2 ); ?> each)<br>
-							</label>
-							<label>
-								<input type="radio" id="ticket_meal_type_upgraded" name="ticket_meal_type">
-								Steak Dinner ($<?php echo number_format( \OutSpokane\MurderMysteryEntry::UPGRADED_TICKET_PRICE, 2 ); ?> each)
-							</label>
-						</div>
-					</div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="ticket_qty">How many total tickets would you like to purchase?</label>
+                        </div>
+                        <div class="col-md-12">
+                            <select id="ticket_qty">
+                                <?php for ($x=1; $x<=\OutSpokane\MurderMysteryEntry::MAX_TICKETS; $x++) { ?>
+                                    <option value="<?php echo $x; ?>">
+                                        <?php echo $x; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
 
-					<div class="row">
-						<div class="col-md-3">
-							<label for="ticket_qty">How many total tickets?</label>
-						</div>
-						<div class="col-md-6">
-							<select id="ticket_qty">
-								<?php for ($x=1; $x<=\OutSpokane\MurderMysteryEntry::MAX_TICKETS; $x++) { ?>
-									<option value="<?php echo $x; ?>">
-										<?php echo $x; ?>
-									</option>
-								<?php } ?>
-							</select>
-						</div>
-					</div>
+                </div>
 
-					<div class="row" id="mm-vegetarian-dinners">
-						<div class="col-md-3">
-							<label for="ticket_vegetarian_qty">How many vegetarian dinners do you need?</label>
-						</div>
-						<div class="col-md-6">
-							<select id="ticket_vegetarian_qty">
-								<option value="0">0</option>
-								<option value="1">1</option>
-							</select>
-						</div>
-					</div>
-
-				</div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="ticket_qty">Please indicate the number of each meal type you would like:</label>
+                    </div>
+                    <div class="col-md-12">
+                        <table>
+                            <?php foreach ( \OutSpokane\MurderMysteryEntry::getMealTypes() as $index => $meal ) { ?>
+                                <?php if ( $meal['active'] == 1 ) { ?>
+                                    <tr>
+                                        <td>
+                                            <input style="width:50px;" value="0" class="meal_qty" data-index="<?php echo $index; ?>" name="meal_qty_<?php echo $index; ?>">
+                                        </td>
+                                        <td style="width:80%"><?php echo $meal['name']; ?></td>
+                                    </tr>
+                                <?php } ?>
+                            <?php } ?>
+                        </table>
+                    </div>
+                </div>
 
 				<div class="row">
-					<div class="col-md-6 col-md-offset-3">
+					<div class="col-md-12">
 
 						<button id="btn-step-1">Submit</button>
 

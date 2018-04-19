@@ -150,39 +150,37 @@ class Controller {
 
 		/* murder_mystery_entries table */
 		$table = $wpdb->prefix . MurderMysteryEntry::TABLE_NAME;
-		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
-			$sql = "
-				CREATE TABLE `" . $table . "`
-				(
-					`id` INT(11) NOT NULL AUTO_INCREMENT,
-					`entry_year` INT(11) DEFAULT NULL,
-					`email` VARCHAR(50) DEFAULT NULL,
-					`phone` VARCHAR(50) DEFAULT NULL,
-					`organization` VARCHAR(150) DEFAULT NULL,
-					`first_name` VARCHAR(50) DEFAULT NULL,
-					`last_name` VARCHAR(50) DEFAULT NULL,
-					`address` VARCHAR(50) DEFAULT NULL,
-					`city` VARCHAR(50) DEFAULT NULL,
-					`state` VARCHAR(2) DEFAULT NULL,
-					`zip` VARCHAR(10) DEFAULT NULL,
-					`qty` INT(11) DEFAULT NULL,
-					`vegetarian_qty` INT(11) DEFAULT NULL,
-					`is_sponsor` TINYINT(4) DEFAULT NULL,
-					`is_upgraded` TINYINT(4) DEFAULT NULL,
-					`price_per_qty` DECIMAL(11,2) DEFAULT NULL,
-					`payment_method_id` INT(11) DEFAULT NULL,
-					`paid_at` DATETIME DEFAULT NULL,
-					`payment_amount` DECIMAL(11,2) DEFAULT NULL,
-					`payment_confirmation_number` VARCHAR(50) DEFAULT NULL,
-					`notes` TEXT DEFAULT NULL,
-					`tickets_sent` TINYINT(4) DEFAULT NULL,
-					`created_at` DATETIME DEFAULT NULL,
-					`updated_at` DATETIME DEFAULT NULL,
-					PRIMARY KEY (`id`)
-				)";
-			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
-			dbDelta( $sql );
-		}
+        $sql = "CREATE TABLE " . $table . " (
+                id INT(11) NOT NULL AUTO_INCREMENT,
+                entry_year INT(11) DEFAULT NULL,
+                email VARCHAR(50) DEFAULT NULL,
+                phone VARCHAR(50) DEFAULT NULL,
+                organization VARCHAR(150) DEFAULT NULL,
+                first_name VARCHAR(50) DEFAULT NULL,
+                last_name VARCHAR(50) DEFAULT NULL,
+                address VARCHAR(50) DEFAULT NULL,
+                city VARCHAR(50) DEFAULT NULL,
+                state VARCHAR(2) DEFAULT NULL,
+                zip VARCHAR(10) DEFAULT NULL,
+                qty INT(11) DEFAULT NULL,
+                vegetarian_qty INT(11) DEFAULT NULL,
+                is_sponsor TINYINT(4) DEFAULT NULL,
+                is_vip TINYINT(4) DEFAULT NULL,
+                meals TEXT DEFAULT NULL,
+                is_upgraded TINYINT(4) DEFAULT NULL,
+                price_per_qty DECIMAL(11,2) DEFAULT NULL,
+                payment_method_id INT(11) DEFAULT NULL,
+                paid_at DATETIME DEFAULT NULL,
+                payment_amount DECIMAL(11,2) DEFAULT NULL,
+                payment_confirmation_number VARCHAR(50) DEFAULT NULL,
+                notes TEXT DEFAULT NULL,
+                tickets_sent TINYINT(4) DEFAULT NULL,
+                created_at DATETIME DEFAULT NULL,
+                updated_at DATETIME DEFAULT NULL,
+                PRIMARY KEY  (id)
+                )";
+        $sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+        dbDelta( $sql );
 
 		/* donations table */
 		$table = $wpdb->prefix . Donation::TABLE_NAME;
@@ -832,23 +830,27 @@ class Controller {
 						$subject = 'Murder Mystery';
 						/** @var MurderMysteryEntry $entry */
 						$entry = new MurderMysteryEntry;
-						$entry
-							->setIsUpgraded( $_POST['is_upgraded'] )
-							->setVegetarianQty( $_POST['vegetarian_qty'] );
+						$entry->setMeals( $_POST['meals'] );
 
 						if ( $_POST['is_sponsor'] == 1 )
 						{
 							$entry
-								->setQty( 1 )
+								->setQty( 10 )
 								->setIsSponsor( TRUE )
-								->setPricePerQty( ($entry->isUpgraded()) ? MurderMysteryEntry::UPGRADED_TABLE_PRICE : MurderMysteryEntry::TABLE_PRICE );
+								->setPricePerQty( 0 );
 						}
+                        elseif ( $_POST['is_vip'] == 1 )
+                        {
+                            $entry
+                                ->setQty( 1 )
+                                ->setIsVip( TRUE )
+                                ->setPricePerQty( MurderMysteryEntry::VIP_TABLE_PRICE );
+                        }
 						else
 						{
 							$entry
 								->setQty( $_POST['qty'] )
-								->setIsSponsor( FALSE )
-								->setPricePerQty( ($entry->isUpgraded()) ? MurderMysteryEntry::UPGRADED_TICKET_PRICE : MurderMysteryEntry::TICKET_PRICE );
+								->setPricePerQty( MurderMysteryEntry::TICKET_PRICE );
 						}
 
 						break;

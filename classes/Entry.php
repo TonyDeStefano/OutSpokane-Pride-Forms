@@ -432,7 +432,7 @@ class Entry {
 	/**
 	 * @param mixed $qty
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setQty( $qty ) {
 		$this->qty = (is_numeric($qty)) ? abs(round($qty)) : NULL;
@@ -845,7 +845,7 @@ class Entry {
 					echo "Entry Type,Corner Booth,";
 					break;
 				case MurderMysteryEntry::TABLE_NAME:
-					echo "Upgraded Meal,Vegetarian Count,Entry Type,";
+					echo "Tickets,Entry Type,";
 					break;
 				case ParadeEntry::TABLE_NAME:
 					echo "Entry Types,Description,Parking Spots,Amped Sound,Group Size,Donation,";
@@ -922,9 +922,22 @@ class Entry {
 							echo ( ( $entry->isCornerBooth() ) ? 'Y' : 'N' ) . ',';
 							break;
 						case MurderMysteryEntry::TABLE_NAME:
-							echo ( ( $entry->isUpgraded() ) ? 'Y' : 'N' ) . ',';
-							echo $entry->getVegetarianQty() . ',';
-							echo ( ( $entry->isSponsor() ) ? 'Table' : 'Ticket' ) . ',';
+							if ( $entry->isVip() )
+                            {
+                                echo "8,VIP Table,";
+                            }
+                            else
+                            {
+                                echo $entry->getQty() . ",";
+                                if ( $entry->isSponsor() )
+                                {
+                                    echo "Sponsor Tickets,";
+                                }
+                                else
+                                {
+                                    echo "Tickets,";
+                                }
+                            }
 							break;
 						case ParadeEntry::TABLE_NAME:
 							echo '"' . str_replace('"', '""', implode( ',', $entry->getEntryTypes() ) ) . '",';

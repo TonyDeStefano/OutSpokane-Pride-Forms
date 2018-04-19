@@ -5,14 +5,15 @@ namespace OutSpokane;
 class MurderMysteryEntry extends Entry {
 
 	const TABLE_NAME = 'out_spokane_murder_mystery_entries';
-	const TICKET_PRICE = 55;
-	const UPGRADED_TICKET_PRICE = 65;
-	const TABLE_PRICE = 350;
-	const UPGRADED_TABLE_PRICE = 500;
+	const TICKET_PRICE = 50;
+	const VIP_TABLE_PRICE = 500;
+	const SPONSOR_PRICE = 0;
 	const MAX_TICKETS = 20;
 
 	private $vegetarian_qty;
 	private $is_sponsor = FALSE;
+	private $is_vip = FALSE;
+	private $meals;
 	private $is_upgraded = FALSE;
 	private $tickets_sent = FALSE;
 
@@ -73,7 +74,7 @@ class MurderMysteryEntry extends Entry {
 	 */
 	public function isUpgraded()
 	{
-		return ( $this->is_upgraded === TRUE ) ? TRUE : FALSE;
+		return ( $this->is_upgraded === TRUE );
 	}
 
 	/**
@@ -87,6 +88,58 @@ class MurderMysteryEntry extends Entry {
 
 		return $this;
 	}
+
+    /**
+     * @return bool
+     */
+    public function isVip()
+    {
+        return ( $this->is_vip === TRUE );
+    }
+
+    /**
+     * @param bool $is_vip
+     *
+     * @return MurderMysteryEntry
+     */
+    public function setIsVip( $is_vip )
+    {
+        $this->is_vip = ( $is_vip == 1 || $is_vip === TRUE ) ? TRUE : FALSE;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $as_array
+     *
+     * @return array|string
+     */
+    public function getMeals( $as_array = FALSE )
+    {
+        if ( $as_array )
+        {
+            return ( strlen( $this->meals ) > 0 ) ? json_decode( $this->meals, TRUE ) : array();
+        }
+
+        return ( strlen( $this->meals ) > 0 ) ? $this->meals : '';
+    }
+
+    /**
+     * @param string|array|null $meals
+     *
+     * @return MurderMysteryEntry
+     */
+    public function setMeals( $meals )
+    {
+        if ( is_array( $meals ) )
+        {
+            $meals = json_encode( $meals );
+        }
+
+        $this->meals = $meals;
+
+        return $this;
+    }
 
 	/**
 	 * @return boolean
@@ -151,7 +204,8 @@ class MurderMysteryEntry extends Entry {
 				'payment_method_id' => $this->payment_method_id,
 				'vegetarian_qty' => $this->vegetarian_qty,
 				'is_sponsor' => ( $this->isSponsor() ) ? 1 : 0,
-				'is_upgraded' => ( $this->isUpgraded() ) ? 1 : 0,
+				'is_vip' => ( $this->isVip() ) ? 1 : 0,
+				'meals' => $this->meals,
 				'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
 				'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 			),
@@ -172,6 +226,7 @@ class MurderMysteryEntry extends Entry {
 				'%d',
 				'%d',
 				'%d',
+				'%s',
 				'%s',
 				'%s',
 			)
@@ -235,7 +290,38 @@ class MurderMysteryEntry extends Entry {
 		$this
 			->setIsSponsor( $row->is_sponsor )
 			->setIsUpgraded( $row->is_upgraded )
+            ->setIsVip( $row->is_vip )
+            ->setMeals( $row->meals )
 			->setVegetarianQty( $row->vegetarian_qty )
 			->setTicketsSent( $row->tickets_sent );
 	}
+
+    /**
+     * @return array
+     */
+	public static function getMealTypes()
+    {
+        /*
+         * Don't remove items from this list, just change active to 0 for ones no longer needed.
+         * And add any new ones to the end (for backwards compatibility)
+         * */
+        return array(
+            array(
+                'name' => 'Chicken Parmesan',
+                'active' => TRUE
+            ),
+            array(
+                'name' => 'Chicken Fettuccine',
+                'active' => TRUE
+            ),
+            array(
+                'name' => 'Prime Rib',
+                'active' => TRUE
+            ),
+            array(
+                'name' => 'Eggplant Marinara w/ Gluten Free Spaghetti + Veggies w/ Garlic and Olive Oil',
+                'active' => TRUE
+            ),
+        );
+    }
 }

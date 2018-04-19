@@ -55,6 +55,41 @@ var pride_form_is_processing = false;
             }
         }
 
+        var mm_qty = 1;
+        var mm_is_sponsor = 0;
+        var mm_is_vip = 0;
+        var mm_meals = {};
+
+        if (pride_form.form === 'murder_mystery') {
+
+            mm_qty = $('#ticket_qty').val();
+            if ($('#mm_is_sponsor').val() === '1') {
+                mm_qty = 10;
+                mm_is_sponsor = 1;
+            } else if ($('#mm_is_vip').val() === '1') {
+                mm_qty = 8;
+                mm_is_vip = 1;
+            } else {
+                mm_qty = parseInt(mm_qty);
+            }
+
+            var meal_qty = 0;
+            $('.meal_qty').each(function(){
+                var q = $(this).val();
+                q = q.replace(/[^0-9]/g, '');
+                if(q.length === 0){
+                    q = '0';
+                }
+                if(q > 0){
+                    mm_meals[$(this).data('index')] = q;
+                }
+                meal_qty += parseInt(q);
+            });
+
+            if (meal_qty !== mm_qty) {
+                error = 'The number of meals needs to add up to the number of tickets'
+            }
+        }
         if (error.length > 0) {
 
             alert(error);
@@ -106,31 +141,10 @@ var pride_form_is_processing = false;
                 post.message = getPrideFormValue('message');
                 post.color = getPrideFormValue('color');
             } else if (pride_form.form === 'murder_mystery') {
-                post.is_sponsor = 0;
-                /*
-                post.is_sponsor = $('#is_sponsor').val();
-                if (post.is_sponsor == '1') {
-                    post.qty = '1';
-                    if ($('#sponsor_meal_type_upgraded').prop('checked')) {
-                        post.is_upgraded = '1';
-                        post.vegetarian_qty = 0;
-                    } else {
-                        post.is_upgraded = '0';
-                        post.vegetarian_qty = $('#sponsor_vegetarian_qty').val();
-                    }
-                } else {
-                */
-                    post.qty = $('#ticket_qty').val();
-                    if ($('#ticket_meal_type_upgraded').prop('checked')) {
-                        post.is_upgraded = '1';
-                        post.vegetarian_qty = 0;
-                    } else {
-                        post.is_upgraded = '0';
-                        post.vegetarian_qty = $('#ticket_vegetarian_qty').val();
-                    }
-                /*
-                }
-                */
+                post.qty = mm_qty;
+                post.is_sponsor = mm_is_sponsor;
+                post.is_vip = mm_is_vip;
+                post.meals = mm_meals;
             } else if (pride_form.form === 'sponsorship') {
                 post.amount = getPrideFormValue('amount');
                 post.position = getPrideFormValue('position');
@@ -205,27 +219,13 @@ var pride_form_is_processing = false;
 
     doSponsorChange();
 
-    var mm_ticket_fields = $('#mm-ticket-fields');
+    /* Murder Mystery Form */
 
-    mm_ticket_fields.on('change', '#ticket_qty', function(){
-        fillVegNumbers();
+    refreshMurderMysteryForm();
+
+    $('#mm_is_sponsor, #mm_is_vip').change(function(){
+        refreshMurderMysteryForm();
     });
-
-    fillVegNumbers();
-
-    mm_ticket_fields.on('change', 'input[name=ticket_meal_type]:radio', function(){
-       showHideTicketVeg();
-    });
-
-    showHideTicketVeg();
-
-    var mm_sponsor_fields = $('#mm-sponsor-fields');
-
-    mm_sponsor_fields.on('change', 'input[name=sponsor_meal_type]:radio', function(){
-        showHideSponsorVeg();
-    });
-
-    showHideSponsorVeg();
 
 })(jQuery);
 
@@ -235,42 +235,32 @@ var pride_form = {
     fields: []
 };
 
-function fillVegNumbers()
-{
-    var tix = jQuery('#mm-ticket-fields').find('#ticket_qty');
-    if (tix.length) {
-        var val = parseInt(tix.val());
-        var el = jQuery('#ticket_vegetarian_qty');
-        el.html('');
-        for (var v = 0; v <= val; v++) {
-            el.append('<option value="' + v + '">' + v + '</option>');
-        }
-    }
-}
+function refreshMurderMysteryForm(){
 
-function showHideTicketVeg()
-{
-    var container = jQuery('#mm-ticket-fields');
-    var veg = jQuery('#mm-vegetarian-dinners');
-    if (container.length) {
-        if (jQuery('#ticket_meal_type_upgraded').prop('checked')) {
-            veg.hide();
-        } else {
-            veg.show();
-        }
-    }
-}
+    var qty = jQuery('#mm-qty-question').find('#ticket_qty');
+    var preset_qty = false;
 
-function showHideSponsorVeg()
-{
-    var container = jQuery('#mm-sponsor-fields');
-    var veg = jQuery('#sponsor-vegetarian-dinners');
-    if (container.length) {
-        if (jQuery('#sponsor_meal_type_upgraded').prop('checked')) {
-            veg.hide();
-        } else {
-            veg.show();
-        }
+    if(jQuery('#mm_is_sponsor').val() === '1'){
+        jQuery('#mm-vip-question').hide();
+        preset_qty = true;
+        qty.closest('div').prepend('<span>10</span>');
+    } else {
+        jQuery('#mm-vip-question').show();
+    }
+
+    if(jQuery('#mm_is_vip').val() === '1'){
+        jQuery('#mm-sponsor-question').hide();
+        preset_qty = true;
+        qty.closest('div').prepend('<span>8</span>');
+    } else {
+        jQuery('#mm-sponsor-question').show();
+    }
+
+    if(preset_qty) {
+        qty.hide();
+    } else {
+        qty.closest('div').find('span').remove();
+        qty.show();
     }
 }
 

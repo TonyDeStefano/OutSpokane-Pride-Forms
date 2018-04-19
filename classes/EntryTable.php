@@ -185,7 +185,24 @@ class EntryTable extends \WP_List_Table {
 			case 'email':
 				return $item->$column_name;
 			case 'type':
-				return ( $item->is_sponsor == 1 ) ? 'Table' : 'Ticket';
+			    if ( $item->entry_year == 2018 ) {
+			        if ( $item->is_vip == 1 )
+                    {
+                        return 'VIP Table';
+                    }
+                    elseif ( $item->is_sponsor )
+                    {
+                        return 'Sponsor Ticket';
+                    }
+                    else
+                    {
+                        return 'Ticket';
+                    }
+                }
+                else
+                {
+                    return ( $item->is_sponsor == 1 ) ? 'Table' : 'Ticket';
+                }
 			case 'name':
 				return $item->first_name . ' ' . $item->last_name . ( ( strlen( $item->organization ) > 0 ) ? '<br><em>' . $item->organization . '</em>' : '' );
 			case 'is_corner_booth':
