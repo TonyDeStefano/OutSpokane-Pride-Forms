@@ -90,6 +90,7 @@ var pride_form_is_processing = false;
                 error = 'The number of meals needs to add up to the number of tickets'
             }
         }
+
         if (error.length > 0) {
 
             alert(error);
@@ -117,7 +118,8 @@ var pride_form_is_processing = false;
             };
 
             if (pride_form.form === 'cruise' || pride_form.form === 'bowling') {
-                post.qty = getPrideFormValue('qty')
+                post.qty = getPrideFormValue('qty');
+                post.is_will_call = getPrideFormValue('is_will_call');
             } else if (pride_form.form === 'festival') {
                 post.entry_type_id = getPrideFormValue('entry_type_id');
                 post.corner_booth = getPrideFormValue('corner_booth');

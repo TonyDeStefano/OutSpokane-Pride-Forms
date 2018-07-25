@@ -208,7 +208,7 @@ class Entry {
 	/**
 	 * @param mixed $table_name
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setTableName( $table_name ) {
 		$this->table_name = $table_name;
@@ -226,7 +226,7 @@ class Entry {
 	/**
 	 * @param mixed $id
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setId( $id ) {
 		$this->id = (is_numeric($id)) ? abs(round($id)) : NULL;
@@ -244,7 +244,7 @@ class Entry {
 	/**
 	 * @param mixed $entry_year
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setEntryYear( $entry_year ) {
 		$this->entry_year = (is_numeric($entry_year)) ? abs(round($entry_year)) : NULL;
@@ -262,7 +262,7 @@ class Entry {
 	/**
 	 * @param mixed $email
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setEmail( $email ) {
 		$this->email = $email;
@@ -280,7 +280,7 @@ class Entry {
 	/**
 	 * @param mixed $phone
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setPhone( $phone ) {
 		$this->phone = $phone;
@@ -298,7 +298,7 @@ class Entry {
 	/**
 	 * @param mixed $organization
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setOrganization( $organization ) {
 		$this->organization = $organization;
@@ -316,7 +316,7 @@ class Entry {
 	/**
 	 * @param mixed $first_name
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setFirstName( $first_name ) {
 		$this->first_name = $first_name;
@@ -334,7 +334,7 @@ class Entry {
 	/**
 	 * @param mixed $last_name
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setLastName( $last_name ) {
 		$this->last_name = $last_name;
@@ -356,7 +356,7 @@ class Entry {
 	/**
 	 * @param mixed $address
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setAddress( $address ) {
 		$this->address = $address;
@@ -374,7 +374,7 @@ class Entry {
 	/**
 	 * @param mixed $city
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setCity( $city ) {
 		$this->city = $city;
@@ -392,7 +392,7 @@ class Entry {
 	/**
 	 * @param mixed $state
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setState( $state ) {
 		$this->state = $state;
@@ -410,7 +410,7 @@ class Entry {
 	/**
 	 * @param mixed $zip
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setZip( $zip ) {
 		$this->zip = $zip;
@@ -450,7 +450,7 @@ class Entry {
 	/**
 	 * @param mixed $price_per_qty
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setPricePerQty( $price_per_qty ) {
 		$this->price_per_qty = (is_numeric($price_per_qty)) ? abs(round($price_per_qty, 2)) : NULL;
@@ -506,7 +506,7 @@ class Entry {
 	/**
 	 * @param mixed $payment_method_id
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setPaymentMethodId( $payment_method_id ) {
 		$this->payment_method_id = (in_array($payment_method_id, array(1, 2, 3, 4, 5))) ? $payment_method_id : NULL;
@@ -531,7 +531,7 @@ class Entry {
 	/**
 	 * @param mixed $paid_at
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setPaidAt( $paid_at ) {
 		$this->paid_at = (is_numeric($paid_at) || $paid_at === NULL) ? $paid_at : strtotime($paid_at);
@@ -549,7 +549,7 @@ class Entry {
 	/**
 	 * @param mixed $payment_amount
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setPaymentAmount( $payment_amount ) {
 		$this->payment_amount = (is_numeric($payment_amount)) ? abs(round($payment_amount, 2)) : NULL;
@@ -567,7 +567,7 @@ class Entry {
 	/**
 	 * @param mixed $payment_confirmation_number
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setPaymentConfirmationNumber( $payment_confirmation_number ) {
 		$this->payment_confirmation_number = $payment_confirmation_number;
@@ -585,7 +585,7 @@ class Entry {
 	/**
 	 * @param mixed $notes
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setNotes( $notes ) {
 		$this->notes = $notes;
@@ -605,7 +605,7 @@ class Entry {
 	/**
 	 * @param mixed $created_at
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setCreatedAt( $created_at ) {
 		$this->created_at = (is_numeric($created_at) || $created_at === NULL) ? $created_at : strtotime($created_at);
@@ -625,7 +625,7 @@ class Entry {
 	/**
 	 * @param mixed $updated_at
 	 *
-	 * @return Entry
+	 * @return $this
 	 */
 	public function setUpdatedAt( $updated_at ) {
 		$this->updated_at = (is_numeric($updated_at) || $updated_at === NULL) ? $updated_at : strtotime($updated_at);
@@ -856,6 +856,9 @@ class Entry {
 				case FlagHandle::TABLE_NAME:
 					echo "Message,Color,";
 					break;
+                case CruiseEntry::TABLE_NAME:
+                    echo "Delivery,";
+                    break;
 			}
 			echo "Qty,Amount Due,Amount Paid,Payment Method,Paid On,Notes";
 
@@ -954,6 +957,9 @@ class Entry {
 							echo '"' . str_replace( "\n", ' ', str_replace( "\r", ' ', str_replace( '"', '""', $entry->getMessage() ) ) ) . '",';
 							echo '"' . str_replace( "\n", ' ', str_replace( "\r", ' ', str_replace( '"', '""', $entry->getColor() ) ) ) . '",';
 							break;
+                        case CruiseEntry::TABLE_NAME:
+                            echo ( ( $entry->isWillCall() ) ? 'Will Call' : 'Mail' ) . ',';
+                            break;
 					}
 
 					echo $entry->getQty() . ',';

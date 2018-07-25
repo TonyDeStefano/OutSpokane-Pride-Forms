@@ -6,7 +6,7 @@
  * Description: Custom plugin for all the OutSpokane forms
  * Author: Tony DeStefano
  * Author URI:
- * Version: 1.5.0
+ * Version: 1.6.0
  * Text Domain: out-spokane-pride-forms
  *
  * Copyright 2016 Tony DeStefano

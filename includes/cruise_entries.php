@@ -84,6 +84,10 @@ if ( isset( $_GET[ 'action' ] ) )
 								<th>Tickets:</th>
 								<td><?php echo $entry->getQty(); ?></td>
 							</tr>
+                            <tr>
+                                <th>Delivery:</th>
+                                <td><?php echo ( $entry->isWillCall() ) ? 'Will Call' : 'Mail'; ?></td>
+                            </tr>
 							<?php if ( $entry->getAmountDue() > 0 ) { ?>
 								<tr>
 									<th>Amount Due:</th>

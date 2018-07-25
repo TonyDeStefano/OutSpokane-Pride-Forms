@@ -69,6 +69,7 @@ class EntryTable extends \WP_List_Table {
 			'paid_at' => 'Pay Date',
 			'payment_method_id' => 'Payment Method',
 			'email' => 'Email',
+			'delivery' => 'Delivery',
 			'tickets_sent' => 'Tickets Sent',
 			'view' => ''
 		);
@@ -102,6 +103,11 @@ class EntryTable extends \WP_List_Table {
 			unset( $return['tickets_sent'] );
 		}
 
+        if ( $this->table != CruiseEntry::TABLE_NAME )
+        {
+            unset( $return['delivery'] );
+        }
+
 		if ( $this->table != Sponsorship::TABLE_NAME )
 		{
 			unset( $return['level'] );
@@ -129,6 +135,7 @@ class EntryTable extends \WP_List_Table {
 			'paid_at' => array( 'paid_at', TRUE ),
 			'payment_method_id' => array( 'payment_method_id', TRUE ),
 			'email' => array( 'email', TRUE ),
+			'delivery' => array( 'is_will_call', TRUE ),
 			'tickets_sent' => array( 'tickets_sent', TRUE )
 		);
 
@@ -160,6 +167,11 @@ class EntryTable extends \WP_List_Table {
 		{
 			unset( $return['tickets_sent'] );
 		}
+
+        if ( $this->table != CruiseEntry::TABLE_NAME )
+        {
+            unset( $return['delivery'] );
+        }
 
 		if ( ! $this->table == Sponsorship::TABLE_NAME )
 		{
@@ -229,6 +241,8 @@ class EntryTable extends \WP_List_Table {
 				return '$' . number_format( ( $item->price_per_qty === NULL ) ? 0 : $item->price_per_qty * $item->qty, 2 );
 			case 'tickets_sent':
 				return ( $item->tickets_sent == 1 ) ? 'Yes' : 'No';
+            case 'delivery':
+                return ( $item->is_will_call == 1 ) ? 'Will Call' : 'Mail';
 			case 'view':
 				return '<a href="?page=' . $_REQUEST['page'] . '&action=view&id=' . $item->id . '" class="button-primary">' . __('View') . '</a>';
 			case 'payment_method_id':

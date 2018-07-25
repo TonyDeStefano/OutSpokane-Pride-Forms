@@ -8,8 +8,8 @@ use \Stripe\Error\Card;
 
 class Controller {
 
-	const VERSION = '1.5.0';
-	const VERSION_JS = '1.5.0';
+	const VERSION = '1.6.0';
+	const VERSION_JS = '1.6.0';
 	const VERSION_CSS = '1.5.0';
 
 	public $action = '';
@@ -66,6 +66,7 @@ class Controller {
 					`payment_confirmation_number` VARCHAR(50) DEFAULT NULL,
 					`notes` TEXT DEFAULT NULL,
 					`tickets_sent` TINYINT(4) DEFAULT NULL,
+					`is_will_call` TINYINT(4) DEFAULT NULL,
 					`created_at` DATETIME DEFAULT NULL,
 					`updated_at` DATETIME DEFAULT NULL,
 					PRIMARY KEY (`id`)
@@ -495,7 +496,9 @@ class Controller {
 			}
 			elseif ( $_POST['form'] == 'cruise' )
 			{
-				$entry->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) );
+				$entry
+                    ->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) )
+                    ->setIsWillCall( $_POST['is_will_call'] );
 			}
 			elseif ( $_POST['form'] == 'parade' )
 			{
@@ -807,7 +810,8 @@ class Controller {
 						$entry
 							->setQty( $_POST['qty'] )
 							->setPricePerQty( CruiseEntry::PRICE_PER_TICKET )
-							->setPaymentMethodId( Entry::PAYMENT_METHOD_CARD );
+							->setPaymentMethodId( Entry::PAYMENT_METHOD_CARD )
+                            ->setIsWillCall( $_POST['is_will_call'] );
 
 						break;
 
@@ -979,6 +983,15 @@ class Controller {
 							<td>' . $entry->getRaw( strtolower( str_replace( ' ', '_', $field ) ) ) . '</td>
 						</tr>';
 				}
+
+                if ( $_POST['form'] == 'cruise' )
+                {
+                    $body .= '
+						<tr>
+							<td><strong>Ticket Delivery:</strong></td>
+							<td>' . ( ( $entry->isWillCall() ) ? 'Will Call' : 'Mail' ) . '</td>
+						</tr>';
+                }
 
 
 				$body .= '

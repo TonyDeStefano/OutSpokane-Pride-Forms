@@ -70,6 +70,10 @@
 				<th>Tickets:</th>
 				<td><?php echo $entry->getQty(); ?></td>
 			</tr>
+            <tr>
+                <th>Delivery:</th>
+                <td><?php echo ( $entry->isWillCall() ) ? 'Will Call' : 'Mail'; ?></td>
+            </tr>
 			<?php if ( $entry->getAmountDue() > 0 ) { ?>
 				<tr>
 					<th>Amount Due:</th>
@@ -110,7 +114,7 @@
 									</form>
 								</p>
 
-							<?php } elseif ( $payment_method_id != \OutSpokane\Entry::PAYMENT_METHOD_CARD ) { ?>
+							<?php } elseif ( FALSE && $payment_method_id != \OutSpokane\Entry::PAYMENT_METHOD_CARD ) { ?>
 
 								<p>
 									Send <?php echo $payment_method; ?> to:<br><br>
@@ -185,6 +189,22 @@
 						</select>
 					</div>
 				</div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="is_will_call">Ticket Delivery</label>
+                    </div>
+                    <div class="col-md-6">
+                        <select id="is_will_call" class="form-control">
+                            <option value="1">
+                                Will Call
+                            </option>
+                            <option value="0">
+                                Mail
+                            </option>
+                        </select>
+                    </div>
+                </div>
 
 				<div class="row">
 					<div class="col-md-6 col-md-offset-3">

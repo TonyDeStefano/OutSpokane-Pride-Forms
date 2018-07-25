@@ -16,6 +16,7 @@ class CruiseEntry extends Entry{
 	const MAX_TICKETS = 20;
 
 	private $tickets_sent = FALSE;
+	private $is_will_call = FALSE;
 
 	/**
 	 * CruiseEntry constructor.
@@ -39,7 +40,7 @@ class CruiseEntry extends Entry{
 	/**
 	 * @param boolean $tickets_sent
 	 *
-	 * @return MurderMysteryEntry
+	 * @return $this
 	 */
 	public function setTicketsSent( $tickets_sent )
 	{
@@ -47,6 +48,26 @@ class CruiseEntry extends Entry{
 
 		return $this;
 	}
+
+    /**
+     * @return bool
+     */
+	public function isWillCall()
+    {
+        return ( $this->is_will_call === TRUE );
+    }
+
+    /**
+     * @param $is_will_call
+     *
+     * @return $this
+     */
+    public function setIsWillCall( $is_will_call )
+    {
+        $this->is_will_call = ( $is_will_call === TRUE || $is_will_call == 1 ) ? TRUE : FALSE;
+
+        return $this;
+    }
 
 	/**
 	 * @param bool $use_parent
@@ -89,6 +110,7 @@ class CruiseEntry extends Entry{
 				'qty' => $this->qty,
 				'price_per_qty' => $this->price_per_qty,
 				'payment_method_id' => $this->payment_method_id,
+				'is_will_call' => ( $this->isWillCall() ) ? 1 : 0,
 				'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
 				'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 			),
@@ -106,6 +128,7 @@ class CruiseEntry extends Entry{
 				'%d',
 				'%f',
 				'%d',
+                '%d',
 				'%s',
 				'%s',
 			)
@@ -140,13 +163,15 @@ class CruiseEntry extends Entry{
 		$wpdb->update(
 			$wpdb->prefix . $this->table_name,
 			array(
-				'tickets_sent' => ( $this->wereTicketsSent() ) ? 1 : 0
+				'tickets_sent' => ( $this->wereTicketsSent() ) ? 1 : 0,
+                'is_will_call' => ( $this->isWillCall() ) ? 1 : 0
 			),
 			array(
 				'id' => $this->id
 			),
 			array(
-				'%d'
+				'%d',
+                '%d'
 			),
 			array(
 				'%d'
@@ -160,6 +185,8 @@ class CruiseEntry extends Entry{
 	public function loadFromRow( \stdClass $row )
 	{
 		parent::loadFromRow( $row );
-		$this->setTicketsSent( $row->tickets_sent );
+		$this
+            ->setTicketsSent( $row->tickets_sent )
+            ->setIsWillCall( $row->is_will_call );
 	}
 }
