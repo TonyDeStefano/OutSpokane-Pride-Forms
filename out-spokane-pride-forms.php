@@ -6,7 +6,7 @@
  * Description: Custom plugin for all the OutSpokane forms
  * Author: Tony DeStefano
  * Author URI:
- * Version: 1.6.0
+ * Version: 1.7.0
  * Text Domain: out-spokane-pride-forms
  *
  * Copyright 2016 Tony DeStefano
@@ -26,7 +26,7 @@
  *
  * @package OutSpokanePrideForms
  * @author Tony DeStefano
- * @version 1.5.0
+ * @version 1.7.0
  */
 
 require_once ( 'classes/Controller.php' );
@@ -40,6 +40,7 @@ require_once ( 'classes/Donation.php' );
 require_once ( 'classes/FlagHandle.php' );
 require_once ( 'classes/Sponsorship.php' );
 require_once ( 'classes/BowlingEntry.php' );
+require_once ( 'classes/FoodTruck.php' );
 require_once ( 'classes/Stripe/init.php' );
 
 /* controller object  */

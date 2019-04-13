@@ -8,8 +8,8 @@ use \Stripe\Error\Card;
 
 class Controller {
 
-	const VERSION = '1.6.0';
-	const VERSION_JS = '1.6.0';
+	const VERSION = '1.7.0';
+	const VERSION_JS = '1.7.5';
 	const VERSION_CSS = '1.5.0';
 
 	public $action = '';
@@ -295,7 +295,7 @@ class Controller {
 			dbDelta( $sql );
 		}
 
-		/* flag_handles table */
+		/* bowling table */
 		$table = $wpdb->prefix . BowlingEntry::TABLE_NAME;
 		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
 			$sql = "
@@ -326,6 +326,39 @@ class Controller {
 			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
 			dbDelta( $sql );
 		}
+
+        /* food_truck table */
+        $table = $wpdb->prefix . FoodTruck::TABLE_NAME;
+        if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
+            $sql = "
+				CREATE TABLE `" . $table . "`
+				(
+					`id` INT(11) NOT NULL AUTO_INCREMENT,
+					`entry_year` INT(11) DEFAULT NULL,
+					`email` VARCHAR(50) DEFAULT NULL,
+					`phone` VARCHAR(50) DEFAULT NULL,
+					`organization` VARCHAR(150) DEFAULT NULL,
+					`first_name` VARCHAR(50) DEFAULT NULL,
+					`last_name` VARCHAR(50) DEFAULT NULL,
+					`address` VARCHAR(50) DEFAULT NULL,
+					`city` VARCHAR(50) DEFAULT NULL,
+					`state` VARCHAR(2) DEFAULT NULL,
+					`zip` VARCHAR(10) DEFAULT NULL,
+					`qty` INT(11) DEFAULT NULL,
+					`price_per_qty` DECIMAL(11,2) DEFAULT NULL,
+					`payment_method_id` INT(11) DEFAULT NULL,
+					`paid_at` DATETIME DEFAULT NULL,
+					`payment_amount` DECIMAL(11,2) DEFAULT NULL,
+					`payment_confirmation_number` VARCHAR(50) DEFAULT NULL,
+					`notes` TEXT DEFAULT NULL,
+					`description` TEXT DEFAULT NULL,
+					`created_at` DATETIME DEFAULT NULL,
+					`updated_at` DATETIME DEFAULT NULL,
+					PRIMARY KEY (`id`)
+				)";
+            $sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+            dbDelta( $sql );
+        }
 	}
 
 	/**
@@ -399,6 +432,7 @@ class Controller {
 			case 'flag':
 			case 'sponsorship':
 			case 'bowling':
+            case 'food_truck':
 				return $this->return . $this->returnOutputFromPage( $this->getAttribute('form') );
 		}
 
@@ -468,6 +502,9 @@ class Controller {
 				case 'bowling':
 					$entry = new BowlingEntry( $_POST['id'] );
 					break;
+                case 'food_truck':
+                    $entry = new FoodTruck( $_POST['id'] );
+                    break;
 				default:
 					$entry = new MurderMysteryEntry( $_POST['id'] );
 			}
@@ -494,6 +531,12 @@ class Controller {
 					->setPriceForCornerBooth( preg_replace( '/[^0-9\.]/', '', $_POST['price_for_corner_booth'] ) )
 					->setDescription( $_POST['description'] );
 			}
+			elseif ( $_POST['form'] == 'food_truck' )
+            {
+                $entry
+                    ->setPricePerQty( preg_replace( '/[^0-9\.]/', '', $_POST['price_per_qty'] ) )
+                    ->setDescription( $_POST['description'] );
+            }
 			elseif ( $_POST['form'] == 'cruise' )
 			{
 				$entry
@@ -573,6 +616,10 @@ class Controller {
 									$entry = new FestivalEntry( $parts[1] );
 									$title = 'Pride Festival Entry';
 									break;
+                                case 'food_truck':
+                                    $entry = new FoodTruck( $parts[1] );
+                                    $title = 'Food Truck Entry';
+                                    break;
 								case 'murder_mystery':
 									$entry = new MurderMysteryEntry( $parts[1] );
 									$title = 'Murder Mystery Ticket';
@@ -652,6 +699,7 @@ class Controller {
 		add_submenu_page('outspokane', 'Flag Handles', 'Flag Handles', 'manage_options', 'outspokane_flag', array($this, 'showFlagHandles'));
 		add_submenu_page('outspokane', 'Sponsorships', 'Sponsorships', 'manage_options', 'outspokane_sponsorship', array($this, 'showSponsorships'));
 		add_submenu_page('outspokane', 'Bowling Tickets', 'Bowling Tickets', 'manage_options', 'outspokane_bowling', array($this, 'showBowlingEntries'));
+        add_submenu_page('outspokane', 'Food Trucks', 'Food Trucks', 'manage_options', 'outspokane_food_truck', array($this, 'showFoodTruckEntries'));
 		
 		/* I guess this is how to add a page without adding a menu */
 		add_submenu_page(NULL, 'Edit Entry', 'Edit Entry', 'manage_options', 'outspokane_edit_entry', array($this, 'editEntry'));
@@ -667,6 +715,7 @@ class Controller {
 		register_setting( 'outspokane_settings', 'pride_forms_disable_cruise_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_donation_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_festival_form' );
+        register_setting( 'outspokane_settings', 'pride_forms_disable_food_truck_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_murder_mystery_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_parade_form' );
 		register_setting( 'outspokane_settings', 'pride_forms_disable_flag_form' );
@@ -713,6 +762,14 @@ class Controller {
 	{
 		include( dirname( __DIR__ ) . '/includes/festival_entries.php');
 	}
+
+    /**
+     *
+     */
+    public function showFoodTruckEntries()
+    {
+        include( dirname( __DIR__ ) . '/includes/food_truck_entries.php');
+    }
 
 	/**
 	 *
@@ -828,6 +885,17 @@ class Controller {
 							->setIsCornerBooth( ( $_POST['entry_type_id'] == FestivalEntry::ENTRY_TYPE_SPONSOR ) ? FALSE : $_POST['corner_booth'] );
 
 						break;
+
+                    case 'food_truck':
+
+                        $subject = 'Food Truck';
+                        $entry = new FoodTruck;
+                        $entry
+                            ->setQty( 1 )
+                            ->setDescription( $_POST['description'] )
+                            ->setPricePerQty( FoodTruck::ENTRY_FEE );
+
+                        break;
 
 					case 'murder_mystery':
 
@@ -1007,7 +1075,11 @@ class Controller {
 					'Content-Type: text/html; charset=UTF-8',
 					'From info@outspokane.org'
 				);
-				wp_mail( $_POST['email'], $subject, $body, $headers );
+
+                if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                    wp_mail($_POST['email'], $subject, $body, $headers);
+                }
+
 				wp_mail( 'info@outspokane.org', 'BCC: ' . $subject, $body, $headers );
 
 				$response['txid'] = $entry->getCreatedAt() . '-' . $entry->getId();
@@ -1039,6 +1111,9 @@ class Controller {
 				case 'festival':
 					$entry = new FestivalEntry( $_POST['id'] );
 					break;
+                case 'food_truck':
+                    $entry = new FoodTruck( $_POST['id'] );
+                    break;
 				case 'murder_mystery':
 					$entry = new MurderMysteryEntry( $_POST['id'] );
 					break;
@@ -1086,6 +1161,9 @@ class Controller {
 			case 'festival':
 				$entry = new FestivalEntry( $_POST['id'] );
 				break;
+            case 'food_truck':
+                $entry = new FoodTruck( $_POST['id'] );
+                break;
 			case 'murder_mystery':
 				$entry = new MurderMysteryEntry( $_POST['id'] );
 				break;
@@ -1167,6 +1245,9 @@ class Controller {
 				case 'festival':
 					$entry = new FestivalEntry( $_POST['id'] );
 					break;
+                case 'food_truck':
+                    $entry = new FoodTruck( $_POST['id'] );
+                    break;
 				case 'murder_mystery':
 					$entry = new MurderMysteryEntry( $_POST['id'] );
 					break;
@@ -1224,6 +1305,9 @@ class Controller {
 				case 'festival':
 					$entry = new FestivalEntry( $_POST['id'] );
 					break;
+                case 'food_truck':
+                    $entry = new FoodTruck( $_POST['id'] );
+                    break;
 				case 'murder_mystery':
 					$entry = new MurderMysteryEntry( $_POST['id'] );
 					break;

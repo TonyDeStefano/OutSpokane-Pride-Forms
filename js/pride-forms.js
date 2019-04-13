@@ -124,6 +124,8 @@ var pride_form_is_processing = false;
                 post.entry_type_id = getPrideFormValue('entry_type_id');
                 post.corner_booth = getPrideFormValue('corner_booth');
                 post.description = getPrideFormValue('description');
+            } else if (pride_form.form === 'food_truck') {
+                post.description = getPrideFormValue('description');
             } else if (pride_form.form === 'parade') {
                 pride_entry_types = [];
                 $('.parade_entry_type').each(function () {
@@ -185,7 +187,7 @@ var pride_form_is_processing = false;
                     });
                 },
                 success: function(json) {
-                    if (json.success === '0') {
+                    if (json.success == 0) {
                         alert(json.error);
                         pride_form_is_processing = false;
                         $('#btn-step-1').text('Submit');

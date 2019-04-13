@@ -16,6 +16,7 @@
 			<li>flag</li>
 			<li>sponsorship</li>
             <li>bowling</li>
+            <li>food_truck</li>
 		</ul>
 	</blockquote>
 

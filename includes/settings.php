@@ -8,6 +8,7 @@ $disable_parade_form = get_option( 'pride_forms_disable_parade_form', 'N' );
 $disable_flag_form = get_option( 'pride_forms_disable_flag_form', 'N' );
 $disable_sponsorship_form = get_option( 'pride_forms_disable_sponsorship_form', 'N' );
 $disable_bowling_form = get_option( 'pride_forms_disable_bowling_form', 'N' );
+$disable_food_truck_form = get_option( 'pride_forms_disable_food_truck_form', 'N' );
 
 ?>
 
@@ -236,6 +237,25 @@ $disable_bowling_form = get_option( 'pride_forms_disable_bowling_form', 'N' );
                             No
                         </option>
                         <option value="Y"<?php if ( $disable_bowling_form == 'Y') { ?> selected<?php } ?>>
+                            Yes
+                        </option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr valign="top">
+                <th scope="row">
+                    <label for="pride_forms_disable_food_truck_form">
+                        Disable Food Truck Form
+                    </label>
+                </th>
+                <td><?php echo ( $disable_food_truck_form == 'N' ) ? 'No' : '<strong style="color:red">Yes</strong>' ?></td>
+                <td>
+                    <select id="pride_forms_disable_food_truck_form" name="pride_forms_disable_food_truck_form">
+                        <option value="N"<?php if ( $disable_food_truck_form == 'N') { ?> selected<?php } ?>>
+                            No
+                        </option>
+                        <option value="Y"<?php if ( $disable_food_truck_form == 'Y') { ?> selected<?php } ?>>
                             Yes
                         </option>
                     </select>
